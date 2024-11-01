@@ -86,9 +86,9 @@ const Evento = () => {
     }
     return (
         <>
-            <Header title={evento.nombre} />
-        <ScrollView>
-            <Text style={[Styles.subtitle, {color:"black", fontWeight: "bold", marginTop:"2%", marginLeft:"2%"}]}>{local?.nombre} - {evento.nombre}</Text>
+            <Header title={"Informacion del evento"} />
+            <ScrollView>
+                <Text style={[Styles.subtitle, { color: "black", fontWeight: "bold", marginTop: "2%", marginLeft: "2%" }]}>{local?.nombre} - {evento.nombre}</Text>
 
                 <Image
                     source={evento.logo}
@@ -261,22 +261,43 @@ const Evento = () => {
                         </Link>
                     </Pressable>
                 </View>
-                <View>
-                    <Text>¿Quieres saber mas de {local?.nombre}?</Text>
-                    <Link href={("/places/" + local?.id_evento) as Href}>
-                        Visita el perfil de {local?.nombre}
-                    </Link>
+                <View style={{
+                    borderWidth: 2,
+                    borderColor: 'black',
+                    padding: 16,
+                    borderRadius: 8,
+                    margin: 16,
+                }}>
+                    <View style={{
+                        borderWidth: 1,
+                        borderColor: 'black',
+                        padding: 12,
+                        borderRadius: 4,
+                        marginVertical: 8,
+                    }}>
+                        <Text>¿Quieres saber más de <Text style={{ color: '#402158' }}>{local?.nombre}</Text>?</Text>
+                        <Link href={`/places/${local?.id_evento}`} style={{ textDecorationLine: 'underline' }}>
+                            Visita el perfil de <Text style={{ color: '#402158' }}>{local?.nombre}</Text>
+                        </Link>
+                    </View>
+                    <View style={{
+                        borderWidth: 1,
+                        borderColor: 'black',
+                        padding: 12,
+                        borderRadius: 4,
+                        marginVertical: 8,
+                    }}>
+                        <Text>¿Quieres saber más del evento?</Text>
+                        <Link href={`https://wa.me/${local?.telefono}`} style={{ textDecorationLine: 'underline' }}>
+                            Contacta con el equipo de <Text style={{ color: '#402158' }}>{local?.nombre}</Text>
+                        </Link>
+                    </View>
                 </View>
-                <View>
-                    <Text>¿Quieres saber mas del evento?</Text>
-                    <Link href={("https://wa.me/" + local?.telefono) as Href}>
-                        Contacta con el equipo de {local?.nombre}
-                    </Link>
-                </View>
-        </ScrollView>
-        
+
+            </ScrollView>
+
         </>
-        
+
     );
 };
 
