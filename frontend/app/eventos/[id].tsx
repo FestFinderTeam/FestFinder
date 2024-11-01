@@ -65,8 +65,9 @@ const Evento = () => {
 
     const obtenerEstrellas = () => {
         const estrellas = Array(5).fill(0);
-        return estrellas.map((item, index) => (
+        return estrellas.map((_, index) => (
             <FontAwesome
+                key={index}
                 name="star"
                 color={index < (evento?.puntuacion || 0) ? "orange" : "gray"}
             />
