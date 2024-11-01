@@ -24,7 +24,12 @@ export default {
         "backgroundColor": "#ffffff"
       },
       "package": "com.mobile.festfinder",
-      "googleServicesFile": process.env.GOOGLE_SERVICES_JSON
+      "googleServicesFile": process.env.GOOGLE_SERVICES_JSON,
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCCi7U0FG1-Mq_eH1pOooq3g3I41mrXWsg"
+        }
+      }
     },
     "web": {
       "bundler": "metro",
@@ -36,7 +41,6 @@ export default {
       "@react-native-google-signin/google-signin",
       "expo-secure-store",
       [
-
         "expo-image-picker",
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."

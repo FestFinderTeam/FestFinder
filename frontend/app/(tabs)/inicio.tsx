@@ -11,7 +11,6 @@ import {
     TextInput,
     View,
 } from "react-native";
-import { red } from "react-native-reanimated/lib/typescript/reanimated2/Colors";
 import Notch from "@/components/Notch";
 import { FadeIn } from "react-native-reanimated";
 
