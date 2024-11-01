@@ -18,6 +18,7 @@ import {
     FlatList,
     Modal,
 } from "react-native";
+import { red } from "react-native-reanimated/lib/typescript/reanimated2/Colors";
 
 type Establecimiento = {
     id: number;
@@ -97,7 +98,7 @@ const Place = () => {
     }, [fontsLoaded]);
 
     useEffect(() => {
-        
+
         if (fontsLoaded) {
             SplashScreen.hideAsync();
         }
@@ -285,7 +286,7 @@ const Place = () => {
                 animationType="slide"
                 transparent={true}
                 visible={horarioOpened}
-                onRequestClose={() => {}}
+                onRequestClose={() => { }}
             >
                 <View
                     style={{
@@ -297,42 +298,57 @@ const Place = () => {
                     <View
                         style={{
                             padding: 20,
+                            paddingTop: 40, // Aumenta el espacio superior para evitar que la X se sobreponga
                             backgroundColor: "white",
                             borderRadius: 10,
                             elevation: 5,
                             shadowOffset: { width: 0, height: 2 },
                             shadowOpacity: 0.8,
                             shadowRadius: 2,
+                            position: "relative",
                         }}
                     >
                         <Pressable
-                            onPress={() => {
-                                setHorarioOpened(false);
+                            onPress={() => setHorarioOpened(false)}
+                            style={{
+                                position: "absolute",
+                                top: 10,
+                                right: 10,
+                                padding: 5,
+                                borderRadius: 15,
+                                backgroundColor: "#f0f0f0",
                             }}
                         >
-                            <FontAwesome name="close" size={22} />
+                            <FontAwesome name="close" size={22} color="#787878" />
                         </Pressable>
-                        <Text>Horarios de Atencion</Text>
+
+                        <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10, textAlign: "center", color: "#333" }}>
+                            Horarios de Atención
+                        </Text>
+
                         {horarioAtencion.map((horario, index) => (
                             <View
                                 key={index}
                                 style={{
                                     flexDirection: "row",
                                     justifyContent: "space-between",
+                                    paddingVertical: 5,
+                                    borderBottomWidth: index < horarioAtencion.length - 1 ? 1 : 0,
+                                    borderBottomColor: "#e0e0e0",
                                 }}
                             >
-                                <Text>{days[horario.dia]}</Text>
-
-                                <Text>
+                                <Text style={{ fontSize: 16, color: "#666" }}>
+                                    {days[horario.dia]}
+                                </Text>
+                                <Text style={{ fontSize: 16, color: "#444", fontWeight: horario.horario ? "500" : "300" }}>
                                     {horario.horario
-                                        ? horario.horario.inicio_atencion +
-                                          " / " +
-                                          horario.horario.fin_atencion
+                                        ? `${horario.horario.inicio_atencion} / ${horario.horario.fin_atencion}`
                                         : "Cerrado"}
                                 </Text>
                             </View>
                         ))}
                     </View>
+
                 </View>
             </Modal>
 
@@ -417,8 +433,9 @@ const Place = () => {
                         <Text
                             style={
                                 establecimientoAbierto
-                                    ? { color: "green" }
-                                    : { color: "red" }
+                                    ? { color: "green", marginLeft: "2%" }
+                                    : { color: "red", marginLeft: "2%" }
+
                             }
                         >
                             <FontAwesome
@@ -426,12 +443,12 @@ const Place = () => {
                                 color={establecimientoAbierto ? "green" : "red"}
                                 size={15}
                             />
-                            {establecimientoAbierto ? "Abierto" : "Cerrado"}
+                            {establecimientoAbierto ? "  Abierto" : "  Cerrado"}
                         </Text>
                         <Pressable onPress={handleHorariosAtencion}>
-                            <Text>
+                            <Text style={{ color: "#787878", marginLeft: "2%" }}>
                                 Ver horario y dias de atencion
-                                <FontAwesome name="chevron-down" size={15} />
+                                <FontAwesome name="plus" size={12} style={{ marginLeft: 10 }} />
                             </Text>
                         </Pressable>
 
@@ -572,6 +589,7 @@ const Place = () => {
                                     flex: 1,
                                     borderRadius: 150,
                                     marginTop: "2%",
+                                    marginRight: 10,
                                 }}
                                 key={item.id_evento}
                             >
@@ -611,7 +629,14 @@ const Place = () => {
                                         </Text>
                                     </View>
                                 </ImageBackground>
-                                <Text style={{ fontFamily: "Poppins-Regular" }}>
+                                <Text
+                                    style={{
+                                        fontFamily: "Poppins-Regular",
+                                        width: 150,
+                                        textAlign: "center",
+                                    }}
+                                    numberOfLines={2}
+                                >
                                     {item.nombre}
                                 </Text>
                             </Pressable>
@@ -619,7 +644,8 @@ const Place = () => {
                         keyExtractor={(item, index) => index.toString()}
                         horizontal
                     />
-                    
+
+
                     <View
                         style={{
                             flexDirection: "row",
