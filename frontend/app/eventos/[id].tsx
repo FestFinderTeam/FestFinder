@@ -5,6 +5,7 @@ import { Link, useLocalSearchParams, type Href } from "expo-router";
 import { useEffect, useState } from "react";
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
 import Styles from "@/globalStyles/styles";
+import React from "react";
 
 interface Evento {
     id_evento: number;
@@ -84,10 +85,11 @@ const Evento = () => {
         return <Text>Cargando evento...</Text>;
     }
     return (
-        <View>
+        <>
             <Header title={evento.nombre} />
+        <ScrollView>
             <Text style={[Styles.subtitle, {color:"black", fontWeight: "bold", marginTop:"2%", marginLeft:"2%"}]}>{local?.nombre} - {evento.nombre}</Text>
-            <ScrollView>
+
                 <Image
                     source={evento.logo}
                     style={{
@@ -271,8 +273,10 @@ const Evento = () => {
                         Contacta con el equipo de {local?.nombre}
                     </Link>
                 </View>
-            </ScrollView>
-        </View>
+        </ScrollView>
+        
+        </>
+        
     );
 };
 
