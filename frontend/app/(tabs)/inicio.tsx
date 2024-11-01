@@ -168,268 +168,277 @@ const inicio = () => {
     };
 
     return (
-        <ScrollView>
-            {/* Notch*/}
+        <>
             <Notch />
-            <View
-                style={{
-                    backgroundColor: "#402158",
-                    paddingVertical: 15,
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    flexDirection: "row",
-                    borderRadius: 5,
-                    shadowColor: "#000",
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.3,
-                    bottom: 5,
-                }}
-            >
-                <FontAwesome
-                    style={{ marginLeft: "7%" }}
-                    name="bell"
-                    size={23}
-                    color={"white"}
-                />
-                {openSearch ? (
-                    <TextInput
-                        placeholder="Buscar"
-                        value={search}
-                        onChangeText={(text) => setSearch(text)}
-                        placeholderTextColor={"gray"}
-                        autoFocus
-                        onSubmitEditing={handleSubmitSearch}
-                    />
-                ) : (
-                    <Pressable
-                        style={{ flexDirection: "row" }}
-                        onPress={() => console.log("cambiando de ciudad")}
-                    >
-                        <View style={{ alignItems: "center" }}>
-                            <Text style={{ color: "white" }}>Ciudad</Text>
-                            <Text style={{ color: "white" }}>Cochabamba</Text>
-                        </View>
-                        <FontAwesome name="sort-down" size={23} color="white" />
-                    </Pressable>
-                )}
-
-                <Pressable onPress={searchPress}>
+            <ScrollView>
+                <View
+                    style={{
+                        backgroundColor: "#402158",
+                        paddingVertical: 15,
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        flexDirection: "row",
+                        borderRadius: 5,
+                        shadowColor: "#000",
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: 0.3,
+                        bottom: 5,
+                    }}
+                >
                     <FontAwesome
-                        name="search"
+                        style={{ marginLeft: "7%" }}
+                        name="bell"
                         size={23}
                         color={"white"}
-                        style={{ marginRight: "7%" }}
                     />
-                </Pressable>
-            </View>
-
-            <Text style={styles.textoTitulo}>Categorias</Text>
-            <FlatList
-                data={tags}
-                style={styles.slider}
-                keyExtractor={(item) => item.toString()}
-                renderItem={({ item }) => (
-                    <Pressable
-                        onPress={() => {}}
-                        style={{
-                            alignItems: "center",
-                            marginHorizontal: 10,
-                        }}
-                    >
-                        <Text
-                            style={{
-                                fontFamily: "Poppins-Regular",
-                                textAlign: "center",
-                                borderRadius: 20,
-                                borderWidth: 2,
-                                borderColor: "#956ca3",
-                                color: "#956ca3",
-                                paddingHorizontal: 10,
-                                paddingVertical: 4,
-                                lineHeight: 24,
-                            }}
+                    {openSearch ? (
+                        <TextInput
+                            placeholder="Buscar"
+                            value={search}
+                            onChangeText={(text) => setSearch(text)}
+                            placeholderTextColor={"gray"}
+                            autoFocus
+                            onSubmitEditing={handleSubmitSearch}
+                        />
+                    ) : (
+                        <Pressable
+                            style={{ flexDirection: "row" }}
+                            onPress={() => console.log("cambiando de ciudad")}
                         >
-                            {item}
-                        </Text>
+                            <View style={{ alignItems: "center" }}>
+                                <Text style={{ color: "white" }}>Ciudad</Text>
+                                <Text style={{ color: "white" }}>
+                                    Cochabamba
+                                </Text>
+                            </View>
+                            <FontAwesome
+                                name="sort-down"
+                                size={23}
+                                color="white"
+                            />
+                        </Pressable>
+                    )}
+
+                    <Pressable onPress={searchPress}>
+                        <FontAwesome
+                            name="search"
+                            size={23}
+                            color={"white"}
+                            style={{ marginRight: "7%" }}
+                        />
                     </Pressable>
-                )}
-                horizontal
-            />
+                </View>
 
-            <Text style={[styles.textoTitulo, { marginTop: "5%" }]}>
-                Eventos hoy
-            </Text>
-
-            <FlatList
-                data={eventosDelDia}
-                style={styles.slider}
-                keyExtractor={(item) => JSON.stringify(item)}
-                renderItem={({ item }) => (
-                    <Link
-                        href={("/eventos/" + item.id_evento) as Href}
-                        style={{ marginLeft: "3%" }}
-                    >
-                        <ImageBackground
-                            resizeMode="cover"
-                            source={{ uri: `${API_URL}${item.logo}` }}
+                <Text style={styles.textoTitulo}>Categorias</Text>
+                <FlatList
+                    data={tags}
+                    style={styles.slider}
+                    keyExtractor={(item) => item.toString()}
+                    renderItem={({ item }) => (
+                        <Pressable
+                            onPress={() => {}}
                             style={{
-                                width: 150,
-                                height: 200,
-                                borderRadius: 10,
-                                overflow: "hidden",
+                                alignItems: "center",
+                                marginHorizontal: 10,
                             }}
                         >
-                            <View
+                            <Text
                                 style={{
-                                    flex: 1,
-                                    justifyContent: "flex-end",
-                                    alignItems: "center",
-                                    padding: 5,
+                                    fontFamily: "Poppins-Regular",
+                                    textAlign: "center",
+                                    borderRadius: 20,
+                                    borderWidth: 2,
+                                    borderColor: "#956ca3",
+                                    color: "#956ca3",
+                                    paddingHorizontal: 10,
+                                    paddingVertical: 4,
+                                    lineHeight: 24,
                                 }}
                             >
-                                <Text
-                                    style={{
-                                        color: "white",
-                                        fontFamily: "Poppins-Regular",
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    {item.nombre}
-                                </Text>
-                                <Text
-                                    style={{
-                                        color: "white",
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    <FontAwesome
-                                        name="clock-o"
-                                        color={"yellow"}
-                                    />
-                                    {item.horario_fin}
-                                </Text>
-                            </View>
-                        </ImageBackground>
-                    </Link>
-                )}
-                horizontal
-            />
+                                {item}
+                            </Text>
+                        </Pressable>
+                    )}
+                    horizontal
+                />
 
-            <Text style={[styles.textoTitulo, { marginTop: "5%" }]}>
-                Lugares populares
-            </Text>
-            <FlatList
-                data={popularPlaces}
-                style={styles.slider}
-                keyExtractor={(item) => JSON.stringify(item)}
-                renderItem={({ item }) => (
-                    <Link
-                        href={("/places/" + item.id) as Href}
+                <Text style={[styles.textoTitulo, { marginTop: "5%" }]}>
+                    Eventos hoy
+                </Text>
 
-                        style={{ marginLeft: "3%" }}
-                    >
-                        <ImageBackground
-                            resizeMode="cover"
-                            source={item.uri}
-                            style={{
-                                width: 150,
-                                height: 200,
-                                borderRadius: 10,
-                                overflow: "hidden",
-                            }}
+                <FlatList
+                    data={eventosDelDia}
+                    style={styles.slider}
+                    keyExtractor={(item) => JSON.stringify(item)}
+                    renderItem={({ item }) => (
+                        <Link
+                            href={("/eventos/" + item.id_evento) as Href}
+                            style={{ marginLeft: "3%" }}
                         >
-                            <View
+                            <ImageBackground
+                                resizeMode="cover"
+                                source={{ uri: `${API_URL}${item.logo}` }}
                                 style={{
-                                    flex: 1,
-                                    justifyContent: "flex-end",
-                                    alignItems: "center",
-                                    padding: 5,
+                                    width: 150,
+                                    height: 200,
+                                    borderRadius: 10,
+                                    overflow: "hidden",
                                 }}
                             >
-                                <Text
+                                <View
                                     style={{
-                                        color: "white",
-                                        fontFamily: "Poppins-Regular",
-                                        textAlign: "center",
+                                        flex: 1,
+                                        justifyContent: "flex-end",
+                                        alignItems: "center",
+                                        padding: 5,
                                     }}
                                 >
-                                    {item.name}
-                                </Text>
-                                <Text
-                                    style={{
-                                        color: "white",
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    <FontAwesome name="star" color={"yellow"} />
-                                    {item.score} / 10
-                                </Text>
-                            </View>
-                        </ImageBackground>
-                    </Link>
-                )}
-                horizontal
-            />
+                                    <Text
+                                        style={{
+                                            color: "white",
+                                            fontFamily: "Poppins-Regular",
+                                            textAlign: "center",
+                                        }}
+                                    >
+                                        {item.nombre}
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            color: "white",
+                                            textAlign: "center",
+                                        }}
+                                    >
+                                        <FontAwesome
+                                            name="clock-o"
+                                            color={"yellow"}
+                                        />
+                                        {item.horario_fin}
+                                    </Text>
+                                </View>
+                            </ImageBackground>
+                        </Link>
+                    )}
+                    horizontal
+                />
 
-            <Text style={[styles.textoTitulo, { marginTop: "5%" }]}>
-                Eventos populares
-            </Text>
-            <FlatList
-                data={eventosDelMes}
-                style={styles.slider}
-                keyExtractor={(item) => JSON.stringify(item)}
-                renderItem={({ item, index }) => (
-                    <Link
-                        href={("/eventos/" + item.id_evento) as Href}
-                        key={index}
-                        style={{ marginLeft: "3%" }}
-                    >
-                        <ImageBackground
-                            resizeMode="cover"
-                            source={{ uri: `${API_URL}${item.logo}` }}
-                            style={{
-                                width: 150,
-                                height: 200,
-                                borderRadius: 10,
-                                overflow: "hidden",
-                            }}
+                <Text style={[styles.textoTitulo, { marginTop: "5%" }]}>
+                    Lugares populares
+                </Text>
+                <FlatList
+                    data={popularPlaces}
+                    style={styles.slider}
+                    keyExtractor={(item) => JSON.stringify(item)}
+                    renderItem={({ item }) => (
+                        <Link
+                            href={("/places/" + item.id) as Href}
+                            style={{ marginLeft: "3%" }}
                         >
-                            <View
+                            <ImageBackground
+                                resizeMode="cover"
+                                source={item.uri}
                                 style={{
-                                    flex: 1,
-                                    justifyContent: "flex-end",
-                                    alignItems: "center",
-                                    padding: 5,
+                                    width: 150,
+                                    height: 200,
+                                    borderRadius: 10,
+                                    overflow: "hidden",
                                 }}
                             >
-                                <Text
+                                <View
                                     style={{
-                                        color: "white",
-                                        fontFamily: "Poppins-Regular",
-                                        textAlign: "center",
+                                        flex: 1,
+                                        justifyContent: "flex-end",
+                                        alignItems: "center",
+                                        padding: 5,
                                     }}
                                 >
-                                    {item.nombre}
-                                </Text>
-                                <Text
+                                    <Text
+                                        style={{
+                                            color: "white",
+                                            fontFamily: "Poppins-Regular",
+                                            textAlign: "center",
+                                        }}
+                                    >
+                                        {item.name}
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            color: "white",
+                                            textAlign: "center",
+                                        }}
+                                    >
+                                        <FontAwesome
+                                            name="star"
+                                            color={"yellow"}
+                                        />
+                                        {item.score} / 10
+                                    </Text>
+                                </View>
+                            </ImageBackground>
+                        </Link>
+                    )}
+                    horizontal
+                />
+
+                <Text style={[styles.textoTitulo, { marginTop: "5%" }]}>
+                    Eventos populares
+                </Text>
+                <FlatList
+                    data={eventosDelMes}
+                    style={styles.slider}
+                    keyExtractor={(item) => JSON.stringify(item)}
+                    renderItem={({ item, index }) => (
+                        <Link
+                            href={("/eventos/" + item.id_evento) as Href}
+                            key={index}
+                            style={{ marginLeft: "3%" }}
+                        >
+                            <ImageBackground
+                                resizeMode="cover"
+                                source={{ uri: `${API_URL}${item.logo}` }}
+                                style={{
+                                    width: 150,
+                                    height: 200,
+                                    borderRadius: 10,
+                                    overflow: "hidden",
+                                }}
+                            >
+                                <View
                                     style={{
-                                        color: "white",
-                                        textAlign: "center",
+                                        flex: 1,
+                                        justifyContent: "flex-end",
+                                        alignItems: "center",
+                                        padding: 5,
                                     }}
                                 >
-                                    <FontAwesome
-                                        name="clock-o"
-                                        color={"yellow"}
-                                    />
-                                    {item.horario_fin}
-                                </Text>
-                            </View>
-                        </ImageBackground>
-                    </Link>
-                )}
-                horizontal
-            />
-        </ScrollView>
+                                    <Text
+                                        style={{
+                                            color: "white",
+                                            fontFamily: "Poppins-Regular",
+                                            textAlign: "center",
+                                        }}
+                                    >
+                                        {item.nombre}
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            color: "white",
+                                            textAlign: "center",
+                                        }}
+                                    >
+                                        <FontAwesome
+                                            name="clock-o"
+                                            color={"yellow"}
+                                        />
+                                        {item.horario_fin}
+                                    </Text>
+                                </View>
+                            </ImageBackground>
+                        </Link>
+                    )}
+                    horizontal
+                />
+            </ScrollView>
+        </>
     );
 };
 
