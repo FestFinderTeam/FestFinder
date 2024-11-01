@@ -5,7 +5,7 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import Styles from "@/globalStyles/styles";
 import moment from "moment";
-
+import ImageViewing from "react-native-image-viewing";
 import {
     ImageBackground,
     Text,
@@ -17,8 +17,10 @@ import {
     ScrollView,
     FlatList,
     Modal,
+    Touchable,
 } from "react-native";
-import { red } from "react-native-reanimated/lib/typescript/reanimated2/Colors";
+
+import Notch from "@/components/Notch";
 
 type Establecimiento = {
     id: number;
@@ -69,14 +71,17 @@ const Place = () => {
     const [etiquetas, setEtiquetas] = useState<string[]>([]);
     const [proximosEventos, setProximosEventos] = useState<Evento[]>([]);
     const [fotos, setFotos] = useState<any[]>([]);
-    const [lugaresParecidos, setLugaresParecidos] = useState<Establecimiento[]>([]);
+    const [lugaresParecidos, setLugaresParecidos] = useState<Establecimiento[]>(
+        []
+    );
     const [horarioAtencion, setHorarioAtencion] = useState<HorarioAtencion[]>(
         []
     );
     const [horarioOpened, setHorarioOpened] = useState<boolean>(false);
     const [establecimientoAbierto, setEstablecimientoAbierto] =
         useState<Boolean>(false);
-
+    const [visibleImages, setVisibleImages] = useState(false);
+    const [imageIndex, setImageIndex] = useState(0);
     const params = useLocalSearchParams();
 
     const [fontsLoaded] = useFonts({
@@ -98,7 +103,6 @@ const Place = () => {
     }, [fontsLoaded]);
 
     useEffect(() => {
-
         if (fontsLoaded) {
             SplashScreen.hideAsync();
         }
@@ -118,7 +122,7 @@ const Place = () => {
             logo: require("../../assets/images/alice-park.png"),
             nombre_tipo: "Discoteca",
             nro_ref: "70711360",
-            puntuacion: 9.2
+            puntuacion: 9.2,
         };
 
         // Simulación de llamada a API para etiquetas
@@ -241,14 +245,20 @@ const Place = () => {
 
             if (!horarioToday) return false;
 
-            const inicio_atencion = moment(horarioToday.inicio_atencion, "HH:mm");
+            const inicio_atencion = moment(
+                horarioToday.inicio_atencion,
+                "HH:mm"
+            );
             const fin_atencion = moment(horarioToday.fin_atencion, "HH:mm");
             const current = moment();
 
             if (fin_atencion.isBefore(inicio_atencion)) {
                 // Verificar si está entre 'inicio_atencion' y medianoche o entre medianoche y 'fin_atencion'
                 return (
-                    current.isBetween(inicio_atencion, moment("23:59:59", "HH:mm")) ||
+                    current.isBetween(
+                        inicio_atencion,
+                        moment("23:59:59", "HH:mm")
+                    ) ||
                     current.isBetween(moment("00:00", "HH:mm"), fin_atencion)
                 );
             }
@@ -282,11 +292,20 @@ const Place = () => {
 
     return (
         <ScrollView style={styles.container}>
+            <Notch />
+            <ImageViewing
+                images={fotos}
+                imageIndex={imageIndex}
+                visible={visibleImages}
+                onRequestClose={() => setVisibleImages(false)}
+                doubleTapToZoomEnabled={true}
+                swipeToCloseEnabled={true}
+            />
             <Modal
                 animationType="slide"
                 transparent={true}
                 visible={horarioOpened}
-                onRequestClose={() => { }}
+                onRequestClose={() => {}}
             >
                 <View
                     style={{
@@ -319,10 +338,22 @@ const Place = () => {
                                 backgroundColor: "#f0f0f0",
                             }}
                         >
-                            <FontAwesome name="close" size={22} color="#787878" />
+                            <FontAwesome
+                                name="close"
+                                size={22}
+                                color="#787878"
+                            />
                         </Pressable>
 
-                        <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10, textAlign: "center", color: "#333" }}>
+                        <Text
+                            style={{
+                                fontSize: 18,
+                                fontWeight: "bold",
+                                marginBottom: 10,
+                                textAlign: "center",
+                                color: "#333",
+                            }}
+                        >
                             Horarios de Atención
                         </Text>
 
@@ -333,14 +364,25 @@ const Place = () => {
                                     flexDirection: "row",
                                     justifyContent: "space-between",
                                     paddingVertical: 5,
-                                    borderBottomWidth: index < horarioAtencion.length - 1 ? 1 : 0,
+                                    borderBottomWidth:
+                                        index < horarioAtencion.length - 1
+                                            ? 1
+                                            : 0,
                                     borderBottomColor: "#e0e0e0",
                                 }}
                             >
                                 <Text style={{ fontSize: 16, color: "#666" }}>
                                     {days[horario.dia]}
                                 </Text>
-                                <Text style={{ fontSize: 16, color: "#444", fontWeight: horario.horario ? "500" : "300" }}>
+                                <Text
+                                    style={{
+                                        fontSize: 16,
+                                        color: "#444",
+                                        fontWeight: horario.horario
+                                            ? "500"
+                                            : "300",
+                                    }}
+                                >
                                     {horario.horario
                                         ? `${horario.horario.inicio_atencion} / ${horario.horario.fin_atencion}`
                                         : "Cerrado"}
@@ -348,7 +390,6 @@ const Place = () => {
                             </View>
                         ))}
                     </View>
-
                 </View>
             </Modal>
 
@@ -435,7 +476,6 @@ const Place = () => {
                                 establecimientoAbierto
                                     ? { color: "green", marginLeft: "2%" }
                                     : { color: "red", marginLeft: "2%" }
-
                             }
                         >
                             <FontAwesome
@@ -446,9 +486,15 @@ const Place = () => {
                             {establecimientoAbierto ? "  Abierto" : "  Cerrado"}
                         </Text>
                         <Pressable onPress={handleHorariosAtencion}>
-                            <Text style={{ color: "#787878", marginLeft: "2%" }}>
+                            <Text
+                                style={{ color: "#787878", marginLeft: "2%" }}
+                            >
                                 Ver horario y dias de atencion
-                                <FontAwesome name="plus" size={12} style={{ marginLeft: 10 }} />
+                                <FontAwesome
+                                    name="plus"
+                                    size={12}
+                                    style={{ marginLeft: 10 }}
+                                />
                             </Text>
                         </Pressable>
 
@@ -645,7 +691,6 @@ const Place = () => {
                         horizontal
                     />
 
-
                     <View
                         style={{
                             flexDirection: "row",
@@ -677,17 +722,24 @@ const Place = () => {
                     <FlatList
                         style={{ marginLeft: "3%" }}
                         data={fotos}
-                        renderItem={({ item }) => (
-                            <Image
-                                source={item}
-                                style={{
-                                    width: "auto",
-                                    height: 150,
-                                    aspectRatio: "16/9",
-                                    margin: 3,
-                                    borderRadius: 10,
+                        renderItem={({ item, index }) => (
+                            <Pressable
+                                onPress={() => {
+                                    setImageIndex(index);
+                                    setVisibleImages(true);
                                 }}
-                            />
+                            >
+                                <Image
+                                    source={item}
+                                    style={{
+                                        width: "auto",
+                                        height: 150,
+                                        aspectRatio: "16/9",
+                                        margin: 3,
+                                        borderRadius: 10,
+                                    }}
+                                />
+                            </Pressable>
                         )}
                         keyExtractor={(item, index) => index.toString()}
                         horizontal

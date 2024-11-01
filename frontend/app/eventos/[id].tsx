@@ -70,6 +70,7 @@ const Evento = () => {
         return estrellas.map((item, index) => (
             <FontAwesome
                 key={index}
+                key={index}
                 name="star"
                 size={18}
                 color={index < (evento?.puntuacion || 0) ? colorEstrella : "#D3D3D3"}
