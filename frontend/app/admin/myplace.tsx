@@ -36,7 +36,7 @@ const days = [
     "Sabado",
     "Domingo",
 ];
-type Evento = {
+export type Evento = {
     id_evento: number;
     nombre: string;
     fecha_inicio: Date;
