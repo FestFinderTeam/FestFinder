@@ -5,6 +5,7 @@ import { router, type Href } from "expo-router";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import {
+    Alert,
     FlatList,
     Image,
     ImageBackground,
@@ -12,11 +13,16 @@ import {
     ScrollView,
     StyleSheet,
     Text,
+    TextInput,
     View,
 } from "react-native";
 import { Double } from "react-native/Libraries/Types/CodegenTypes";
 import { pickImage } from "@/utils/Image";
 import type { ImagePickerAsset } from "expo-image-picker";
+import { SelectList } from "react-native-dropdown-select-list";
+import { dateToHHmm, showTime } from "@/utils/DateTime";
+import React from "react";
+import { useSafeAreaFrame } from "react-native-safe-area-context";
 const image_default = require("../../assets/images/default_image.png");
 
 interface Horario {
@@ -45,37 +51,66 @@ export type Evento = {
 };
 
 const MyPlace = () => {
-    const [portada, setPortada] = useState();
+    const [etiqueta, setEtiqueta] = useState("");
+    const [banner, setBanner] = useState();
     const [imagenes, setImagenes] = useState();
-    const [imagenLocal, setImagenLocal] = useState();
-    const [nombre, setNombre] = useState<String>();
+    const [logo, setLogo] = useState();
+    const [nombre, setNombre] = useState<string>();
     const [tipo, setTipo] = useState<String>();
     const [direccion, setDireccion] = useState<String>();
     const [establecimientoAbierto, setEstablecimientoAbierto] = useState(false);
     const [puntuacion, setValoracion] = useState<Double>();
-    const [horarioAtencion, setHorarioAtencion] = useState<HorarioAtencion[]>(
-        []
+    const [horariosInicio, setHorariosInicio] = useState<Date[]>(
+        Array(7).fill(new Date())
     );
+    const [horariosFin, setHorariosFin] = useState<Date[]>(
+        Array(7).fill(new Date())
+    );
+    const [horarioAtencion, setHorarioAtencion] = useState<HorarioAtencion[]>([
+        {
+            dia: 0,
+            horario: null,
+        },
+        {
+            dia: 1,
+            horario: null,
+        },
+        {
+            dia: 2,
+            horario: null,
+        },
+        {
+            dia: 3,
+            horario: null,
+        },
+        {
+            dia: 4,
+            horario: null,
+        },
+        {
+            dia: 5,
+            horario: null,
+        },
+        {
+            dia: 6,
+            horario: null,
+        },
+    ]);
     const [etiquetas, setEtiquetas] = useState<String[]>([]);
-    const [horarioOpened, setHorarioOpened] = useState(false);
-    const [eventos, setEventos] = useState<Evento[]>([]);
     const [fotos, setFotos] = useState<any[]>([]);
+    const [tipo_fk, setSelectedBusiness] = useState("");
+    const [openHorario, setOpenHorario] = useState(Array(7).fill(false));
+
+    const dataTypesBusiness = [
+        { key: "1", value: "Bar" },
+        { key: "2", value: "Club" },
+        { key: "3", value: "Discoteca" },
+    ];
+    const [rango_de_precios, setRango] = useState("");
+    const dataRango = ["Bajo", "Medio", "Alto"];
+    const [location, setLocation] = useState({ longitude: 0, latitude: 0 });
 
     useEffect(() => {
-        const eventos = [
-            {
-                id_evento: 2,
-                nombre: "Alice Park-Noche de colores",
-                fecha_inicio: new Date("2024-09-02"),
-                logo: require("../../assets/images/alice-park-event-1.png"),
-            },
-            {
-                id_evento: 3,
-                nombre: "Alice Park - Neon Party",
-                fecha_inicio: new Date("2024-09-07"),
-                logo: require("../../assets/images/alice-park-event-2.png"),
-            },
-        ];
         const fotos = [
             require("../../assets/images/alice-park-1.png"),
             require("../../assets/images/alice-park-2.png"),
@@ -159,9 +194,8 @@ const MyPlace = () => {
             return current.isBetween(inicio_atencion, fin_atencion);
         };
         setEstablecimientoAbierto(isOpenToday());
-        setEventos(eventos);
-        setPortada(require("../../assets/images/alice-park.png"));
-        setImagenLocal(require("../../assets/images/alice-park.png"));
+        setBanner(require("../../assets/images/alice-park.png"));
+        setLogo(require("../../assets/images/alice-park.png"));
         setNombre("Alice Park");
         setTipo("Tipo de local");
         setDireccion("Av Melchor Urquidi S/N, Cochabamba");
@@ -202,12 +236,26 @@ const MyPlace = () => {
         );
     };
 
+    const handleSubmit = () => {
+        console.log(
+            nombre,
+            tipo_fk,
+            location.latitude,
+            location.longitude,
+            etiquetas,
+            rango_de_precios,
+            horarioAtencion
+        );
+        console.log(banner);
+        console.log(logo);
+    };
+
     return (
         <View>
             <Notch />
             <ScrollView>
                 <ImageBackground
-                    source={portada ? portada : image_default}
+                    source={banner ? banner : image_default}
                     style={[Styles.imageBanner, { position: "relative" }]}
                 >
                     <Pressable onPress={router.back}>
@@ -232,13 +280,14 @@ const MyPlace = () => {
                             position: "absolute",
                             flexDirection: "row",
                         }}
+                        onPress={() => pickImage(setBanner, [16, 9])}
                     >
                         <FontAwesome name="camera" color={"white"} size={20} />
                         <Text style={{ color: "white" }}>Cambiar Portada</Text>
                     </Pressable>
                 </ImageBackground>
                 <Image
-                    source={imagenLocal ? imagenLocal : image_default}
+                    source={logo ? logo : image_default}
                     style={[
                         styles.redondoImg,
                         styles.contenedorIMG,
@@ -247,138 +296,67 @@ const MyPlace = () => {
                         },
                     ]}
                 />
-                <Pressable style={[styles.changeImage, { top: -70 }]}>
+                <Pressable
+                    style={[styles.changeImage, { top: -70 }]}
+                    onPress={() => pickImage(setLogo, [1, 1])}
+                >
                     <FontAwesome name="camera" color={"white"} size={20} />
                 </Pressable>
                 <View style={{ top: -70 }}>
-                    <View
-                        style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                        }}
-                    >
-                        <View style={{}}>
-                            <Text
-                                style={[
-                                    { fontFamily: "Poppins-Bold" },
-                                    { left: "10%" },
-                                    styles.nombreLocal,
-                                ]}
-                            >
-                                {nombre}
-                            </Text>
-                            <Text
-                                style={[
-                                    { fontFamily: "Poppins-Regular" },
-                                    { left: "10%" },
-                                    styles.tipoLocal,
-                                ]}
-                            >
-                                {tipo}
-                            </Text>
-                        </View>
-                        <View style={{}}>
-                            <Pressable style={{ backgroundColor: "purple" }}>
-                                <Text style={{ color: "white" }}>
-                                    Editar Local
-                                </Text>
-                            </Pressable>
-                        </View>
-                    </View>
-
                     <View>
-                        <Text
-                            style={
-                                establecimientoAbierto
-                                    ? { color: "green" }
-                                    : { color: "red" }
-                            }
-                        >
-                            <FontAwesome
-                                name="circle"
-                                color={establecimientoAbierto ? "green" : "red"}
-                                size={15}
-                            />
-                            {establecimientoAbierto ? "Abierto" : "Cerrado"}
-                        </Text>
-                        <View
-                            style={{
-                                flexDirection: "row",
-                                justifyContent: "space-between",
-                            }}
-                        >
-                            <Pressable
-                                onPress={() => {
-                                    setHorarioOpened(!horarioOpened);
-                                }}
-                            >
-                                <Text>
-                                    Ver horario y dias de atencion
-                                    <FontAwesome
-                                        name="chevron-down"
-                                        size={15}
-                                    />
-                                </Text>
-                            </Pressable>
-                            <Pressable>
-                                <Text>Editar horario</Text>
-                            </Pressable>
-                        </View>
-
-                        {horarioOpened && (
-                            <View>
-                                {horarioAtencion.map((horarioDia, index) => (
-                                    <View
-                                        key={index}
-                                        style={{
-                                            flexDirection: "row",
-                                            justifyContent: "space-between",
-                                        }}
-                                    >
-                                        <Text>{days[horarioDia.dia]}</Text>
-                                        <Text>
-                                            {horarioDia.horario
-                                                ? horarioDia.horario
-                                                      .inicio_atencion +
-                                                  " / " +
-                                                  horarioDia.horario
-                                                      .fin_atencion
-                                                : "Cerrado"}
-                                        </Text>
-                                    </View>
-                                ))}
-                            </View>
-                        )}
-
-                        <Text
+                        <Text>Nombre del Local</Text>
+                        <TextInput
                             style={[
-                                { fontFamily: "Poppins-Regular" },
-                                { marginLeft: 10, fontSize: 14 },
+                                { fontFamily: "Poppins-Bold" },
+                                { left: "10%" },
+                                styles.nombreLocal,
                             ]}
-                        >
-                            <FontAwesome
-                                name="location-arrow"
-                                style={{ marginRight: 10 }}
-                            />
-                            {direccion}
-                        </Text>
-                        <View
-                            style={{
-                                flexDirection: "row",
-                                justifyContent: "space-around",
+                            value={nombre}
+                            onChangeText={(text) => setNombre(text)}
+                        />
+                        <Text>Tipo de negocio</Text>
+                        <SelectList
+                            setSelected={setSelectedBusiness}
+                            data={dataTypesBusiness}
+                            save="key"
+                            searchPlaceholder="Buscar"
+                            placeholder="Tipo de negocio"
+                            boxStyles={Styles.input}
+                            dropdownStyles={Styles.inputDropDown}
+                        />
+                        <Text>Ubicacion del local</Text>
+                        <Pressable
+                            onPress={() => {
+                                Alert.alert("selecciona la ubicacion");
                             }}
                         >
-                            <Pressable
-                                style={{
-                                    backgroundColor: "rgba(235, 182, 255, 0.5)",
-                                    borderRadius: 10,
-                                    paddingHorizontal: 8,
-                                    marginTop: "3%",
-                                }}
-                            >
-                                <FontAwesome name="plus" color={"white"} />
-                            </Pressable>
-                            {etiquetas.map((etiqueta, index) => (
+                            <Text>Cambiar Ubicacion</Text>
+                        </Pressable>
+                        <Text>Etiquetas</Text>
+                        <TextInput
+                            placeholder="Nueva Etiqueta"
+                            value={etiqueta}
+                            onChangeText={(text) => setEtiqueta(text)}
+                        />
+
+                        <Pressable
+                            onPress={() => {
+                                if (etiqueta) {
+                                    setEtiquetas([...etiquetas, etiqueta]);
+                                    setEtiqueta("");
+                                }
+                            }}
+                            style={{
+                                backgroundColor: "rgba(235, 182, 255, 0.5)",
+                                borderRadius: 10,
+                                paddingHorizontal: 8,
+                                marginTop: "3%",
+                            }}
+                        >
+                            <FontAwesome name="plus" color={"white"} />
+                        </Pressable>
+                        {etiquetas.map((etiqueta, index) => (
+                            <>
                                 <Text
                                     key={index}
                                     style={[
@@ -396,147 +374,132 @@ const MyPlace = () => {
                                 >
                                     {etiqueta}
                                 </Text>
-                            ))}
-                        </View>
-                        <View
-                            style={{
-                                flexDirection: "row",
-                                justifyContent: "space-between",
-                            }}
-                        >
-                            <Text
-                                style={[
-                                    { fontFamily: "Poppins-Regular" },
-                                    {
-                                        color: "#402158",
-                                        marginLeft: "3%",
-                                    },
-                                ]}
-                            >
-                                Calificación
-                            </Text>
-
-                            <View>
-                                <Text
-                                    style={{
-                                        fontFamily: "Poppins-SemiBold",
+                                <Pressable
+                                    key={"remove" + index}
+                                    onPress={() => {
+                                        setEtiquetas(
+                                            etiquetas.filter(
+                                                (_, i) => i !== index
+                                            )
+                                        );
                                     }}
                                 >
-                                    {" "}
-                                    <FontAwesome
-                                        name="star"
-                                        color={"orange"}
-                                    />{" "}
-                                    {puntuacion} / 10
-                                </Text>
-                            </View>
-
-                            <Pressable>
-                                <Text>Ver calificaciones</Text>
-                            </Pressable>
-                        </View>
+                                    <FontAwesome name="minus" />
+                                </Pressable>
+                            </>
+                        ))}
                     </View>
-                    <Text>Eventos</Text>
 
-                    <FlatList
-                        style={{ marginLeft: "3%" }}
-                        data={[null, ...eventos]}
-                        renderItem={({ item }) => {
-                            if (item === null) {
-                                return (
-                                    <Pressable
-                                        onPress={() =>
-                                            router.navigate(
-                                                "/eventos/crearEvento" as Href
-                                            )
-                                        }
-                                        style={[
-                                            {
-                                                flexDirection: "column",
-                                                flex: 1,
-                                                borderRadius: 150,
-                                                marginTop: "2%",
-                                                height: 200,
-                                                width: 150,
-                                                alignItems: "center",
-                                                justifyContent: "center",
-                                            },
-                                        ]}
-                                    >
-                                        <FontAwesome name="plus" size={50} />
-                                    </Pressable>
-                                );
-                            } else {
-                                return (
+                    <Text>Rango de precio</Text>
+                    <View style={{ flexDirection: "row" }}>
+                        {dataRango.map((value, index) => (
+                            <Pressable
+                                key={index}
+                                onPress={() => {
+                                    setRango(value);
+                                }}
+                                style={
+                                    value === rango_de_precios
+                                        ? styles.buttonSelected
+                                        : styles.button
+                                }
+                            >
+                                <Text
+                                    style={
+                                        value === rango_de_precios
+                                            ? styles.textSelected
+                                            : styles.text
+                                    }
+                                >
+                                    {value}
+                                </Text>
+                                <Text
+                                    style={
+                                        value === rango_de_precios
+                                            ? styles.textSelected
+                                            : styles.text
+                                    }
+                                >
+                                    {"$".repeat(index + 1)}
+                                </Text>
+                            </Pressable>
+                        ))}
+                    </View>
+
+                    <View>
+                        <Text>Horario de atencion</Text>
+                        {horarioAtencion.map((horario, index) => (
+                            <View
+                                key={index}
+                                style={{
+                                    flexDirection: "row",
+                                    width: "100%",
+                                    justifyContent: "space-between",
+                                }}
+                            >
+                                <Text>{days[horario.dia]}</Text>
+
+                                <View style={{ flexDirection: "row" }}>
                                     <Pressable
                                         onPress={() => {
-                                            router.navigate(
-                                                ("/eventos/" +
-                                                    item.id_evento) as Href
-                                            );
+                                            const newValues = [...openHorario];
+                                            newValues[index] =
+                                                !openHorario[index];
+                                            setOpenHorario(newValues);
                                         }}
-                                        style={{
-                                            flexDirection: "column",
-                                            flex: 1,
-                                            borderRadius: 150,
-                                            marginTop: "2%",
-                                        }}
-                                        key={item.id_evento}
                                     >
-                                        <ImageBackground
-                                            source={
-                                                item.logo
-                                                    ? item.logo
-                                                    : image_default
-                                            }
-                                            style={{
-                                                height: 200,
-                                                width: 150,
-                                                borderRadius: 150,
-                                                alignItems: "flex-end",
-                                            }}
-                                        >
-                                            <View
-                                                style={{
-                                                    backgroundColor: "white",
-                                                    width: "35%",
-                                                    alignItems: "center",
-                                                    padding: 3,
-                                                    borderRadius: 10,
-                                                    marginTop: 5,
-                                                    marginRight: 5,
-                                                }}
-                                            >
-                                                <Text
-                                                    style={{
-                                                        fontSize: 24,
-                                                        fontWeight: "bold",
-                                                    }}
-                                                >
-                                                    {item.fecha_inicio.getDate()}
-                                                </Text>
-                                                <Text style={{ fontSize: 12 }}>
-                                                    {item.fecha_inicio.toLocaleString(
-                                                        "es-ES",
-                                                        { month: "short" }
-                                                    )}
-                                                </Text>
-                                            </View>
-                                        </ImageBackground>
-                                        <Text
-                                            style={{
-                                                fontFamily: "Poppins-Regular",
-                                            }}
-                                        >
-                                            {item.nombre}
+                                        <Text>
+                                            {openHorario[index]
+                                                ? "Cerrar"
+                                                : "Abrir"}
                                         </Text>
                                     </Pressable>
-                                );
-                            }
-                        }}
-                        keyExtractor={(item, index) => index.toString()}
-                        horizontal
-                    />
+
+                                    {openHorario[index] && (
+                                        <>
+                                            <Pressable
+                                                onPress={() =>
+                                                    showTime(
+                                                        horariosInicio,
+                                                        setHorariosInicio,
+                                                        index
+                                                    )
+                                                }
+                                            >
+                                                <Text>
+                                                    {horariosInicio
+                                                        ? dateToHHmm(
+                                                              horariosInicio[
+                                                                  index
+                                                              ]
+                                                          )
+                                                        : ""}
+                                                </Text>
+                                            </Pressable>
+                                            <Pressable
+                                                onPress={() =>
+                                                    showTime(
+                                                        horariosFin,
+                                                        setHorariosFin,
+                                                        index
+                                                    )
+                                                }
+                                            >
+                                                <Text>
+                                                    {horariosFin
+                                                        ? dateToHHmm(
+                                                              horariosFin[index]
+                                                          )
+                                                        : ""}
+                                                </Text>
+                                            </Pressable>
+                                        </>
+                                    )}
+                                </View>
+                            </View>
+                        ))}
+                    </View>
+
                     <Text>Fotos</Text>
                     <FlatList
                         style={{ marginLeft: "3%" }}
@@ -577,6 +540,10 @@ const MyPlace = () => {
                         keyExtractor={(item, index) => index.toString()}
                         horizontal
                     />
+
+                    <Pressable onPress={handleSubmit}>
+                        <Text>Actualizar</Text>
+                    </Pressable>
                 </View>
             </ScrollView>
         </View>
@@ -635,6 +602,30 @@ const styles = StyleSheet.create({
     },
     localData: {
         marginTop: "-18%",
+    },
+    buttonSelected: {
+        width: "25%",
+        borderColor: "#fef5ff",
+        borderWidth: 2,
+        backgroundColor: "#7d5683",
+        borderRadius: 10,
+        padding: 3,
+        alignItems: "center",
+        marginHorizontal: 5,
+    },
+    textSelected: {
+        color: "#fef5ff",
+        fontSize: 16,
+    },
+    button: {
+        width: "25%",
+        borderColor: "#7d5683",
+        borderWidth: 2,
+        backgroundColor: "#fef5ff",
+        borderRadius: 10,
+        padding: 3,
+        alignItems: "center",
+        marginHorizontal: 5,
     },
 });
 
