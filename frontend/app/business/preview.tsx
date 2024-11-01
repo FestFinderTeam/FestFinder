@@ -7,6 +7,7 @@ import {
     Text,
     TextInput,
     View,
+    StyleSheet,
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Styles from "@/globalStyles/styles";
@@ -77,9 +78,9 @@ const preview = () => {
             .map((_, index) => {
                 const horario = openHorario[index]
                     ? {
-                          inicio_atencion: dateToHHmm(horariosInicio[index]),
-                          fin_atencion: dateToHHmm(horariosFin[index]),
-                      }
+                        inicio_atencion: dateToHHmm(horariosInicio[index]),
+                        fin_atencion: dateToHHmm(horariosFin[index]),
+                    }
                     : null;
                 return {
                     dia: index,
@@ -233,31 +234,22 @@ const preview = () => {
                             <FontAwesome color={"white"} name="plus" />
                         </Pressable>
                     </View>
-                    <View>
+                    <View style={styles.container}>
                         {horarioAtencion.map((horario, index) => (
-                            <View
-                                key={index}
-                                style={{
-                                    flexDirection: "row",
-                                    width: "100%",
-                                    justifyContent: "space-between",
-                                }}
-                            >
-                                <Text>{days[horario.dia]}</Text>
+                            <View key={index} style={styles.scheduleContainer}>
+                                <Text style={styles.dayText}>{days[horario.dia]}</Text>
 
-                                <View style={{ flexDirection: "row" }}>
+                                <View style={styles.timeContainer}>
                                     <Pressable
                                         onPress={() => {
                                             const newValues = [...openHorario];
-                                            newValues[index] =
-                                                !openHorario[index];
+                                            newValues[index] = !openHorario[index];
                                             setOpenHorario(newValues);
                                         }}
+                                        style={styles.toggleButton}
                                     >
-                                        <Text>
-                                            {openHorario[index]
-                                                ? "Cerrar"
-                                                : "Abrir"}
+                                        <Text style={styles.toggleButtonText}>
+                                            {openHorario[index] ? "Cerrar" : "Abrir"}
                                         </Text>
                                     </Pressable>
 
@@ -265,38 +257,22 @@ const preview = () => {
                                         <>
                                             <Pressable
                                                 onPress={() =>
-                                                    showTime(
-                                                        horariosInicio,
-                                                        setHorariosInicio,
-                                                        index
-                                                    )
+                                                    showTime(horariosInicio, setHorariosInicio, index)
                                                 }
+                                                style={styles.timeButton}
                                             >
-                                                <Text>
-                                                    {horariosInicio
-                                                        ? dateToHHmm(
-                                                              horariosInicio[
-                                                                  index
-                                                              ]
-                                                          )
-                                                        : ""}
+                                                <Text style={styles.timeText}>
+                                                    {horariosInicio ? dateToHHmm(horariosInicio[index]) : ""}
                                                 </Text>
                                             </Pressable>
                                             <Pressable
                                                 onPress={() =>
-                                                    showTime(
-                                                        horariosFin,
-                                                        setHorariosFin,
-                                                        index
-                                                    )
+                                                    showTime(horariosFin, setHorariosFin, index)
                                                 }
+                                                style={styles.timeButton}
                                             >
-                                                <Text>
-                                                    {horariosFin
-                                                        ? dateToHHmm(
-                                                              horariosFin[index]
-                                                          )
-                                                        : ""}
+                                                <Text style={styles.timeText}>
+                                                    {horariosFin ? dateToHHmm(horariosFin[index]) : ""}
                                                 </Text>
                                             </Pressable>
                                         </>
@@ -332,5 +308,53 @@ const preview = () => {
         </ScrollView>
     );
 };
+const styles = StyleSheet.create({
+    container: {
+        padding: 24,
+        backgroundColor: '#f9f9f9', 
+        borderRadius: 8,
+        elevation: 2, 
+        width: "80%"
+    },
+    scheduleContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ddd',
+    },
+    dayText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#333',
+    },
+    timeContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    toggleButton: {
+        backgroundColor: '#402158', 
+        borderRadius: 4,
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+        marginRight: 10,
+    },
+    toggleButtonText: {
+        color: '#fff', 
+        fontWeight: '600',
+    },
+    timeButton: {
+        backgroundColor: '#B197FC', 
+        borderRadius: 4,
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+        marginRight: 10,
+    },
+    timeText: {
+        color: '#fff', // Texto blanco
+        fontWeight: '500',
+    },
+});
 
 export default preview;
