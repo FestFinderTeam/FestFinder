@@ -4,6 +4,7 @@ import {
     Text,
     TextInput,
     View,
+    ScrollView,
 } from "react-native";
 
 import { useState } from "react";
@@ -18,6 +19,11 @@ import {
     showSingleDate,
     showSingleTime,
 } from "@/utils/DateTime";
+import Styles from "@/globalStyles/styles";
+
+
+
+
 
 const imagen_defecto = require("../../assets/images/default_image.png");
 
@@ -56,110 +62,136 @@ const CrearEvento = () => {
         //enviar al servidor
     };
     return (
-        <View>
-            <Header title="Crear nuevo evento" />
+        <ScrollView>
+            <View>
+                <Header title="Crear nuevo evento" />
+                <View style={{ alignItems: "center" }}>
+                    <ImageBackground
+                        source={logo ? { uri: logo.uri } : imagen_defecto}
+                        alt="imagen Evento"
+                        style={{
+                            backgroundColor: "gray",
+                            height: 250,
+                            width: 200,
+                            position: "relative",
+                            marginTop: "3%",
+                            borderRadius: 20,
 
-            <ImageBackground
-                source={logo ? { uri: logo.uri } : imagen_defecto}
-                alt="imagen Evento"
-                style={{
-                    backgroundColor: "gray",
-                    height: 200,
-                    width: 150,
-                    position: "relative",
-                }}
-            >
-                <Pressable
-                    style={{
-                        position: "absolute",
-                        top: "auto",
-                        left: "auto",
-                        bottom: 5,
-                        right: 5,
-                    }}
-                    onPress={() => {
-                        pickImage(setImagenEvento, [3, 4]);
-                    }}
-                >
-                    <FontAwesome name="camera" size={30} />
-                </Pressable>
-            </ImageBackground>
-            <Text>Nombre de evento</Text>
-            <TextInput
-                placeholder="Nombre"
-                onChangeText={(e) => setNombre(e)}
-            />
-            <View style={{ flexDirection: "row" }}>
-                <View>
-                    <Text>Fecha</Text>
-                    <Pressable
-                        onPress={() =>
-                            showSingleDate(horario_inicio, setHoraInicio)
-                        }
+                        }}
                     >
-                        <Text>{dateToDDMMYYYY(horario_inicio)}</Text>
-                    </Pressable>
-                </View>
-                <View>
-                    <Text>Hora</Text>
-                    <View style={{ flexDirection: "row" }}>
                         <Pressable
-                            onPress={() =>
-                                showSingleTime(horario_inicio, setHoraInicio)
-                            }
+                            style={{
+                                position: "absolute",
+                                top: "auto",
+                                left: "auto",
+                                bottom: 5,
+                                right: 5,
+                                borderRadius: 15,
+                            }}
+                            onPress={() => {
+                                pickImage(setImagenEvento, [3, 4]);
+                            }}
                         >
-                            <Text>{dateToHHmm(horario_inicio)}</Text>
+                            <FontAwesome name="camera" size={30} />
                         </Pressable>
-                        <Text>-</Text>
+                    </ImageBackground>
+                    <Text style={{
+                        fontWeight: "600",
+                        fontSize: 18,
+                        color: "#333",
+                        marginTop: "3%",
+                        alignSelf: "flex-start",
+                        marginLeft: "10%"
+                    }}>
+                        Nombre
+                    </Text>
 
-                        <Pressable
-                            onPress={() =>
-                                showSingleTime(horario_fin, setHoraFin)
-                            }
-                        >
-                            <Text>{dateToHHmm(horario_fin)}</Text>
-                        </Pressable>
+                    <TextInput
+                        placeholder="Nombre"
+                        onChangeText={(e) => setNombre(e)}
+                        style={[Styles.input, { marginTop: "3%" }]}
+                    />
+                </View>
+                <View style={{ flexDirection: "row", paddingHorizontal: 20 }}>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: '100%', marginTop: '3%', }}>
+                        <View style={{ flex: 1, alignItems: "center" }}>
+                            <Text style={{ fontWeight: "600", fontSize: 18, color: "#333", marginBottom: 8 }}>Fecha</Text>
+                            <Pressable
+                                onPress={() => showSingleDate(horario_inicio, setHoraInicio)}
+                                style={[Styles.input, { width: '80%', alignItems: 'center' }]}
+                            >
+                                <Text>{dateToDDMMYYYY(horario_inicio)}</Text>
+                            </Pressable>
+                        </View>
+                        <View style={{ flex: 1, alignItems: "center" }}>
+                            <Text style={{ fontWeight: "600", fontSize: 18, color: "#333", marginBottom: 8 }}>Hora</Text>
+                            <View style={{ flexDirection: "row", justifyContent: "space-between", width: '100%', alignItems: "center" }}>
+                                <Pressable
+                                    onPress={() => showSingleTime(horario_inicio, setHoraInicio)}
+                                    style={[Styles.input, { flex: 1, maxWidth: 120, alignItems: 'center', marginRight: 5 }]}
+                                >
+                                    <Text>{dateToHHmm(horario_inicio)}</Text>
+                                </Pressable>
+                                <Text>-</Text>
+                                <Pressable
+                                    onPress={() => showSingleTime(horario_fin, setHoraFin)}
+                                    style={[Styles.input, { flex: 1, maxWidth: 120, alignItems: 'center', marginLeft: 5 }]}
+                                >
+                                    <Text>{dateToHHmm(horario_fin)}</Text>
+                                </Pressable>
+                            </View>
+
+                        </View>
                     </View>
                 </View>
+                <View style={{ marginTop: '2%', marginLeft: "10%" }}>
+                    <Text style={{ fontWeight: "600", fontSize: 18, color: "#333", marginBottom: 8 }}>Rango de Precio</Text>
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-start" }}>
+                        <TextInput
+                            onChangeText={(e) => setPrecioInicial(e)}
+                            keyboardType="number-pad"
+                            placeholder="00"
+                            style={[Styles.input, { flex: 1, maxWidth: 120, marginRight: 5 }]}
+                        />
+                        <Text>-</Text>
+                        <TextInput
+                            onChangeText={(e) => setPrecioFinal(e)}
+                            keyboardType="number-pad"
+                            placeholder="00"
+                            style={[Styles.input, { flex: 1, maxWidth: 120, marginLeft: 5 }]}
+                        />
+                    </View>
+                </View>
+                <Text style={{ fontWeight: "600", fontSize: 18, color: "#333", marginBottom: 8, marginLeft: "10%" }}>
+                    Descripción
+                </Text>
+                <View style={{ alignItems: "center", marginTop: 10 }}>
+                    <TextInput
+                        multiline
+                        onChangeText={(e) => setDescripcion(e)}
+                        placeholder="Ingresa una descripción para tu evento"
+                        style={{
+                            width: "90%",
+                            minHeight: 100,
+                            padding: 10,
+                            borderColor: "#ccc",
+                            borderWidth: 1,
+                            borderRadius: 8,
+                            backgroundColor: "#f9f9f9",
+                            textAlignVertical: "top",
+                            fontSize: 16,
+                            color: "#333"
+                        }}
+                    />
+                </View>
+                {error && <Text style={{ color: "red" }}>{error}</Text>}
+                <View style={{alignItems:"center"}}>
+                    <Pressable onPress={handleSubmit} style={[Styles.button,{marginBottom: 30,}]}>
+                        <Text style={Styles.buttonText}>Crear nuevo evento</Text>
+                    </Pressable>
+                </View>
             </View>
-            <Text>Rango de Precio</Text>
-            <View style={{ flexDirection: "row" }}>
-                <TextInput
-                    onChangeText={(e) => setPrecioInicial(e)}
-                    keyboardType="number-pad"
-                    placeholder="00"
-                />
-                <Text>-</Text>
-                <TextInput
-                    onChangeText={(e) => setPrecioFinal(e)}
-                    keyboardType="number-pad"
-                    placeholder="00"
-                />
-            </View>
-            <Text>Descripcion</Text>
-            <TextInput
-                multiline={true}
-                onChangeText={(e) => setDescripcion(e)}
-                placeholder="Describe tu eventos"
-            />
-            <Text>Ubicacion</Text>
-            <TextInput
-                onChangeText={(e) => setUbicacion(e)}
-                placeholder="Av Melchor Urquidi S/N, Cochabamba"
-            />
-            <Pressable>
-                <Text>Ubicacion Predeterminada</Text>
-            </Pressable>
-            <Text>Se pondra la ubicacion fijada del local</Text>
-            <Pressable>
-                <Text>Agregar ubicacion nueva</Text>
-            </Pressable>
-            {error && <Text style={{ color: "red" }}>{error}</Text>}
-
-            <Pressable onPress={handleSubmit}>
-                <Text>Crear nuevo evento</Text>
-            </Pressable>
-        </View>
+        </ScrollView>
     );
 };
 
