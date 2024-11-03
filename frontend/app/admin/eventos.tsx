@@ -4,6 +4,7 @@ import { router, type Href } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { FlatList, ImageBackground, Pressable, Text, View } from "react-native";
 import type { Evento } from "./myplace";
+import Styles from "@/globalStyles/styles";
 
 const image_default = require("../../assets/images/default_image.png");
 
@@ -39,7 +40,7 @@ const eventos = () => {
     return (
         <>
             <Header title="Administrar eventos" />
-            <Text>Eventos Activos</Text>
+            <Text style={[Styles.subtitle, { color: "black", fontWeight: "bold", marginTop: "2%", marginLeft: "2%" }]}>Eventos Activos</Text>
             <FlatList
                 style={{ marginLeft: "3%" }}
                 data={[null, ...eventosActivos]}
@@ -56,17 +57,31 @@ const eventos = () => {
                                     {
                                         flexDirection: "column",
                                         flex: 1,
-                                        borderRadius: 150,
+                                        borderRadius: 10,
                                         marginTop: "2%",
                                         height: 200,
                                         width: 150,
                                         alignItems: "center",
                                         justifyContent: "center",
+                                        backgroundColor: "gray", 
+                                        marginRight:10,
                                     },
                                 ]}
                             >
-                                <FontAwesome name="plus" size={50} />
+                                <FontAwesome name="plus" size={50} color="white" />
+                                <Text
+                                    style={{
+                                        fontFamily: "Poppins-Regular",
+                                        width: 150,
+                                        textAlign: "center",
+                                        color:"white",
+                                    }}
+                                    numberOfLines={2}
+                                >
+                                    Crear un nuevo evento
+                                </Text>
                             </Pressable>
+                            
                         );
                     } else {
                         return (
@@ -78,9 +93,9 @@ const eventos = () => {
                                 }}
                                 style={{
                                     flexDirection: "column",
-                                    flex: 1,
                                     borderRadius: 150,
                                     marginTop: "2%",
+                                    marginRight: 10, 
                                 }}
                                 key={item.id_evento}
                             >
@@ -125,7 +140,10 @@ const eventos = () => {
                                 <Text
                                     style={{
                                         fontFamily: "Poppins-Regular",
+                                        width: 150,
+                                        textAlign: "center",
                                     }}
+                                    numberOfLines={2}
                                 >
                                     {item.nombre}
                                 </Text>
@@ -136,9 +154,9 @@ const eventos = () => {
                 keyExtractor={(item, index) => index.toString()}
                 horizontal
             />
-            <Text>Todos los Eventos</Text>
+            <Text style={[Styles.subtitle, { color: "black", fontWeight: "bold", marginTop: "2%", marginLeft: "2%" }]}>Todos los Eventos</Text>
             <FlatList
-                style={{ marginLeft: "3%" }}
+                style={{ marginLeft: "4%" }}
                 data={eventos}
                 renderItem={({ item }) => (
                     <Pressable
@@ -149,9 +167,9 @@ const eventos = () => {
                         }}
                         style={{
                             flexDirection: "column",
-                            flex: 1,
                             borderRadius: 150,
                             marginTop: "2%",
+                            marginRight: 10,
                         }}
                         key={item.id_evento}
                     >
@@ -193,7 +211,10 @@ const eventos = () => {
                         <Text
                             style={{
                                 fontFamily: "Poppins-Regular",
+                                width: 150,
+                                textAlign: "center",
                             }}
+                            numberOfLines={2}
                         >
                             {item.nombre}
                         </Text>
@@ -202,6 +223,7 @@ const eventos = () => {
                 keyExtractor={(item, index) => index.toString()}
                 horizontal
             />
+
         </>
     );
 };

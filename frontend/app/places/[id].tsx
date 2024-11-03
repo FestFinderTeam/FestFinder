@@ -318,7 +318,7 @@ const Place = () => {
                         <View
                             style={{
                                 padding: 20,
-                                paddingTop: 40, // Aumenta el espacio superior para evitar que la X se sobreponga
+                                paddingTop: 40, 
                                 backgroundColor: "white",
                                 borderRadius: 10,
                                 elevation: 5,
