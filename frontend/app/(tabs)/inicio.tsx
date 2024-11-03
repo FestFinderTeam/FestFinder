@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import Notch from "@/components/Notch";
 import { FadeIn } from "react-native-reanimated";
+import React from "react";
 
 interface Place {
     id: number;

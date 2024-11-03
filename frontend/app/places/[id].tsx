@@ -17,7 +17,6 @@ import {
     ScrollView,
     FlatList,
     Modal,
-    Touchable,
 } from "react-native";
 
 import Notch from "@/components/Notch";
@@ -111,6 +110,7 @@ const Place = () => {
     useEffect(() => {
         // id del establecimiento
         const { id } = params;
+        console.log(id)
 
         // Simulación de llamada a API para el establecimiento
         const establecimiento = {
@@ -463,7 +463,7 @@ const Place = () => {
                                 </Text>
                             </View>
                             <View style={{ top: "-20%", right: "40%" }}>
-                                <Link href={"https://wa.link/9nq0oq"}>
+                                <Link href={("https://wa.me/" + establecimiento.nro_ref) as Href}>
                                     <FontAwesome
                                         name="whatsapp"
                                         color={"green"}

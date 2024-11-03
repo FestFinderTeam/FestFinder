@@ -23,6 +23,7 @@ const register_business = () => {
 
     const dataRango = ["Bajo", "Medio", "Alto"];
 
+    // esto debe ser reemplazado por las peticiones de tipos de negocio
     const dataTypesBusiness = [
         { key: "1", value: "Bar" },
         { key: "2", value: "Club" },

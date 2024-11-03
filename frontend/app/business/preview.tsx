@@ -16,8 +16,10 @@ import React from "react";
 import type { ImagePickerAsset } from "expo-image-picker";
 import { pickImage } from "@/utils/Image";
 import { dateToHHmm, showTime } from "@/utils/DateTime";
+import { useSession } from "@/hooks/ctx";
 
 const preview = () => {
+    const {session} = useSession()
     const [logo, setimage2] = useState<ImagePickerAsset>();
     const [imageBanner, setImageBanner] = useState<ImagePickerAsset>();
     const [tags, setTags] = useState<string[] | []>([]);
@@ -91,6 +93,9 @@ const preview = () => {
 
     const local = useLocalSearchParams();
     const handleSubmit = async () => {
+        if (session){
+            const {id_usuario} = session   
+        }
         // obtener datos del params
         const data = { ...local, horarios: obtenerHorarios(), etiquetas: tags };
         const formData = new FormData();

@@ -20,14 +20,13 @@ import {
     showSingleTime,
 } from "@/utils/DateTime";
 import Styles from "@/globalStyles/styles";
-
-
-
-
+import { router, type Href } from "expo-router";
+import { useSession } from "@/hooks/ctx";
 
 const imagen_defecto = require("../../assets/images/default_image.png");
 
 const CrearEvento = () => {
+    const {session} = useSession()
     const [nombre, setNombre] = useState("");
     const [logo, setImagenEvento] = useState<ImagePickerAsset>();
     const [horario_inicio, setHoraInicio] = useState<Date>(new Date());
@@ -39,6 +38,10 @@ const CrearEvento = () => {
     const [error, setError] = useState("");
 
     const handleSubmit = async () => {
+        if (session){
+            const {id_usuario} = session
+        }
+
         if (logo === undefined) {
             setError("Seleccione una imagen");
             return;
@@ -59,7 +62,11 @@ const CrearEvento = () => {
         formData.append("precioFinal", precioFinal);
         formData.append("ubicacion", ubicacion);
 
+        console.log(formData);
         //enviar al servidor
+        
+        //enviar al los eventos una vez registrado
+        //router.push('admin/eventos' as Href)
     };
     return (
         <ScrollView>
