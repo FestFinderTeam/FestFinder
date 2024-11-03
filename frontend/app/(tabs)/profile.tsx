@@ -59,7 +59,7 @@ const profile = () => {
                 />
                 <ItemProfile
                     onPress={() => {
-                        router.push("/places/myplace");
+                        router.push("/admin");
                     }}
                     color="#7D5683"
                     text="Administrar mi local"
