@@ -1,9 +1,6 @@
-import { useState } from "react";
-
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
-export const fetchEventosDelMes = async () => {
-    const [eventosDelMes, setEventosDelMes] = useState([]);
+export const getEventosDelMes = async () => {
     try {
         console.log(new Date().toISOString().split("T")[0] + "");
 
@@ -18,17 +15,14 @@ export const fetchEventosDelMes = async () => {
         });
         const data = await response.json();
         console.log(data);
-        setEventosDelMes(data);
+        return data;
     } catch (error) {
-        //Alert.alert("Error", "No se pudo obtener los eventos del mes");
-        console.error("Error fetching eventos del mes:", error);
+        console.error(error);
+        return [];
     }
-    return eventosDelMes;
 };
 
-export const fetchEventosDelDia = async () => {
-    const [eventosDelDia, setEventosDelDia] = useState([]);
-
+export const getEventosDelDia = async () => {
     try {
         console.log(new Date().toISOString().split("T")[0] + "");
         const response = await fetch(`${API_URL}/api/eventos_hoy/`, {
@@ -42,11 +36,10 @@ export const fetchEventosDelDia = async () => {
         });
         const data = await response.json();
         console.log(data);
-        setEventosDelDia(data);
+        return data;
     } catch (error) {
         //Alert.alert("Error", "No se pudo obtener los eventos del día");
-        console.error("Error fetching eventos del día:", error);
+        console.error(error);
+        return [];
     }
-
-    return eventosDelDia;
 };

@@ -19,7 +19,7 @@ import { dateToHHmm, showTime } from "@/utils/DateTime";
 import { useSession } from "@/hooks/ctx";
 
 const preview = () => {
-    const {session} = useSession()
+    const { session } = useSession();
     const [logo, setimage2] = useState<ImagePickerAsset>();
     const [imageBanner, setImageBanner] = useState<ImagePickerAsset>();
     const [tags, setTags] = useState<string[] | []>([]);
@@ -80,9 +80,9 @@ const preview = () => {
             .map((_, index) => {
                 const horario = openHorario[index]
                     ? {
-                        inicio_atencion: dateToHHmm(horariosInicio[index]),
-                        fin_atencion: dateToHHmm(horariosFin[index]),
-                    }
+                          inicio_atencion: dateToHHmm(horariosInicio[index]),
+                          fin_atencion: dateToHHmm(horariosFin[index]),
+                      }
                     : null;
                 return {
                     dia: index,
@@ -93,8 +93,8 @@ const preview = () => {
 
     const local = useLocalSearchParams();
     const handleSubmit = async () => {
-        if (session){
-            const {id_usuario} = session   
+        if (session) {
+            const { id_usuario } = session;
         }
         // obtener datos del params
         const data = { ...local, horarios: obtenerHorarios(), etiquetas: tags };
@@ -242,19 +242,24 @@ const preview = () => {
                     <View style={styles.container}>
                         {horarioAtencion.map((horario, index) => (
                             <View key={index} style={styles.scheduleContainer}>
-                                <Text style={styles.dayText}>{days[horario.dia]}</Text>
+                                <Text style={styles.dayText}>
+                                    {days[horario.dia]}
+                                </Text>
 
                                 <View style={styles.timeContainer}>
                                     <Pressable
                                         onPress={() => {
                                             const newValues = [...openHorario];
-                                            newValues[index] = !openHorario[index];
+                                            newValues[index] =
+                                                !openHorario[index];
                                             setOpenHorario(newValues);
                                         }}
                                         style={styles.toggleButton}
                                     >
                                         <Text style={styles.toggleButtonText}>
-                                            {openHorario[index] ? "Cerrar" : "Abrir"}
+                                            {openHorario[index]
+                                                ? "Cerrar"
+                                                : "Abrir"}
                                         </Text>
                                     </Pressable>
 
@@ -262,22 +267,40 @@ const preview = () => {
                                         <>
                                             <Pressable
                                                 onPress={() =>
-                                                    showTime(horariosInicio, setHorariosInicio, index)
+                                                    showTime(
+                                                        horariosInicio,
+                                                        setHorariosInicio,
+                                                        index
+                                                    )
                                                 }
                                                 style={styles.timeButton}
                                             >
                                                 <Text style={styles.timeText}>
-                                                    {horariosInicio ? dateToHHmm(horariosInicio[index]) : ""}
+                                                    {horariosInicio
+                                                        ? dateToHHmm(
+                                                              horariosInicio[
+                                                                  index
+                                                              ]
+                                                          )
+                                                        : ""}
                                                 </Text>
                                             </Pressable>
                                             <Pressable
                                                 onPress={() =>
-                                                    showTime(horariosFin, setHorariosFin, index)
+                                                    showTime(
+                                                        horariosFin,
+                                                        setHorariosFin,
+                                                        index
+                                                    )
                                                 }
                                                 style={styles.timeButton}
                                             >
                                                 <Text style={styles.timeText}>
-                                                    {horariosFin ? dateToHHmm(horariosFin[index]) : ""}
+                                                    {horariosFin
+                                                        ? dateToHHmm(
+                                                              horariosFin[index]
+                                                          )
+                                                        : ""}
                                                 </Text>
                                             </Pressable>
                                         </>
@@ -316,49 +339,49 @@ const preview = () => {
 const styles = StyleSheet.create({
     container: {
         padding: 24,
-        backgroundColor: '#f9f9f9', 
+        backgroundColor: "#f9f9f9",
         borderRadius: 8,
-        elevation: 2, 
-        width: "80%"
+        elevation: 2,
+        width: "80%",
     },
     scheduleContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
         padding: 12,
         borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
+        borderBottomColor: "#ddd",
     },
     dayText: {
         fontSize: 16,
-        fontWeight: 'bold',
-        color: '#333',
+        fontWeight: "bold",
+        color: "#333",
     },
     timeContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
+        flexDirection: "row",
+        alignItems: "center",
     },
     toggleButton: {
-        backgroundColor: '#402158', 
+        backgroundColor: "#402158",
         borderRadius: 4,
         paddingVertical: 6,
         paddingHorizontal: 12,
         marginRight: 10,
     },
     toggleButtonText: {
-        color: '#fff', 
-        fontWeight: '600',
+        color: "#fff",
+        fontWeight: "600",
     },
     timeButton: {
-        backgroundColor: '#B197FC', 
+        backgroundColor: "#B197FC",
         borderRadius: 4,
         paddingVertical: 6,
         paddingHorizontal: 12,
         marginRight: 10,
     },
     timeText: {
-        color: '#fff', // Texto blanco
-        fontWeight: '500',
+        color: "#fff", // Texto blanco
+        fontWeight: "500",
     },
 });
 

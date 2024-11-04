@@ -16,6 +16,7 @@ import { FadeIn } from "react-native-reanimated";
 import React from "react";
 import { getCategorias } from "@/services/categoriasService";
 import { getEstablecimientos } from "@/services/establecimientosServices";
+import { getEventosDelDia, getEventosDelMes } from "@/services/eventosService";
 
 interface Place {
     id: number;
@@ -64,12 +65,10 @@ const inicio = () => {
         fetchEventosDelMes();
         fetchEventosDelDia();
         fetchEstablecimientos();
-        //fetchCategoriasEstablecimientos();
     }, []);
 
     const fetchEstablecimientos = async () => {
         const establecimientos = await getEstablecimientos();
-        console.log("panpolin2");
         setPopularPlaces(establecimientos); // Ajusta si el campo en tu API tiene otro nombre
     };
 
@@ -79,46 +78,13 @@ const inicio = () => {
     };
 
     const fetchEventosDelMes = async () => {
-        try {
-            console.log(new Date().toISOString().split("T")[0] + "");
-
-            const response = await fetch(`${API_URL}/api/eventos_mes/`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    fecha: new Date().toISOString().split("T")[0],
-                }), // Envía la fecha actual
-            });
-            const data = await response.json();
-            console.log(data);
-            setEventosDelMes(data);
-        } catch (error) {
-            //Alert.alert("Error", "No se pudo obtener los eventos del mes");
-            console.error("Error fetching eventos del mes:", error);
-        }
+        const eventos = await getEventosDelMes();
+        setEventosDelMes(eventos); // Ajusta si el campo en tu API tiene otro nombre
     };
 
     const fetchEventosDelDia = async () => {
-        try {
-            console.log(new Date().toISOString().split("T")[0] + "");
-            const response = await fetch(`${API_URL}/api/eventos_hoy/`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    fecha: new Date().toISOString().split("T")[0],
-                }), // Envía la fecha actual
-            });
-            const data = await response.json();
-            console.log(data);
-            setEventosDelDia(data);
-        } catch (error) {
-            //Alert.alert("Error", "No se pudo obtener los eventos del día");
-            console.error("Error fetching eventos del día:", error);
-        }
+        const eventos = await getEventosDelDia();
+        setEventosDelDia(eventos); // Ajusta si el campo en tu API tiene otro nombre
     };
 
     const handleSubmitSearch = () => {
@@ -243,7 +209,7 @@ const inicio = () => {
                         >
                             <ImageBackground
                                 resizeMode="cover"
-                                source={{ uri: `${API_URL}${item.logo}` }}
+                                source={{ uri: `${item.logo}` }}
                                 style={{
                                     width: 150,
                                     height: 200,
@@ -301,7 +267,7 @@ const inicio = () => {
                         >
                             <ImageBackground
                                 resizeMode="cover"
-                                source={item.uri}
+                                source={{ uri: `${item.uri}` }}
                                 style={{
                                     width: 150,
                                     height: 200,
@@ -360,7 +326,7 @@ const inicio = () => {
                         >
                             <ImageBackground
                                 resizeMode="cover"
-                                source={{ uri: `${API_URL}${item.logo}` }}
+                                source={{ uri: `${item.logo}` }}
                                 style={{
                                     width: 150,
                                     height: 200,
