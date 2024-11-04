@@ -14,6 +14,8 @@ import {
 import Notch from "@/components/Notch";
 import { FadeIn } from "react-native-reanimated";
 import React from "react";
+import { getCategorias } from "@/services/categoriasService";
+import { getEstablecimientos } from "@/services/establecimientosServices";
 
 interface Place {
     id: number;
@@ -21,6 +23,11 @@ interface Place {
     score: number;
     views: number;
     uri: any;
+}
+
+interface TipoEstablecimiento {
+    id: number;
+    nombre_tipo: string;
 }
 
 interface Evento {
@@ -33,7 +40,7 @@ interface Evento {
 
 const inicio = () => {
     const [popularPlaces, setPopularPlaces] = useState<Place[]>([]);
-    const [tags, setTags] = useState<string[]>([]);
+    const [tags, setTags] = useState<TipoEstablecimiento[]>([]);
     const [openSearch, setOpenSearch] = useState(false);
     const [search, setSearch] = useState("");
     const [eventosDelMes, setEventosDelMes] = useState<Evento[]>([]);
@@ -51,66 +58,24 @@ const inicio = () => {
             },
         ];
         const newTags = ["Fiestas", "Conciertos", "Fiestas +21", "Bailes"];
-        setPopularPlaces(places);
-        setTags(newTags);
+        //setPopularPlaces(places);
 
+        fetchCategoriasEstablecimientos();
         fetchEventosDelMes();
         fetchEventosDelDia();
-        //fetchEstablecimientos();
+        fetchEstablecimientos();
         //fetchCategoriasEstablecimientos();
     }, []);
 
     const fetchEstablecimientos = async () => {
-        try {
-            const response = await fetch(`${API_URL}/api/establecimientos/`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            const data = await response.json();
-            console.log(data);
-            setPopularPlaces(data);
-        } catch (error) {
-            //Alert.alert("Error", "No se pudo obtener los establecimientos");
-            console.error("Error fetching establecimientos:", error);
-        }
+        const establecimientos = await getEstablecimientos();
+        console.log("panpolin2");
+        setPopularPlaces(establecimientos); // Ajusta si el campo en tu API tiene otro nombre
     };
 
     const fetchCategoriasEstablecimientos = async () => {
-        try {
-            const response = await fetch(
-                `${API_URL}/api/categorias-establecimientos/`,
-                {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
-            const data = await response.json();
-            console.log(data);
-            setTags(data);
-        } catch (error) {
-            //Alert.alert("Error", "No se pudo obtener los establecimientos");
-            console.error("Error fetching establecimientos:", error);
-        }
-    };
-    const fetchGeneroEvento = async () => {
-        try {
-            const response = await fetch(`${API_URL}/api/generos-evento/`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            const data = await response.json();
-            console.log(data);
-            setTags(data);
-        } catch (error) {
-            //Alert.alert("Error", "No se pudo obtener los establecimientos");
-            console.error("Error fetching establecimientos:", error);
-        }
+        const categories = await getCategorias();
+        setTags(categories); // Ajusta si el campo en tu API tiene otro nombre
     };
 
     const fetchEventosDelMes = async () => {
@@ -234,7 +199,7 @@ const inicio = () => {
                 <FlatList
                     data={tags}
                     style={styles.slider}
-                    keyExtractor={(item) => item.toString()}
+                    keyExtractor={(item) => JSON.stringify(item)}
                     renderItem={({ item }) => (
                         <Pressable
                             onPress={() => {}}
@@ -256,7 +221,7 @@ const inicio = () => {
                                     lineHeight: 24,
                                 }}
                             >
-                                {item}
+                                {item.nombre_tipo}
                             </Text>
                         </Pressable>
                     )}
