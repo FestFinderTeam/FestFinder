@@ -5,3 +5,4 @@ from .ListarEstablecimientos import ListarEstablecimientos
 from .AgregarTipoEstablecimiento import AgregarTipoEstablecimiento
 from .Genero_Evento_Vista import CrearGeneroEvento, ListarGenerosEvento
 from .Usuario_Vista import CrearUsuario, ListarUsuarios, LoginUsuario
+from .Establecimiento_Vista import ListarEstablecimientosPorTipo

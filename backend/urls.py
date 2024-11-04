@@ -6,6 +6,7 @@ from api.views import SubirImagen
 from api.views import AgregarTipoEstablecimiento
 from api.views import ListarTiposEstablecimiento
 from api.views import ListarEstablecimientos
+from api.views.Establecimiento_Vista import ListarEstablecimientosPorTipo
 from api.views import RegistrarEstablecimiento
 from api.views.Etiqueta_Vista import CrearEtiqueta, ListarEtiquetas
 from api.views.EtiquetaEstablecimiento_Vista import (
@@ -83,6 +84,7 @@ urlpatterns = [
     path("api/categorias-establecimientos/", ListarTiposEstablecimiento.as_view(), name="listar-categorias-establecimiento"),
     path("api/establecimiento/", RegistrarEstablecimiento.as_view(), name="registrar-establecimiento"),
     path("api/establecimientos/", ListarEstablecimientos.as_view(), name="listar-establecimiento"),
+    path('api/establecimientos/tipo/<int:tipo_id>/', ListarEstablecimientosPorTipo.as_view(), name='establecimientos_por_tipo'),
 
     path("api/genero-evento/", CrearGeneroEvento.as_view(), name="crear-genero-evento"),
     path(
