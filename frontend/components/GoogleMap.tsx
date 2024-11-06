@@ -1,9 +1,9 @@
+import type { Establecimiento } from "@/app/(tabs)/mapa";
 import Styles from "@/globalStyles/styles";
 import React, { useState } from "react";
-import { Alert, Button, Image, Pressable, Text } from "react-native";
+import { Alert, Image, Pressable, Text } from "react-native";
 import MapView, {
     Marker,
-    MarkerAnimated,
     type LatLng,
     type MapPressEvent,
 } from "react-native-maps";
@@ -13,14 +13,16 @@ export interface MapProps {
     selectedLocation?: LatLng | null;
     setSelectedLocation?: any;
     onPressConfirmLocation?: any;
+    establecimientos?: Establecimiento[];
+    onMarkerPress?: (establecimiento: Establecimiento) => void;
 }
-
 const GoogleMap = ({
     selectedLocation,
     setSelectedLocation,
     onPressConfirmLocation,
+    establecimientos,
+    onMarkerPress,
 }: MapProps) => {
-    const [address, setAddress] = useState(null);
     const handleMapPress = async (event: MapPressEvent) => {
         const coordinate = event.nativeEvent.coordinate;
         console.log(coordinate);
@@ -28,18 +30,8 @@ const GoogleMap = ({
             setSelectedLocation(coordinate);
         }
     };
-    const places = [
-        {
-            id: 1,
-            latitude: -17.385494,
-            longitude: -66.058982,
 
-            nombre: "Casa de Pablo",
-            photo: imagen,
-        },
-    ];
-
-    const handleMarkerPress = (place:any) => {
+    const handleMarkerPress = (place: any) => {
         Alert.alert(
             place.nombre + ` id: ${place.id}`,
             `Lat: ${place.latitude}, Lon: ${place.longitude}`,
@@ -66,27 +58,35 @@ const GoogleMap = ({
             >
                 {selectedLocation && <Marker coordinate={selectedLocation} />}
 
-                {places.map((place) => (
-                    <Marker
-                        key={place.id}
-                        coordinate={{
-                            latitude: place.latitude,
-                            longitude: place.longitude,
-                        }}
-                        title={place.nombre}
-                        onPress={() => handleMarkerPress(place)}
-                    >
-                        <Image
-                            source={imagen}
-                            style={{ width: 40, height: 40, borderRadius: 20 }}
-                        />
-                    </Marker>
-                ))}
+                {establecimientos &&
+                    establecimientos.map((place) => (
+                        <Marker
+                            key={place.id}
+                            coordinate={{
+                                latitude: place.latitude,
+                                longitude: place.longitude,
+                            }}
+                            title={place.nombre}
+                            onPress={() =>
+                                onMarkerPress && onMarkerPress(place)
+                            }
+                        >
+                            <Image
+                                source={place.photo}
+                                style={{
+                                    width: 40,
+                                    height: 40,
+                                    borderRadius: 20,
+                                }}
+                            />
+                        </Marker>
+                    ))}
             </MapView>
+
             {selectedLocation && (
                 <Pressable
                     onPress={onPressConfirmLocation}
-                    style={[{ top: -100},Styles.button]}
+                    style={[{ top: -100 }, Styles.button]}
                 >
                     <Text style={Styles.buttonText}>Confirmar</Text>
                 </Pressable>
