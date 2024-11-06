@@ -18,7 +18,11 @@ import { pickImage } from "@/utils/Image";
 import { dateToHHmm, showTime } from "@/utils/DateTime";
 import { useSession } from "@/hooks/ctx";
 
+
 const preview = () => {
+    const API_URL = "http://192.168.100.3:8000/";
+
+
     const { session } = useSession();
     const [logo, setimage2] = useState<ImagePickerAsset>();
     const [imageBanner, setImageBanner] = useState<ImagePickerAsset>();
@@ -97,22 +101,67 @@ const preview = () => {
             const { id_usuario } = session;
         }
         // obtener datos del params
-        const data = { ...local, horarios: obtenerHorarios(), etiquetas: tags };
+        const data = { ...local};
+        //const data = { ...local, horarios: obtenerHorarios(), etiquetas: tags };
         const formData = new FormData();
+        
+        try {
+            
+            let logoBlob = null;
+            let bannerBlob = null;
 
-        if (logo?.uri) {
-            const logoBlob = await fetch(logo.uri).then((res) => res.blob());
-            formData.append("logo", logoBlob, "logo.png");
-        }
-        if (imageBanner?.uri) {
-            const imageBlob = await fetch(imageBanner.uri).then((res) =>
-                res.blob()
-            );
-            formData.append("banner", imageBlob, "banner.png");
-        }
-        formData.append("data", JSON.stringify(data));
+            if (logo?.uri) {
+                logoBlob = await fetch(logo.uri).then((res) => res.blob());
+                formData.append("logo", logoBlob, "logo.png");
+            }
 
-        console.log(formData);
+            if (imageBanner?.uri) {
+                bannerBlob = await fetch(imageBanner.uri).then((res) => res.blob());
+                formData.append("banner", bannerBlob, "banner.png");
+            }
+
+
+            formData.append("data", JSON.stringify(data));
+            console.log(formData);
+
+            const dataBusiness = {
+                nombre: data.nombre,
+                logo: logoBlob,
+                banner: bannerBlob,
+                direccion: 'Croacia',
+                coordenada_x: data.coordenada_x,
+                coordenada_y:data.coordenada_y,
+                descripcion: 'Villa Peluche',
+                nro_ref: data.nro_ref,
+                em_ref: data.em_ref,
+                tipo_fk: data.tipo_fk,
+                rango_de_precios: data.rango_de_precios,
+            };
+            //console.log(dataBusiness);
+            console.log(API_URL);
+
+            const response = await fetch(`${API_URL}api/establecimiento/`, {
+                method: "POST",
+                body: JSON.stringify(dataBusiness),
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json" // Agrega este encabezado
+                },
+            });
+
+            // Manejo de errores en la respuesta
+            if (!response.ok) {
+                throw new Error("Error al registrar el establecimiento");
+            }
+
+            // Procesar la respuesta
+            const result = await response.json();
+            console.log("Establecimiento registrado:", result);
+            return result;
+        } catch (error) {
+            console.error("Error en el registro del establecimiento:", error);
+            return null;
+        }
     };
 
     return (

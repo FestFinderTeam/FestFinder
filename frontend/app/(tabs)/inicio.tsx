@@ -23,7 +23,7 @@ interface Place {
     name: string;
     score: number;
     views: number;
-    uri: any;
+    logo: any;
 }
 
 interface TipoEstablecimiento {
@@ -49,17 +49,6 @@ const inicio = () => {
     const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
     useEffect(() => {
-        const places = [
-            {
-                id: 1,
-                name: "AlicePark",
-                score: 10,
-                views: 540,
-                uri: require("../../assets/images/alice-park.png"),
-            },
-        ];
-        const newTags = ["Fiestas", "Conciertos", "Fiestas +21", "Bailes"];
-        //setPopularPlaces(places);
 
         fetchCategoriasEstablecimientos();
         fetchEventosDelMes();
@@ -68,7 +57,7 @@ const inicio = () => {
     }, []);
 
     const fetchEstablecimientos = async () => {
-        const establecimientos = await getEstablecimientos();
+        const establecimientos = await getEstablecimientos(null);
         setPopularPlaces(establecimientos); // Ajusta si el campo en tu API tiene otro nombre
     };
 
@@ -84,6 +73,7 @@ const inicio = () => {
 
     const fetchEventosDelDia = async () => {
         const eventos = await getEventosDelDia();
+        console.log(eventos[0].id_evento)
         setEventosDelDia(eventos); // Ajusta si el campo en tu API tiene otro nombre
     };
 
@@ -267,7 +257,7 @@ const inicio = () => {
                         >
                             <ImageBackground
                                 resizeMode="cover"
-                                source={{ uri: `${item.uri}` }}
+                                source={{ uri: `${item.logo}` }}
                                 style={{
                                     width: 150,
                                     height: 200,

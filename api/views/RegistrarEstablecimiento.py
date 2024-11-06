@@ -7,9 +7,17 @@ from ..serializers import EstablecimientoSerializer
 
 class RegistrarEstablecimiento(APIView):
     def post(self, request, *args, **kwargs):
+        print("se envio")
+        print(request.data)
         serializer = EstablecimientoSerializer(data=request.data)
+        print("datos bien enviados")
+        
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            print("Errores de validación:", serializer.errors)  # Imprime errores de validación
+            return Response(
+                {"message": "Error en la validación de los datos", "errors": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST
+            )

@@ -1,8 +1,9 @@
 import GoogleMap from "@/components/GoogleMap";
 import Styles from "@/globalStyles/styles";
+import { getCategorias } from "@/services/categoriasService";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Pressable,
     Text,
@@ -24,15 +25,25 @@ const register_business = () => {
     const [coordenada_y, setCoordenadaY] = useState<number>();
 
     const [toggleMap, setToggleMap] = useState(false);
+    const [dataTypesBusiness, setDataTypesBusiness] = useState([]);
 
     const dataRango = ["Bajo", "Medio", "Alto"];
 
-    // esto debe ser reemplazado por las peticiones de tipos de negocio
-    const dataTypesBusiness = [
-        { key: "1", value: "Bar" },
-        { key: "2", value: "Club" },
-        { key: "3", value: "Discoteca" },
-    ];
+    // Llama a getCategorias al montar el componente para obtener las categorías
+    useEffect(() => {
+        const fetchCategorias = async () => {
+            const categorias = await getCategorias();
+            // Mapear las categorías al formato que necesita SelectList
+            const formattedCategorias = categorias.map((categoria) => ({
+                key: categoria.id,          // Utiliza "id" como clave única
+                value: categoria.nombre_tipo // Utiliza "nombre_tipo" como el nombre visible
+            }));
+       
+            setDataTypesBusiness(formattedCategorias);
+        };
+
+        fetchCategorias();
+    }, []);
 
     const handleNext = () => {
         const dataBusiness = [
@@ -51,6 +62,8 @@ const register_business = () => {
             pathname: "/business/preview",
             params: {
                 nombre,
+                nro_ref,
+                direccion:'',
                 em_ref,
                 tipo_fk,
                 rango_de_precios,
@@ -78,8 +91,8 @@ const register_business = () => {
                         onPressConfirmLocation={() => {
                             setToggleMap(false);
                             if (location) {
-                                setCoordenadaX(location.longitude);
-                                setCoordenadaY(location.latitude);
+                                setCoordenadaX(Number(location.longitude.toFixed(8)));
+                                setCoordenadaY(Number(location.latitude.toFixed(8)));
                             }
                         }}
                     />
@@ -167,6 +180,7 @@ const register_business = () => {
                         boxStyles={Styles.input}
                         dropdownStyles={Styles.inputDropDown}
                     />
+                    
                     <Text
                         style={[
                             Styles.textDecoration2,

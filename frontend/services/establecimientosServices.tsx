@@ -1,8 +1,13 @@
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
-export const getEstablecimientos = async () => {
+export const getEstablecimientos = async (id_tipo = null) => {
+    console.log(API_URL);
     try {
-        const response = await fetch(`${API_URL}/api/establecimientos/`);
+        const url = id_tipo 
+            ? `${API_URL}/api/establecimientos/?tipo_fk=${id_tipo}` 
+            : `${API_URL}/api/establecimientos/`;
+
+        const response = await fetch(url);
         if (!response.ok) {
             throw new Error("Error al recuperar los lugares");
         }
@@ -14,3 +19,5 @@ export const getEstablecimientos = async () => {
         return [];
     }
 };
+
+
