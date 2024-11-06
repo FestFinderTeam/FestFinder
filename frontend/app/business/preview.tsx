@@ -14,15 +14,13 @@ import Styles from "@/globalStyles/styles";
 import { days, type HorarioAtencion } from "../places/[id]";
 import React from "react";
 import type { ImagePickerAsset } from "expo-image-picker";
-import { pickImage } from "@/utils/Image";
+import { getImage, pickImage } from "@/utils/Image";
 import { dateToHHmm, showTime } from "@/utils/DateTime";
 import { useSession } from "@/hooks/ctx";
-
 
 const preview = () => {
     //const API_URL = "http://(TU IPv4 PARA PROBAR ANTES QUE RESUBAN LA API):8000/";
     const API_URL = process.env.EXPO_PUBLIC_API_URL;
-
 
     const { session } = useSession();
     const [logo, setimage2] = useState<ImagePickerAsset>();
@@ -97,7 +95,7 @@ const preview = () => {
     };
 
     const local = useLocalSearchParams();
-    const handleSubmit = async () => {
+    const handleSubmit = async () => {        
         if (session) {
             const { id_usuario } = session;
         }
@@ -111,14 +109,12 @@ const preview = () => {
             let logoBlob = null;
             let bannerBlob = null;
 
-            if (logo?.uri) {
-                logoBlob = await fetch(logo.uri).then((res) => res.blob());
-                formData.append("logo", logoBlob, "logo.png");
+            if (logo) {
+                formData.append("logo", getImage(logo));
             }
 
-            if (imageBanner?.uri) {
-                bannerBlob = await fetch(imageBanner.uri).then((res) => res.blob());
-                formData.append("banner", bannerBlob, "banner.png");
+            if (imageBanner) {
+                formData.append("banner", getImage(imageBanner));
             }
 
 
@@ -163,6 +159,7 @@ const preview = () => {
             console.error("Error en el registro del establecimiento:", error);
             return null;
         }
+            
     };
 
     return (
