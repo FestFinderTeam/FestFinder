@@ -21,3 +21,21 @@ export const getEstablecimientos = async (id_tipo = null) => {
 };
 
 
+export const getEstablecimientoPorId = async (id: any) => {
+    console.log(API_URL);
+    try {
+        const url = `http://192.168.100.3:8000/api/establecimiento/est_id/${id}/`;
+
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error("Error al recuperar el lugar");
+        }
+        const data = await response.json();
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.error("Error fetching establecimiento:", error);
+        return [];
+    }
+};
+

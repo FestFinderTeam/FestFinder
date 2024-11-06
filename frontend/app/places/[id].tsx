@@ -20,6 +20,7 @@ import {
 } from "react-native";
 
 import Notch from "@/components/Notch";
+import { getEstablecimientoPorId } from "@/services/establecimientosServices";
 
 type Establecimiento = {
     id: number;
@@ -65,6 +66,8 @@ export const days = [
 ];
 
 const Place = () => {
+    const [ejemplo, setEjemplo] =
+        useState<any | null>(null);
     const [establecimiento, setEstablecimiento] =
         useState<Establecimiento | null>(null);
     const [etiquetas, setEtiquetas] = useState<string[]>([]);
@@ -88,6 +91,13 @@ const Place = () => {
         "Poppins-Bold": require("../../assets/fonts/Poppins-Bold.ttf"),
         "Poppins-SemiBold": require("../../assets/fonts/Poppins-SemiBold.ttf"),
     });
+
+    const obtenerDatos = async (establecimientoId: any) => {
+        const data = await getEstablecimientoPorId(establecimientoId);
+        console.log(data);
+        setEjemplo(data);
+    };
+    
     useEffect(() => {
         const prepare = async () => {
             try {
@@ -110,7 +120,8 @@ const Place = () => {
     useEffect(() => {
         // id del establecimiento
         const { id } = params;
-        console.log(id)
+        console.log(id);
+        obtenerDatos(id);
 
         // Simulación de llamada a API para el establecimiento
         const establecimiento = {
@@ -893,3 +904,7 @@ const styles = StyleSheet.create({
 });
 
 export default Place;
+function setError(message: any) {
+    throw new Error("Function not implemented.");
+}
+
