@@ -105,9 +105,6 @@ const preview = () => {
         const formData = new FormData();
         
         try {
-            
-            let logoBlob = null;
-            let bannerBlob = null;
 
             if (logo) {
                 formData.append("logo", getImage(logo));
@@ -118,31 +115,27 @@ const preview = () => {
             }
 
 
-            formData.append("data", JSON.stringify(data));
+            formData.append("nombre", data.nombre as string);
+            formData.append("direccion","Bolivia")
+            formData.append("coordenada_x", data.coordenada_x as string);
+            formData.append("coordenada_y", data.coordenada_y as string);
+            formData.append("descripcion", "Huayllani");
+            formData.append("nro_ref", "123456789");
+            formData.append("em_ref", data.em_ref as string);
+            formData.append("tipo_fk", data.tipo_fk as string);
+            formData.append("rango_de_precios", data.rango_de_precios as string);
+
+
             console.log(formData);
 
-            const dataBusiness = {
-                nombre: data.nombre,
-                logo: logoBlob,
-                banner: bannerBlob,
-                direccion: 'Croacia',
-                coordenada_x: data.coordenada_x,
-                coordenada_y:data.coordenada_y,
-                descripcion: 'Villa Peluche',
-                nro_ref: data.nro_ref,
-                em_ref: data.em_ref,
-                tipo_fk: data.tipo_fk,
-                rango_de_precios: data.rango_de_precios,
-            };
-            //console.log(dataBusiness);
+
             console.log(API_URL);
 
-            const response = await fetch(`${API_URL}api/establecimiento/`, {
+            const response = await fetch(`${API_URL}/api/establecimiento/`, {
                 method: "POST",
-                body: JSON.stringify(dataBusiness),
+                body: formData,
                 headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json" // Agrega este encabezado
+                    'Content-Type': 'multipart/form-data', // Agrega este encabezado
                 },
             });
 

@@ -4,8 +4,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from ..models import Establecimiento
 from ..serializers import EstablecimientoSerializer
+from rest_framework.parsers import MultiPartParser, FormParser
 
 class RegistrarEstablecimiento(APIView):
+    parser_classes = (MultiPartParser, FormParser)
     def post(self, request, *args, **kwargs):
         print("se envio")
         print(request.data)
