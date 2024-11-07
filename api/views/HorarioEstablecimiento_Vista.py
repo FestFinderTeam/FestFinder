@@ -4,12 +4,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from ..models import horariosEstablecimiento, Establecimiento
-from ..serializers import horariosEstablecimientoSerializer
+from ..serializers import HorariosEstablecimientoSerializer
 
 # Vista para registrar un nuevo horario
 class RegistrarHorarioEstablecimiento(APIView):
     def post(self, request):
-        serializer = horariosEstablecimientoSerializer(data=request.data)
+        serializer = HorariosEstablecimientoSerializer(data=request.data)
         if serializer.is_valid():
             # Verificar si el establecimiento existe
             establecimiento_id = request.data.get('establecimiento')
@@ -45,5 +45,13 @@ class RecuperarHorariosPorEstablecimiento(APIView):
 
         # Filtrar los horarios por el establecimiento
         horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento)
-        serializer = horariosEstablecimientoSerializer(horarios, many=True)
+        serializer = HorariosEstablecimientoSerializer(horarios, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# Vista para recuperar todos los horarios
+class RecuperarHorarios(APIView):
+    def get(self, request, *args, **kwargs):
+        horarios = horariosEstablecimiento.objects.all()
+        serializer = HorariosEstablecimientoSerializer(horarios, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
