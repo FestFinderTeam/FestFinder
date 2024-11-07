@@ -15,7 +15,7 @@ const Popup = ({ children, isVisible, onClose, title }: Props) => {
                 style={{
                     height: "50%",
                     width: "100%",
-                    backgroundColor: "#858392",
+                    backgroundColor: "white",
                     borderTopRightRadius: 18,
                     borderTopLeftRadius: 18,
                     position: "absolute",
@@ -32,7 +32,7 @@ const Popup = ({ children, isVisible, onClose, title }: Props) => {
                 >
                     <Text>{title}</Text>
                     <Pressable onPress={onClose}>
-                        <MaterialIcons name="close" color="#fff" size={22} />
+                        <MaterialIcons name="close" color="#000000" size={22} />
                     </Pressable>
                 </View>
                 {children}
