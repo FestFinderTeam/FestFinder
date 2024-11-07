@@ -4,7 +4,7 @@ from rest_framework import status
 from ..models import Establecimiento
 from ..serializers import EstablecimientoSerializer
 from ..serializers import EtiquetaSerializer
-from ..serializers import HorariosEstablecimientoSerializer
+#from ..serializers import HorariosEstablecimientoSerializer
 from ..models import EtiquetaEstablecimiento, horariosEstablecimiento
 
 # Vista para listar establecimientos por tipo
@@ -23,9 +23,9 @@ class ListarEstablecimientosPorTipo(APIView):
             etiquetas = EtiquetaSerializer([ee.id_etiqueta for ee in etiquetas_establecimiento], many=True).data
             establecimiento_data['etiquetas'] = etiquetas
 
-            horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento.id)
-            horarios_data = HorariosEstablecimientoSerializer(horarios, many=True).data
-            establecimiento_data['horarios'] = horarios_data
+ #           horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento.id)
+  #          horarios_data = HorariosEstablecimientoSerializer(horarios, many=True).data
+   #         establecimiento_data['horarios'] = horarios_data
 
             establecimientos_data.append(establecimiento_data)
 
@@ -45,9 +45,9 @@ class RecuperarDatosEstablecimiento(APIView):
             establecimiento_data['etiquetas'] = etiquetas
 
             # Obtenemos y serializamos los horarios de atención del establecimiento
-            horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento.id)
-            horarios_data = HorariosEstablecimientoSerializer(horarios, many=True).data
-            establecimiento_data['horarios'] = horarios_data
+    #        horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento.id)
+     #       horarios_data = HorariosEstablecimientoSerializer(horarios, many=True).data
+      #      establecimiento_data['horarios'] = horarios_data
 
             return Response(establecimiento_data, status=status.HTTP_200_OK)
         except Establecimiento.DoesNotExist:
@@ -69,9 +69,9 @@ class ListarEstablecimientos(APIView):
             establecimiento_data['etiquetas'] = etiquetas
 
             # Obtenemos y serializamos los horarios de atención del establecimiento
-            horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento.id)
-            horarios_data = HorariosEstablecimientoSerializer(horarios, many=True).data
-            establecimiento_data['horarios'] = horarios_data
+            #horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento.id)
+            #horarios_data = HorariosEstablecimientoSerializer(horarios, many=True).data
+            #establecimiento_data['horarios'] = horarios_data
 
             # Añadimos el establecimiento con etiquetas y horarios a la lista
             establecimientos_data.append(establecimiento_data)

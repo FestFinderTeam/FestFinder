@@ -6,4 +6,4 @@ from .AgregarTipoEstablecimiento import AgregarTipoEstablecimiento
 from .Genero_Evento_Vista import CrearGeneroEvento, ListarGenerosEvento
 from .Usuario_Vista import CrearUsuario, ListarUsuarios, LoginUsuario
 from .Establecimiento_Vista import ListarEstablecimientosPorTipo, RecuperarDatosEstablecimiento, ListarEstablecimientosPorTipo, RegistrarEstablecimiento
-from .HorarioEstablecimiento_Vista import RegistrarHorarioEstablecimiento, RecuperarHorariosPorEstablecimiento
+#from .HorarioEstablecimiento_Vista import RegistrarHorarioEstablecimiento, RecuperarHorariosPorEstablecimiento
