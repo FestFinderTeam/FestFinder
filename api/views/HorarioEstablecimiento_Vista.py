@@ -47,3 +47,11 @@ class RecuperarHorariosPorEstablecimiento(APIView):
         horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento)
         serializer = horariosEstablecimientoSerializer(horarios, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# Vista para recuperar todos los horarios
+class RecuperarHorarios(APIView):
+    def get(self, request, *args, **kwargs):
+        horarios = horariosEstablecimiento.objects.all()
+        serializer = horariosEstablecimientoSerializer(horarios, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
