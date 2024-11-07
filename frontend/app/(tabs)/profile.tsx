@@ -4,7 +4,7 @@ import Styles from "../../globalStyles/styles";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import ItemProfile from "@/components/ItemProfile";
 import Header from "@/components/Header";
-import { router } from "expo-router";
+import { Href, Link, router } from "expo-router";
 
 const profile = () => {
     const { session, signOut } = useSession();
@@ -37,7 +37,9 @@ const profile = () => {
             <Text style={styles.textoSubtitulo}>Perfil</Text>
             <View style={styles.parametros}>
                 <ItemProfile
-                    onPress={() => {}}
+                    onPress={() => {
+                        router.navigate("/")
+                    }}
                     color="#7D5683"
                     text="Informacion personal"
                     icon="user-o"
@@ -71,7 +73,9 @@ const profile = () => {
             <Text style={styles.textoSubtitulo}>Configuracion</Text>
             <View style={styles.parametros}>
                 <ItemProfile
-                    onPress={() => {}}
+                    onPress={() => {
+                        router.navigate("/notifications/alerts" as Href) 
+                    }}
                     color="#7D5683"
                     text="Notificaiones"
                     icon="bell-o"
