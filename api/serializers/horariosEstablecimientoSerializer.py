@@ -1,7 +1,7 @@
 # api/serializers.py
 
 from rest_framework import serializers
-from ..models import  horariosEstablecimiento
+from ..models import horariosEstablecimiento
 
 class HorariosEstablecimientoSerializer(serializers.ModelSerializer):
     class Meta:
