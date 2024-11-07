@@ -51,9 +51,11 @@ const mapa = () => {
                 isVisible={establecimientoSeleccionado !== null}
                 onClose={() => setEstablecimientoSeleccionado(null)}
             >
-                <ScrollView>
-                    <View style={{ alignItems: "center" }}>
-                        <Text style={Styles.title}>{establecimientoSeleccionado?.nombre}</Text>
+                <ScrollView style={{ backgroundColor: "white" }}>
+                    <View style={{ alignItems: "center", backgroundColor:"white" }}>
+                        <Text style={Styles.subtitle}>
+                            {establecimientoSeleccionado?.nombre}
+                        </Text>
                         <Image
                             source={establecimientoSeleccionado?.photo}
                             style={{
@@ -71,11 +73,11 @@ const mapa = () => {
                             }}
                             style={Styles.button}
                         >
-                            <Text style=
-                        {Styles.buttonText}>Mas Informacion</Text>
+                            <Text style={Styles.buttonText}>Mas Informacion</Text>
                         </Pressable>
                     </View>
                 </ScrollView>
+
             </Popup>
         </View>
     );
