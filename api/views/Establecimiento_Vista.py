@@ -1,6 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+
+from ..serializers import HorariosEstablecimientoSerializer
 from ..models import Establecimiento
 from ..serializers import EstablecimientoSerializer
 from ..serializers import EtiquetaSerializer
@@ -22,9 +24,9 @@ class ListarEstablecimientosPorTipo(APIView):
             etiquetas = EtiquetaSerializer([ee.id_etiqueta for ee in etiquetas_establecimiento], many=True).data
             establecimiento_data['etiquetas'] = etiquetas
 
- #           horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento.id)
-  #          horarios_data = HorariosEstablecimientoSerializer(horarios, many=True).data
-   #         establecimiento_data['horarios'] = horarios_data
+            horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento.id)
+            horarios_data = HorariosEstablecimientoSerializer(horarios, many=True).data
+            establecimiento_data['horarios'] = horarios_data
 
             establecimientos_data.append(establecimiento_data)
 
