@@ -2,7 +2,6 @@ import GoogleMap from "@/components/GoogleMap";
 import Notch from "@/components/Notch";
 import React, { useEffect, useState } from "react";
 import { Image, Modal, Pressable, ScrollView, Text, View } from "react-native";
-
 import Popup from "@/components/Popup";
 import { router, type Href } from "expo-router";
 import Styles from "@/globalStyles/styles";
