@@ -4,7 +4,7 @@ from rest_framework import status
 from ..models import Establecimiento
 from ..serializers import EstablecimientoSerializer
 from ..serializers import EtiquetaSerializer
-from ..serializers import horariosEstablecimientoSerializer
+from ..serializers import HorariosEstablecimientoSerializer
 from ..models import EtiquetaEstablecimiento, horariosEstablecimiento
 
 # Vista para listar establecimientos por tipo
@@ -24,7 +24,7 @@ class ListarEstablecimientosPorTipo(APIView):
             establecimiento_data['etiquetas'] = etiquetas
 
             horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento.id)
-            horarios_data = horariosEstablecimientoSerializer(horarios, many=True).data
+            horarios_data = HorariosEstablecimientoSerializer(horarios, many=True).data
             establecimiento_data['horarios'] = horarios_data
 
             establecimientos_data.append(establecimiento_data)
@@ -46,7 +46,7 @@ class RecuperarDatosEstablecimiento(APIView):
 
             # Obtenemos y serializamos los horarios de atención del establecimiento
             horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento.id)
-            horarios_data = horariosEstablecimientoSerializer(horarios, many=True).data
+            horarios_data = HorariosEstablecimientoSerializer(horarios, many=True).data
             establecimiento_data['horarios'] = horarios_data
 
             return Response(establecimiento_data, status=status.HTTP_200_OK)
@@ -70,7 +70,7 @@ class ListarEstablecimientos(APIView):
 
             # Obtenemos y serializamos los horarios de atención del establecimiento
             horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento.id)
-            horarios_data = horariosEstablecimientoSerializer(horarios, many=True).data
+            horarios_data = HorariosEstablecimientoSerializer(horarios, many=True).data
             establecimiento_data['horarios'] = horarios_data
 
             # Añadimos el establecimiento con etiquetas y horarios a la lista
