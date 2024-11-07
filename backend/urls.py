@@ -16,7 +16,6 @@ from api.views.Genero_Evento_Vista import CrearGeneroEvento, ListarGenerosEvento
 from api.views.Evento_Vista import CrearEvento, ListarEventos, ListarEventosHoy, ListarEventosMes
 from api.views.Entrada_Vista import CrearEntrada, ListarEntradasEvento
 from api.views.Consumo_Vista import CrearConsumo, ListarConsumosPorEstablecimiento
-from api.views.HorarioEstablecimiento_Vista import RecuperarHorarios, RecuperarHorariosPorEstablecimiento, RegistrarHorarioEstablecimiento
 from api.views.Imagen_Vista import ImagenDetailView
 from api.views.Usuario_Vista import CrearUsuario, ListarUsuarios, LoginUsuario
 from api.views.Visita_Vista import (
@@ -85,9 +84,6 @@ urlpatterns = [
     path("api/establecimientos/", ListarEstablecimientos.as_view(), name="listar-establecimiento"),
     path("api/establecimiento/est_id/<int:est_id>/", RecuperarDatosEstablecimiento.as_view(), name="recuperar-establecimiento"),
     path('api/establecimientos/tipo/<int:tipo_id>/', ListarEstablecimientosPorTipo.as_view(), name='establecimientos_por_tipo'),
-    path('api/establecimientos/<int:establecimiento_id>/horarios/', RecuperarHorariosPorEstablecimiento.as_view(), name='recuperar_horarios'),
-    path('api/establecimientos/horarios/registrar/', RegistrarHorarioEstablecimiento.as_view(), name='registrar_horario'),
-    path('api/establecimientos/horarios/', RecuperarHorarios.as_view(), name='recuperar_todos_los_horarios'),
     path("api/genero-evento/", CrearGeneroEvento.as_view(), name="crear-genero-evento"),
     path(
         "api/generos-evento/",

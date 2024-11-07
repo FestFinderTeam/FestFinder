@@ -4,7 +4,6 @@ from rest_framework import status
 from ..models import Establecimiento
 from ..serializers import EstablecimientoSerializer
 from ..serializers import EtiquetaSerializer
-#from ..serializers import HorariosEstablecimientoSerializer
 from ..models import EtiquetaEstablecimiento, horariosEstablecimiento
 
 # Vista para listar establecimientos por tipo
