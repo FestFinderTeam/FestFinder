@@ -24,7 +24,7 @@ export const getEstablecimientos = async (id_tipo = null) => {
 export const getEstablecimientoPorId = async (id: any) => {
     console.log(API_URL);
     try {
-        const url = `http://192.168.100.3:8000/api/establecimiento/est_id/${id}/`;
+        const url = `${API_URL}/api/establecimiento/est_id/${id}/`;
 
         const response = await fetch(url);
         if (!response.ok) {

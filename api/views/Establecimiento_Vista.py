@@ -7,32 +7,30 @@ from ..serializers import EtiquetaSerializer
 from ..serializers import horariosEstablecimientoSerializer
 from ..models import EtiquetaEstablecimiento, horariosEstablecimiento
 
-
 # Vista para listar establecimientos por tipo
 class ListarEstablecimientosPorTipo(APIView):
     def get(self, request, tipo_id):
-        # Filtramos los establecimientos por tipo
         establecimientos = Establecimiento.objects.filter(tipo_fk_id=tipo_id)
+        if not establecimientos.exists():
+            return Response({"message": "No hay establecimientos para el tipo especificado."}, status=status.HTTP_404_NOT_FOUND)
+
         establecimientos_data = []
 
         for establecimiento in establecimientos:
-            # Serializamos cada establecimiento
             establecimiento_data = EstablecimientoSerializer(establecimiento).data
 
-            # Obtenemos y serializamos las etiquetas del establecimiento
-            etiquetas_establecimiento = EtiquetaEstablecimiento.objects.filter(id_establecimiento=establecimiento)
+            etiquetas_establecimiento = EtiquetaEstablecimiento.objects.filter(id_establecimiento=establecimiento.id)
             etiquetas = EtiquetaSerializer([ee.id_etiqueta for ee in etiquetas_establecimiento], many=True).data
             establecimiento_data['etiquetas'] = etiquetas
 
-            # Obtenemos y serializamos los horarios de atención del establecimiento
-            horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento)
+            horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento.id)
             horarios_data = horariosEstablecimientoSerializer(horarios, many=True).data
             establecimiento_data['horarios'] = horarios_data
 
-            # Añadimos el establecimiento con etiquetas y horarios a la lista
             establecimientos_data.append(establecimiento_data)
 
         return Response(establecimientos_data, status=status.HTTP_200_OK)
+    
 
 # Vista para recuperar datos de un establecimiento por su ID
 class RecuperarDatosEstablecimiento(APIView):
@@ -42,12 +40,12 @@ class RecuperarDatosEstablecimiento(APIView):
             establecimiento_data = EstablecimientoSerializer(establecimiento).data
 
             # Obtenemos y serializamos las etiquetas del establecimiento
-            etiquetas_establecimiento = EtiquetaEstablecimiento.objects.filter(id_establecimiento=establecimiento)
+            etiquetas_establecimiento = EtiquetaEstablecimiento.objects.filter(id_establecimiento=establecimiento.id)
             etiquetas = EtiquetaSerializer([ee.id_etiqueta for ee in etiquetas_establecimiento], many=True).data
             establecimiento_data['etiquetas'] = etiquetas
 
             # Obtenemos y serializamos los horarios de atención del establecimiento
-            horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento)
+            horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento.id)
             horarios_data = horariosEstablecimientoSerializer(horarios, many=True).data
             establecimiento_data['horarios'] = horarios_data
 
@@ -66,12 +64,12 @@ class ListarEstablecimientos(APIView):
             establecimiento_data = EstablecimientoSerializer(establecimiento).data
 
             # Obtenemos y serializamos las etiquetas del establecimiento
-            etiquetas_establecimiento = EtiquetaEstablecimiento.objects.filter(id_establecimiento=establecimiento)
+            etiquetas_establecimiento = EtiquetaEstablecimiento.objects.filter(id_establecimiento=establecimiento.id)
             etiquetas = EtiquetaSerializer([ee.id_etiqueta for ee in etiquetas_establecimiento], many=True).data
             establecimiento_data['etiquetas'] = etiquetas
 
             # Obtenemos y serializamos los horarios de atención del establecimiento
-            horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento)
+            horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento.id)
             horarios_data = horariosEstablecimientoSerializer(horarios, many=True).data
             establecimiento_data['horarios'] = horarios_data
 
