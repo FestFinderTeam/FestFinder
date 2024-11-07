@@ -56,6 +56,7 @@ const MyPlace = () => {
     const [imagenes, setImagenes] = useState();
     const [logo, setLogo] = useState();
     const [nombre, setNombre] = useState<string>();
+    const [ubicacion, setUbicacion] = useState<string>();
     const [tipo, setTipo] = useState<String>();
     const [direccion, setDireccion] = useState<String>();
     const [establecimientoAbierto, setEstablecimientoAbierto] = useState(false);
@@ -276,149 +277,226 @@ const MyPlace = () => {
                             bottom: 0,
                             top: "auto",
                             left: "auto",
-                            backgroundColor: "purple",
+                            backgroundColor: "#402158",
                             position: "absolute",
                             flexDirection: "row",
+                            marginBottom: "2%",
+                            marginRight: "2%",
+                            borderRadius: 10,
+                            paddingHorizontal: 10,
+                            paddingVertical: 3,
                         }}
                         onPress={() => pickImage(setBanner, [16, 9])}
                     >
                         <FontAwesome name="camera" color={"white"} size={20} />
-                        <Text style={{ color: "white" }}>Cambiar Portada</Text>
+                        <Text style={{ color: "white", marginLeft: 5 }}>Cambiar Portada</Text>
                     </Pressable>
+
                 </ImageBackground>
-                <Image
+                <ImageBackground
                     source={logo ? logo : image_default}
                     style={[
                         styles.redondoImg,
                         styles.contenedorIMG,
                         {
                             left: "2%",
+                            width: 120,
+                            height: 120,
+                            borderRadius: 75,
+                            overflow: 'hidden',
                         },
                     ]}
-                />
-                <Pressable
-                    style={[styles.changeImage, { top: -70 }]}
-                    onPress={() => pickImage(setLogo, [1, 1])}
                 >
-                    <FontAwesome name="camera" color={"white"} size={20} />
-                </Pressable>
-                <View style={{ top: -70 }}>
+                    <Pressable
+                        style={[
+                            styles.changeImage,
+                            {
+                                position: 'absolute',
+                                bottom: 10,
+                                right: 10,
+                                backgroundColor: "#402158",
+                                borderRadius: 50,
+                                width: 40,
+                                height: 40,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            },
+                        ]}
+                        onPress={() => pickImage(setLogo, [1, 1])}
+                    >
+                        <FontAwesome name="camera" color={"white"} size={20} />
+                    </Pressable>
+                </ImageBackground>
+
+                <View style={{ top: -70, marginTop: "10%", }}>
                     <View>
-                        <Text>Nombre del Local</Text>
-                        <TextInput
-                            style={[
-                                { fontFamily: "Poppins-Bold" },
-                                { left: "10%" },
-                                styles.nombreLocal,
-                            ]}
-                            value={nombre}
-                            onChangeText={(text) => setNombre(text)}
-                        />
-                        <Text>Tipo de negocio</Text>
-                        <SelectList
-                            setSelected={setSelectedBusiness}
-                            data={dataTypesBusiness}
-                            save="key"
-                            searchPlaceholder="Buscar"
-                            placeholder="Tipo de negocio"
-                            boxStyles={Styles.input}
-                            dropdownStyles={Styles.inputDropDown}
-                        />
-                        <Text>Ubicacion del local</Text>
+                        <Text style={{ color: "#402158", marginLeft: "5%" }}>Nombre del Local</Text>
+                        <View style={{ alignItems: "center", marginTop: "2%" }}>
+                            <TextInput
+                                style={[Styles.input, { width: "90%", fontWeight: 'bold', fontFamily: 'Poppins' }]}
+                                value={nombre}
+                                onChangeText={(text) => setNombre(text)}
+                            />
+                        </View>
+                        <Text style={{ color: "#402158", marginLeft: "5%" }}>Tipo de negocio</Text>
+                        <View style={{ alignItems: "center", marginTop: "2%" }}>
+                            <SelectList
+                                setSelected={setSelectedBusiness}
+                                data={dataTypesBusiness}
+                                save="key"
+                                searchPlaceholder="Buscar"
+                                placeholder="Tipo de negocio"
+                                boxStyles={{
+                                    ...Styles.input,
+                                    width: "90%",
+                                }}
+                                dropdownStyles={{
+                                    ...Styles.inputDropDown,
+                                    width: "90%",
+                                }}
+                                inputStyles={{
+                                    fontWeight: 'bold',
+                                    fontFamily: 'Poppins',
+                                }}
+                            />
+                        </View>
+
+                        <Text style={{ color: "#402158", marginLeft: "5%" }}>Ubicacion del local</Text>
                         <Pressable
                             onPress={() => {
                                 Alert.alert("selecciona la ubicacion");
                             }}
                         >
-                            <Text>Cambiar Ubicacion</Text>
+                            <View style={{ alignItems: "center", marginTop: "2%" }}>
+                                <TextInput
+                                    style={[Styles.input, { width: "90%", fontWeight: 'bold', fontFamily: 'Poppins' }]}
+                                    value={ubicacion} //CARGAR LA UBICACION ACA
+                                    onChangeText={(text) => setUbicacion(text)}
+                                />
+                            </View>
                         </Pressable>
-                        <Text>Etiquetas</Text>
-                        <TextInput
-                            placeholder="Nueva Etiqueta"
-                            value={etiqueta}
-                            onChangeText={(text) => setEtiqueta(text)}
-                        />
-
-                        <Pressable
-                            onPress={() => {
-                                if (etiqueta) {
-                                    setEtiquetas([...etiquetas, etiqueta]);
-                                    setEtiqueta("");
-                                }
-                            }}
-                            style={{
-                                backgroundColor: "rgba(235, 182, 255, 0.5)",
-                                borderRadius: 10,
-                                paddingHorizontal: 8,
-                                marginTop: "3%",
-                            }}
-                        >
-                            <FontAwesome name="plus" color={"white"} />
-                        </Pressable>
-                        {etiquetas.map((etiqueta, index) => (
-                            <>
-                                <Text
-                                    key={index}
-                                    style={[
-                                        {
-                                            fontFamily: "Poppins-Regular",
-                                            marginTop: "3%",
-                                        },
-                                        {
-                                            backgroundColor:
-                                                "rgba(235, 182, 255, 0.5)",
-                                            borderRadius: 10,
-                                            paddingHorizontal: 8,
-                                        },
-                                    ]}
-                                >
-                                    {etiqueta}
-                                </Text>
+                        <Text style={{ color: "#402158", marginLeft: "5%" }}>Etiquetas</Text>
+                        <View style={{ alignItems: "center", marginTop: "2%" }}>
+                            <View style={{ flexDirection: "row", alignItems: "center", width: "90%" }}>
+                                <TextInput
+                                    style={[Styles.input, { flex: 1, fontWeight: 'bold', fontFamily: 'Poppins' }]}
+                                    placeholder="Nueva Etiqueta"
+                                    value={etiqueta}
+                                    onChangeText={(text) => setEtiqueta(text)}
+                                />
                                 <Pressable
-                                    key={"remove" + index}
                                     onPress={() => {
-                                        setEtiquetas(
-                                            etiquetas.filter(
-                                                (_, i) => i !== index
-                                            )
-                                        );
+                                        if (etiqueta) {
+                                            setEtiquetas([...etiquetas, etiqueta]);
+                                            setEtiqueta("");
+                                        }
+                                    }}
+                                    style={{
+                                        backgroundColor: "#402158",
+                                        borderRadius: 10,
+                                        paddingHorizontal: 12,
+                                        paddingVertical: 8,
+                                        marginLeft: 8,
+
                                     }}
                                 >
-                                    <FontAwesome name="minus" />
+                                    <FontAwesome name="plus" color={"white"} />
                                 </Pressable>
-                            </>
-                        ))}
+                            </View>
+                        </View>
+                        <View style={{ flexDirection: "row", flexWrap: "wrap", width: "100%", justifyContent: "center" }}>
+                            {etiquetas.map((etiqueta, index) => (
+                                <View
+                                    key={index}
+                                    style={{
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        justifyContent: "space-between",
+                                        width: "40%",
+                                        marginBottom: "1.5%",
+                                        backgroundColor: "rgba(235, 182, 255, 0.5)",
+                                        borderRadius: 10,
+                                        paddingHorizontal: 8,
+                                        paddingVertical: 3,
+                                        marginRight: "2%",
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontFamily: "Poppins-Regular",
+                                            fontSize: 12,
+                                            flex: 1,
+                                            marginRight: 10,
+                                        }}
+                                    >
+                                        {etiqueta}
+                                    </Text>
+                                    <Pressable
+                                        onPress={() => {
+                                            setEtiquetas(etiquetas.filter((_, i) => i !== index));
+                                        }}
+                                    >
+                                        <FontAwesome name="minus" color="black" />
+                                    </Pressable>
+                                </View>
+                            ))}
+                        </View>
+
+
                     </View>
 
-                    <Text>Rango de precio</Text>
-                    <View style={{ flexDirection: "row" }}>
+                    <Text style={{ color: "#402158", marginLeft: "5%", marginTop: "4%" }}>Rango de precio</Text>
+                    <View style={{ flexDirection: "row", justifyContent: "center", flexWrap: "wrap", marginTop: 10 }}>
                         {dataRango.map((value, index) => (
                             <Pressable
                                 key={index}
                                 onPress={() => {
                                     setRango(value);
                                 }}
-                                style={
-                                    value === rango_de_precios
-                                        ? styles.buttonSelected
-                                        : styles.button
-                                }
+                                style={[
+                                    {
+                                        paddingVertical: 10,
+                                        paddingHorizontal: 20,
+                                        margin: 5,
+                                        borderRadius: 25,
+                                        backgroundColor: value === rango_de_precios ? "#7D5683" : "#f1dff5",
+                                        borderWidth: 2,
+                                        borderColor: value === rango_de_precios ? "#7D5683" : "#B197FC",
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        elevation: 3,
+                                        shadowColor: "#000",
+                                        shadowOffset: { width: 0, height: 2 },
+                                        shadowOpacity: 0.1,
+                                        shadowRadius: 4,
+                                    },
+                                    value === rango_de_precios && { backgroundColor: "#7D5683" },
+                                ]}
                             >
                                 <Text
-                                    style={
-                                        value === rango_de_precios
-                                            ? styles.textSelected
-                                            : styles.text
-                                    }
+                                    style={[
+                                        {
+                                            color: value === rango_de_precios ? "#fff" : "#402158",
+                                            fontFamily: "Poppins",
+                                            fontWeight: "bold",
+                                            fontSize: 14,
+                                            marginRight: 5,
+                                        },
+                                        value === rango_de_precios && { color: "#fff" },
+                                    ]}
                                 >
                                     {value}
                                 </Text>
                                 <Text
-                                    style={
-                                        value === rango_de_precios
-                                            ? styles.textSelected
-                                            : styles.text
-                                    }
+                                    style={[
+                                        {
+                                            color: value === rango_de_precios ? "#fff" : "#402158",
+                                            fontFamily: "Poppins",
+                                            fontSize: 14,
+                                        },
+                                        value === rango_de_precios && { color: "#fff" },
+                                    ]}
                                 >
                                     {"$".repeat(index + 1)}
                                 </Text>
@@ -426,20 +504,16 @@ const MyPlace = () => {
                         ))}
                     </View>
 
-                    <View>
-                        <Text>Horario de atencion</Text>
-                        {horarioAtencion.map((horario, index) => (
-                            <View
-                                key={index}
-                                style={{
-                                    flexDirection: "row",
-                                    width: "100%",
-                                    justifyContent: "space-between",
-                                }}
-                            >
-                                <Text>{days[horario.dia]}</Text>
 
-                                <View style={{ flexDirection: "row" }}>
+                    <View>
+                        <Text style={{ color: "#402158", marginLeft: "5%", marginTop: "4%" }}>Horario de atencion</Text>
+                        {horarioAtencion.map((horario, index) => (
+                            <View key={index} style={styles.scheduleContainer}>
+                                <Text style={styles.dayText}>
+                                    {days[horario.dia]}
+                                </Text>
+
+                                <View style={styles.timeContainer}>
                                     <Pressable
                                         onPress={() => {
                                             const newValues = [...openHorario];
@@ -447,8 +521,9 @@ const MyPlace = () => {
                                                 !openHorario[index];
                                             setOpenHorario(newValues);
                                         }}
+                                        style={styles.toggleButton}
                                     >
-                                        <Text>
+                                        <Text style={styles.toggleButtonText}>
                                             {openHorario[index]
                                                 ? "Cerrar"
                                                 : "Abrir"}
@@ -465,14 +540,15 @@ const MyPlace = () => {
                                                         index
                                                     )
                                                 }
+                                                style={styles.timeButton}
                                             >
-                                                <Text>
+                                                <Text style={styles.timeText}>
                                                     {horariosInicio
                                                         ? dateToHHmm(
-                                                              horariosInicio[
-                                                                  index
-                                                              ]
-                                                          )
+                                                            horariosInicio[
+                                                            index
+                                                            ]
+                                                        )
                                                         : ""}
                                                 </Text>
                                             </Pressable>
@@ -484,12 +560,13 @@ const MyPlace = () => {
                                                         index
                                                     )
                                                 }
+                                                style={styles.timeButton}
                                             >
-                                                <Text>
+                                                <Text style={styles.timeText}>
                                                     {horariosFin
                                                         ? dateToHHmm(
-                                                              horariosFin[index]
-                                                          )
+                                                            horariosFin[index]
+                                                        )
                                                         : ""}
                                                 </Text>
                                             </Pressable>
@@ -500,7 +577,7 @@ const MyPlace = () => {
                         ))}
                     </View>
 
-                    <Text>Fotos</Text>
+                    <Text style={{ color: "#402158", marginLeft: "5%", marginTop: "4%" }}>Fotos</Text>
                     <FlatList
                         style={{ marginLeft: "3%" }}
                         data={[null, ...fotos]}
@@ -540,13 +617,14 @@ const MyPlace = () => {
                         keyExtractor={(item, index) => index.toString()}
                         horizontal
                     />
-
-                    <Pressable onPress={handleSubmit}>
-                        <Text>Actualizar</Text>
-                    </Pressable>
+                    <View style={{alignItems:"center"}}>
+                        <Pressable onPress={handleSubmit} style={Styles.button}>
+                            <Text style={{color:"white"}}>Actualizar</Text>
+                        </Pressable>
+                    </View>
                 </View>
             </ScrollView>
-        </View>
+        </View >
     );
 };
 
@@ -626,6 +704,45 @@ const styles = StyleSheet.create({
         padding: 3,
         alignItems: "center",
         marginHorizontal: 5,
+    },
+    timeButton: {
+        backgroundColor: "#B197FC",
+        borderRadius: 4,
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+        marginRight: 10,
+    },
+    timeText: {
+        color: "#fff",
+        fontWeight: "500",
+    },
+    timeContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    toggleButton: {
+        backgroundColor: "#402158",
+        borderRadius: 4,
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+        marginRight: 10,
+    },
+    toggleButtonText: {
+        color: "#fff",
+        fontWeight: "600",
+    },
+    scheduleContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: "#ddd",
+    },
+    dayText: {
+        fontSize: 16,
+        fontWeight: "bold",
+        color: "#333",
     },
 });
 
