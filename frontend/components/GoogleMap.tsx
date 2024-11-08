@@ -24,24 +24,10 @@ const GoogleMap = ({
     onMarkerPress,
 }: MapProps) => {
     const handleMapPress = async (event: MapPressEvent) => {
-        const coordinate = event.nativeEvent.coordinate;
-        console.log(coordinate);
         if (setSelectedLocation) {
+            const coordinate = event.nativeEvent.coordinate;
             setSelectedLocation(coordinate);
         }
-    };
-
-    const handleMarkerPress = (place: any) => {
-        Alert.alert(
-            place.nombre + ` id: ${place.id}`,
-            `Lat: ${place.latitude}, Lon: ${place.longitude}`,
-            [
-                {
-                    text: "OK",
-                    onPress: () => console.log("OK Pressed"),
-                },
-            ]
-        );
     };
 
     return (

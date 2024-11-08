@@ -5,7 +5,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import ItemProfile from "@/components/ItemProfile";
 import Header from "@/components/Header";
 import { Href, Link, router } from "expo-router";
-
+const defaultImage = require("../../assets/images/default-profile.png")
 const profile = () => {
     const { session, signOut } = useSession();
 
@@ -15,13 +15,14 @@ const profile = () => {
     }
 
     const { nombre, imagen_url, email } = session;
+    console.log(imagen_url)
 
     return (
         <View>
             <Header title="Mi perfil" />
             <View style={Styles.containerProfile}>
                 <Image
-                    source={{ uri: imagen_url }}
+                    source={imagen_url ? { uri: imagen_url } : defaultImage}
                     style={Styles.imageProfile}
                 />
                 <View
@@ -38,7 +39,7 @@ const profile = () => {
             <View style={styles.parametros}>
                 <ItemProfile
                     onPress={() => {
-                        router.navigate("/")
+                        router.navigate('/user/info' as Href);
                     }}
                     color="#7D5683"
                     text="Informacion personal"
@@ -74,7 +75,7 @@ const profile = () => {
             <View style={styles.parametros}>
                 <ItemProfile
                     onPress={() => {
-                        router.navigate("/notifications/alerts" as Href) 
+                        router.navigate("/notifications/alerts" as Href);
                     }}
                     color="#7D5683"
                     text="Notificaiones"
