@@ -72,7 +72,7 @@ class ObtenerEventoPorID(APIView):
     def get(self, request, id, *args, **kwargs):
         try:
             # Buscar el evento por ID
-            evento = Evento.objects.get(id=id)
+            evento = Evento.objects.get(id_evento=id)
         except Evento.DoesNotExist:
             return Response({"error": "Evento no encontrado."}, status=status.HTTP_404_NOT_FOUND)
         
