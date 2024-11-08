@@ -2,7 +2,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, router, type Href } from "expo-router";
 import Styles from "@/globalStyles/styles";
 import { useEffect, useState } from "react";
-import { Alert, ScrollView, StyleSheet } from "react-native";
+import { Alert, ScrollView, StyleSheet, Image } from "react-native";
 import {
     FlatList,
     ImageBackground,
@@ -158,7 +158,7 @@ const inicio = () => {
                     keyExtractor={(item) => JSON.stringify(item)}
                     renderItem={({ item }) => (
                         <Pressable
-                            onPress={() => {}}
+                            onPress={() => { }}
                             style={{
                                 alignItems: "center",
                                 marginHorizontal: 10,
@@ -242,6 +242,52 @@ const inicio = () => {
                     )}
                     horizontal
                 />
+                <View style={{ alignItems: "center" }}>
+                    <View style={{
+                        backgroundColor: "#FDC500",
+                        width: 320,
+                        height: 120,
+                        borderRadius: 10,
+                        flexDirection: "row",
+                        padding: 10,
+                    }}>
+                        <Image
+                            source={require('../../assets/images/ticket.png')}
+                            style={{
+                                width: "40%",
+                                height: "100%",
+                                borderTopLeftRadius: 10,
+                                borderBottomLeftRadius: 10,
+                                resizeMode: "contain",
+                            }}
+                        />
+                        <View style={{ width: "60%", paddingLeft: 10, justifyContent: "center", alignItems: "center" }}>
+                            <Text style={{ fontFamily: "Poppins-Regular", fontSize: 16, color: "black", fontWeight: "bold" }}>
+                                Reserva tus entradas
+                            </Text>
+                            <Text style={{ fontFamily: "Poppins-Regular", fontSize: 16, color: "black", fontWeight: "bold" }}>
+                                &
+                            </Text>
+                            <Text style={{ fontFamily: "Poppins-Regular", fontSize: 13, color: "black" }}>
+                                No vivas de horas de filas
+                            </Text>
+                            <Pressable
+                                style={{
+                                    backgroundColor: "white",
+                                    borderRadius: 15,
+                                    paddingVertical: 6,
+                                    paddingHorizontal: 12,
+                                    marginTop: 8,
+                                }}
+                            >
+                                <Text style={{ fontFamily: "Poppins-Regular", fontSize: 14, color: "black", fontWeight: "bold" }}>
+                                    Ver eventos
+                                </Text>
+                            </Pressable>
+                        </View>
+
+                    </View>
+                </View>
 
                 <Text style={[styles.textoTitulo, { marginTop: "5%" }]}>
                     Lugares populares
