@@ -128,6 +128,7 @@ const Place = () => {
         const { id } = params;
         console.log(id);
         obtenerDatosEstablecimiento(id);
+        obtenerDatosEventos(id);
         
 
         // Simulación de llamada a API para etiquetas
@@ -630,7 +631,7 @@ const Place = () => {
                                     key={item.id_evento}
                                 >
                                     <ImageBackground
-                                        source={item.logo}
+                                        source={{ uri: item.logo }}
                                         style={{
                                             height: 200,
                                             width: 150,
@@ -655,10 +656,10 @@ const Place = () => {
                                                     fontWeight: "bold",
                                                 }}
                                             >
-                                                {item.fecha_inicio.getDate()}
+                                                {item.fecha_inicio}
                                             </Text>
                                             <Text style={{ fontSize: 12 }}>
-                                                {item.fecha_inicio.toLocaleString(
+                                                {item.horario_inicio.toLocaleString(
                                                     "es-ES",
                                                     { month: "short" }
                                                 )}
