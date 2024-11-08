@@ -65,3 +65,17 @@ class ListarEventosHoy(APIView):
         eventos = Evento.objects.filter(fecha_inicio__lte=fecha_usuario, fecha_final__gte=fecha_usuario)
         serializer = EventoSerializer(eventos, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+# Vista para obtener un único evento por ID
+class ObtenerEventoPorID(APIView):
+    def get(self, request, id, *args, **kwargs):
+        try:
+            # Buscar el evento por ID
+            evento = Evento.objects.get(id=id)
+        except Evento.DoesNotExist:
+            return Response({"error": "Evento no encontrado."}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Serializar el evento encontrado
+        serializer = EventoSerializer(evento)
+        return Response(serializer.data, status=status.HTTP_200_OK)
