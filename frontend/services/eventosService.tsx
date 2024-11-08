@@ -43,3 +43,24 @@ export const getEventosDelDia = async () => {
         return [];
     }
 };
+
+export const getEventoPorID = async (id: any) => {
+    try {
+        const response = await fetch(`${API_URL}/api/eventos/${id}/`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        if (!response.ok) {
+            console.error("Error al obtener el evento:", response.status);
+            return null;
+        }
+        const data = await response.json();
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.error("Error al obtener el evento:", error);
+        return null;
+    }
+};

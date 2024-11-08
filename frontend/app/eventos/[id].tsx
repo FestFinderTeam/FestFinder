@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
 import Styles from "@/globalStyles/styles";
 import React from "react";
+import { getEventoPorID } from "@/services/eventosService";
 
 interface Evento {
     id_evento: number;
@@ -30,6 +31,8 @@ interface Local {
 
 
 const Evento = () => {
+    const [ejemplo, setEjemplo] =
+        useState<any | null>(null);
     const params = useLocalSearchParams();
     const [evento, setEvento] = useState<Evento>();
     const [interesado, setInteresado] = useState(false);
@@ -37,8 +40,16 @@ const Evento = () => {
     const [local, setLocal] = useState<Local>();
     console.log(params);
 
+    const obtenerDatos = async (eventoId: any) => {
+        const data = await getEventoPorID(eventoId);
+        console.log(data);
+        setEjemplo(data);
+    };
+    
     useEffect(() => {
         const { id_evento } = params;
+        console.log(id_evento);
+        obtenerDatos(id_evento);
         //hacer la peticion en base al id_evento del evento
         const evento = {
             id_evento: 1,
