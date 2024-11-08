@@ -44,8 +44,9 @@ export const getEventosDelDia = async () => {
     }
 };
 
-export const getEventoPorID = async (id: any) => {
+export const getEventoPorID = async (id: string) => {
     try {
+        console.log(API_URL+`/api/eventos/`+id+`/`);
         const response = await fetch(`${API_URL}/api/eventos/${id}/`, {
             method: "GET",
             headers: {
@@ -64,3 +65,4 @@ export const getEventoPorID = async (id: any) => {
         return null;
     }
 };
+

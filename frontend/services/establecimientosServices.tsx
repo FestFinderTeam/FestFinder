@@ -39,3 +39,23 @@ export const getEstablecimientoPorId = async (id: any) => {
     }
 };
 
+export const getEventosPorEstablecimiento = async (idEstablecimiento: string) => {
+    try {
+        const response = await fetch(`${API_URL}/api/eventos/establecimiento/${idEstablecimiento}/`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        if (!response.ok) {
+            console.error("Error al obtener eventos:", response.status);
+            return null;
+        }
+        const data = await response.json();
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.error("Error al obtener eventos:", error);
+        return null;
+    }
+};

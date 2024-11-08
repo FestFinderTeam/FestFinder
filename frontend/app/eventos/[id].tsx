@@ -7,6 +7,7 @@ import { Image, Pressable, ScrollView, Text, View } from "react-native";
 import Styles from "@/globalStyles/styles";
 import React from "react";
 import { getEventoPorID } from "@/services/eventosService";
+import { getEstablecimientoPorId } from "@/services/establecimientosServices";
 
 interface Evento {
     id_evento: number;
@@ -22,9 +23,10 @@ interface Evento {
     puntuacion: number;
     puntuaciones: number;
     interesados: number;
+    id_establecimiento: number;
 }
 interface Local {
-    id_evento: number;
+    id: number;
     nombre: string;
     telefono: string;
 }
@@ -40,42 +42,33 @@ const Evento = () => {
     const [local, setLocal] = useState<Local>();
     console.log(params);
 
-    const obtenerDatos = async (eventoId: any) => {
-        const data = await getEventoPorID(eventoId);
+    const obtenerDatosEvento = async (id: string) => {
+        const data = await getEventoPorID(id);
+        data.fecha_inicio = new Date(data.fecha_inicio);
+        data.horario_inicio = new Date(`1970-01-01T${data.horario_inicio}Z`);
+        data.horario_fin = new Date(`1970-01-01T${data.horario_fin}Z`);
+        setEvento(data);
+    };
+
+    const obtenerDatosEstablecimiento = async (id: string) => {
+        const data = await getEstablecimientoPorId(id);
         console.log(data);
-        setEjemplo(data);
+        setLocal(data);
     };
     
     useEffect(() => {
-        const { id_evento } = params;
-        console.log(id_evento);
-        obtenerDatos(id_evento);
-        //hacer la peticion en base al id_evento del evento
-        const evento = {
-            id_evento: 1,
-            nombre: "Noche de colores",
-            descripcion:
-                "¡Prepárate para una noche llena de brillo y energía! Únete a nuestra Fiesta Neon, donde los colores vibran, la música no para y tú eres el protagonista. ¡No te pierdas la experiencia más electrizante del año!",
-            fecha_inicio: new Date("2024-11-19"),
-            direccion: "Av Melchor Urquidi S/N, Cochabamba",
-            horario_inicio: new Date("24-11-19 18:00"),
-            horario_fin: new Date("24-11-20 04:00"),
-            precioInicial: 50,
-            precioFinal: 100,
-            logo: require("../../assets/images/alice-park-event-1.png"),
-            puntuacion: 4,
-            puntuaciones: 150,
-            interesados: 200,
-        };
-        const local = {
-            id_evento: 1,
-            nombre: "Alice Park",
-            telefono: "70711360",
-        };
-
-        setLocal(local);
-        setEvento(evento);
+        const { id } = params;
+        if (id) {
+            obtenerDatosEvento(id);
+        }
     }, []);
+
+    useEffect(() => {
+        if (evento && evento.id_establecimiento && !local) {
+          obtenerDatosEstablecimiento(evento.id_establecimiento + "");
+        }
+      }, [evento, local]);
+    
 
     const obtenerEstrellas = () => {
         const estrellas = Array(5).fill(0);
@@ -92,7 +85,7 @@ const Evento = () => {
         ));
     };
 
-    if (!evento) {
+    if (!evento && !local) {
         return <Text>Cargando evento...</Text>;
     }
     return (
@@ -102,7 +95,7 @@ const Evento = () => {
                 <Text style={[Styles.subtitle, { color: "black", fontWeight: "bold", marginTop: "2%", marginLeft: "2%" }]}>{local?.nombre} - {evento.nombre}</Text>
 
                 <Image
-                    source={evento.logo}
+                    source={{ uri: evento.logo }}
                     style={{
                         height: 250,
                         aspectRatio: 3 / 4,
@@ -287,7 +280,7 @@ const Evento = () => {
                         marginVertical: 8,
                     }}>
                         <Text>¿Quieres saber más de <Text style={{ color: '#402158' }}>{local?.nombre}</Text>?</Text>
-                        <Link href={`/places/${local?.id_evento}`} style={{ textDecorationLine: 'underline' }}>
+                        <Link href={`/places/${local?.id}`} style={{ textDecorationLine: 'underline' }}>
                             Visita el perfil de <Text style={{ color: '#402158' }}>{local?.nombre}</Text>
                         </Link>
                     </View>

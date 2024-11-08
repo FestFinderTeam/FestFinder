@@ -13,7 +13,7 @@ from api.views.EtiquetaEstablecimiento_Vista import (
     EstablecimientosPorEtiqueta,
 )
 from api.views.Genero_Evento_Vista import CrearGeneroEvento, ListarGenerosEvento
-from api.views.Evento_Vista import CrearEvento, ListarEventos, ListarEventosHoy, ListarEventosMes, ObtenerEventoPorID
+from api.views.Evento_Vista import CrearEvento, ListarEventos, ListarEventosHoy, ListarEventosMes, ListarEventosPorEstablecimiento, ObtenerEventoPorID
 from api.views.Entrada_Vista import CrearEntrada, ListarEntradasEvento
 from api.views.Consumo_Vista import CrearConsumo, ListarConsumosPorEstablecimiento
 from api.views.HorariosEstablecimiento_Vista import RecuperarHorarios, RecuperarHorariosPorEstablecimiento, RegistrarHorarioEstablecimiento
@@ -99,6 +99,7 @@ urlpatterns = [
     path('api/eventos_mes/', ListarEventosMes.as_view(), name='eventos-mes'),
     path('api/eventos_hoy/', ListarEventosHoy.as_view(), name='eventos-hoy'),
     path('api/eventos/<int:id>/', ObtenerEventoPorID.as_view(), name='obtener_evento_por_id'),
+    path('api/eventos/establecimiento/<int:id_establecimiento>/', ListarEventosPorEstablecimiento.as_view(), name='listar-eventos-por-establecimiento'),
 
     path("entrada/", CrearEntrada.as_view(), name="crear-entrada"),
     path(

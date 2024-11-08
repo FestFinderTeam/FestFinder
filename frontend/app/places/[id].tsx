@@ -20,7 +20,7 @@ import {
 } from "react-native";
 
 import Notch from "@/components/Notch";
-import { getEstablecimientoPorId } from "@/services/establecimientosServices";
+import { getEstablecimientoPorId, getEventosPorEstablecimiento } from "@/services/establecimientosServices";
 
 type Establecimiento = {
     id: number;
@@ -29,8 +29,8 @@ type Establecimiento = {
     descripcion?: string;
     nombre_tipo?: string;
     nro_ref?: string;
-    banner?: any;
-    logo?: any;
+    banner?: string;
+    logo?: string;
     puntuacion?: number;
 };
 
@@ -92,10 +92,16 @@ const Place = () => {
         "Poppins-SemiBold": require("../../assets/fonts/Poppins-SemiBold.ttf"),
     });
 
-    const obtenerDatos = async (establecimientoId: any) => {
+    const obtenerDatosEstablecimiento = async (establecimientoId: any) => {
         const data = await getEstablecimientoPorId(establecimientoId);
         console.log(data);
-        setEjemplo(data);
+        setEstablecimiento(data);
+    };
+
+    const obtenerDatosEventos= async (establecimientoId: any) => {
+        const data = await getEventosPorEstablecimiento(establecimientoId);
+        console.log(data);
+        setProximosEventos(data);
     };
     
     useEffect(() => {
@@ -121,20 +127,8 @@ const Place = () => {
         // id del establecimiento
         const { id } = params;
         console.log(id);
-        obtenerDatos(id);
-
-        // Simulación de llamada a API para el establecimiento
-        const establecimiento = {
-            id: 1,
-            nombre: "Alice Park",
-            direccion: "Av Melchor Urquidi S/N, Cochabamba",
-            descripcion: "",
-            banner: require("../../assets/images/alice-park.png"),
-            logo: require("../../assets/images/alice-park.png"),
-            nombre_tipo: "Discoteca",
-            nro_ref: "70711360",
-            puntuacion: 9.2,
-        };
+        obtenerDatosEstablecimiento(id);
+        
 
         // Simulación de llamada a API para etiquetas
         const etiquetas = [
@@ -146,33 +140,7 @@ const Place = () => {
 
         // Simulación de llamada a API para valoraciones
 
-        // Simulación de llamada a API para próximos eventos
-        const proximosEventos = [
-            {
-                id_evento: 2,
-                nombre: "Alice Park-Noche de colores",
-                fecha_inicio: new Date("2024-09-02"),
-                logo: require("../../assets/images/alice-park-event-1.png"),
-            },
-            {
-                id_evento: 3,
-                nombre: "Alice Park - Neon Party",
-                fecha_inicio: new Date("2024-09-07"),
-                logo: require("../../assets/images/alice-park-event-2.png"),
-            },
-            {
-                id_evento: 4,
-                nombre: "Alice Park-Noche de colores",
-                fecha_inicio: new Date("2024-09-02"),
-                logo: require("../../assets/images/alice-park-event-1.png"),
-            },
-            {
-                id_evento: 5,
-                nombre: "Alice Park - Neon Party",
-                fecha_inicio: new Date("2024-09-07"),
-                logo: require("../../assets/images/alice-park-event-2.png"),
-            },
-        ];
+        
 
         // Simulación de llamada a API para fotos
         const fotos = [
@@ -282,7 +250,7 @@ const Place = () => {
         setEstablecimiento(establecimiento);
         setEtiquetas(etiquetas);
         setProximosEventos(proximosEventos);
-        setFotos(fotos);
+        //setFotos(fotos);
         setLugaresParecidos(lugaresParecidos);
         setHorarioAtencion(horarioAtencion);
         setEstablecimientoAbierto(isOpenToday());
@@ -410,7 +378,7 @@ const Place = () => {
                 {establecimiento && (
                     <>
                         <ImageBackground
-                            source={establecimiento.banner}
+                            source={{ uri: establecimiento.banner }}
                             style={Styles.imageBanner}
                         >
                             <Pressable onPress={router.back}>
@@ -438,7 +406,7 @@ const Place = () => {
                         </ImageBackground>
 
                         <Image
-                            source={establecimiento.logo}
+                            source={{ uri: establecimiento.logo }}
                             style={[
                                 styles.redondoImg,
                                 styles.contenedorIMG,
