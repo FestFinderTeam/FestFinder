@@ -98,7 +98,7 @@ urlpatterns = [
     path("api/eventos/", ListarEventos.as_view(), name="listar-eventos"),
     path('api/eventos_mes/', ListarEventosMes.as_view(), name='eventos-mes'),
     path('api/eventos_hoy/', ListarEventosHoy.as_view(), name='eventos-hoy'),
-    path('eventos/<int:id>/', ObtenerEventoPorID.as_view(), name='obtener_evento_por_id'),
+    path('api/eventos/<int:id>/', ObtenerEventoPorID.as_view(), name='obtener_evento_por_id'),
 
     path("entrada/", CrearEntrada.as_view(), name="crear-entrada"),
     path(
