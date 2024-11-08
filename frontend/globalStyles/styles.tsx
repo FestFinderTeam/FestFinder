@@ -189,6 +189,10 @@ const Styles = StyleSheet.create({
         padding: 10,
         borderRadius: 5,
     },
+    slider: {
+        marginLeft: "5%",
+        marginTop: "3%",
+    },
 });
 
 export default Styles;

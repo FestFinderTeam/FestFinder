@@ -47,9 +47,8 @@ const Evento = () => {
     };
     
     useEffect(() => {
-        const { id_evento } = params;
-        console.log(id_evento);
-        obtenerDatos(id_evento);
+        const { id } = params;
+        obtenerDatos(id);
         //hacer la peticion en base al id_evento del evento
         const evento = {
             id_evento: 1,

@@ -5,7 +5,7 @@ import SearchHeader from "@/components/SearchHeader";
 const buscar = () => {
     return (
         <View>
-            <SearchHeader></SearchHeader>
+            <SearchHeader/>
         </View>
     );
 };
