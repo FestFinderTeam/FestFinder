@@ -242,7 +242,7 @@ const inicio = () => {
                     )}
                     horizontal
                 />
-                <View style={{ alignItems: "center" }}>
+                <View style={{ alignItems: "center", marginTop: "3%" }}>
                     <View style={{
                         backgroundColor: "#FDC500",
                         width: 320,
@@ -288,10 +288,23 @@ const inicio = () => {
 
                     </View>
                 </View>
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%", paddingHorizontal: "5%" }}>
+                    <Text style={[styles.textoTitulo, { marginTop: "5%" }]}>
+                        Lugares populares
+                    </Text>
+                    <Pressable onPress={() => {router.navigate("/places/popular")}}>
+                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                            <Text style={{ fontFamily: "Poppins-Regular", fontSize: 14, color: "#402158", marginTop: 15 }}>
+                                Ver más
+                            </Text>
+                            <Text style={{ fontSize: 16, color: "#402158", marginLeft: 5, marginTop: 15  }}>
+                                &gt;
+                            </Text>
+                        </View>
+                    </Pressable>
+                </View>
 
-                <Text style={[styles.textoTitulo, { marginTop: "5%" }]}>
-                    Lugares populares
-                </Text>
+
                 <FlatList
                     data={popularPlaces}
                     style={styles.slider}
@@ -342,69 +355,85 @@ const inicio = () => {
                                     </Text>
                                 </View>
                             </ImageBackground>
+                            <Text>{item.name}</Text>
                         </Link>
                     )}
                     horizontal
                 />
 
-                <Text style={[styles.textoTitulo, { marginTop: "5%" }]}>
-                    Eventos populares
-                </Text>
-                <FlatList
-                    data={eventosDelMes}
-                    style={styles.slider}
-                    keyExtractor={(item) => JSON.stringify(item)}
-                    renderItem={({ item, index }) => (
-                        <Link
-                            href={("/eventos/" + item.id_evento) as Href}
-                            key={index}
-                            style={{ marginLeft: "3%" }}
-                        >
-                            <ImageBackground
-                                resizeMode="cover"
-                                source={{ uri: `${item.logo}` }}
-                                style={{
-                                    width: 150,
-                                    height: 200,
-                                    borderRadius: 10,
-                                    overflow: "hidden",
-                                }}
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%", paddingHorizontal: "5%" }}>
+                    <Text style={[styles.textoTitulo, { marginTop: "5%" }]}>
+                        Eventos populares del mes
+                    </Text>
+                    <Pressable onPress={() => {router.navigate("/eventos/popular")}}>
+                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                            <Text style={{ fontFamily: "Poppins-Regular", fontSize: 14, color: "#402158", marginTop: 15 }}>
+                                Ver más
+                            </Text>
+                            <Text style={{ fontSize: 16, color: "#402158", marginLeft: 5, marginTop:15 }}>
+                                &gt;
+                            </Text>
+                        </View>
+                    </Pressable>
+                </View>
+                <View style={{marginBottom:"5%"}}>
+                    <FlatList
+                        data={eventosDelMes}
+                        style={styles.slider}
+                        keyExtractor={(item) => JSON.stringify(item)}
+                        renderItem={({ item, index }) => (
+                            <Link
+                                href={("/eventos/" + item.id_evento) as Href}
+                                key={index}
+                                style={{ marginLeft: "3%" }}
                             >
-                                <View
+                                <ImageBackground
+                                    resizeMode="cover"
+                                    source={{ uri: `${item.logo}` }}
                                     style={{
-                                        flex: 1,
-                                        justifyContent: "flex-end",
-                                        alignItems: "center",
-                                        padding: 5,
+                                        width: 150,
+                                        height: 200,
+                                        borderRadius: 10,
+                                        overflow: "hidden",
                                     }}
                                 >
-                                    <Text
+                                    <View
                                         style={{
-                                            color: "white",
-                                            fontFamily: "Poppins-Regular",
-                                            textAlign: "center",
+                                            flex: 1,
+                                            justifyContent: "flex-end",
+                                            alignItems: "center",
+                                            padding: 5,
                                         }}
                                     >
-                                        {item.nombre}
-                                    </Text>
-                                    <Text
-                                        style={{
-                                            color: "white",
-                                            textAlign: "center",
-                                        }}
-                                    >
-                                        <FontAwesome
-                                            name="clock-o"
-                                            color={"yellow"}
-                                        />
-                                        {item.horario_fin}
-                                    </Text>
-                                </View>
-                            </ImageBackground>
-                        </Link>
-                    )}
-                    horizontal
-                />
+                                        <Text
+                                            style={{
+                                                color: "white",
+                                                fontFamily: "Poppins-Regular",
+                                                textAlign: "center",
+                                            }}
+                                        >
+                                            {item.nombre}
+                                        </Text>
+                                        <Text
+                                            style={{
+                                                color: "white",
+                                                textAlign: "center",
+                                            }}
+                                        >
+                                            <FontAwesome
+                                                name="clock-o"
+                                                color={"yellow"}
+                                            />
+                                            {item.horario_fin}
+                                        </Text>
+                                    </View>
+                                </ImageBackground>
+                            </Link>
+                        )}
+                        horizontal
+                    />
+                </View>
+
             </ScrollView>
         </>
     );
