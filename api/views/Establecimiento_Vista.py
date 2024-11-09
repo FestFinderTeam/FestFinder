@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from ..serializers import HorariosEstablecimientoSerializer
 from ..models import Establecimiento, Usuario
@@ -80,6 +81,8 @@ class ListarEstablecimientos(APIView):
         return Response(establecimientos_data, status=status.HTTP_200_OK)
 
 class RegistrarEstablecimiento(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
     def post(self, request, *args, **kwargs):
         print("se envio")
         print(request.data)

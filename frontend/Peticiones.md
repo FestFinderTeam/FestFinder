@@ -2,7 +2,7 @@
 
 ## Iniciar Session
 
-- conectar el id de google al usuario
+- conectar el id de google al usuario   LISTO
 
 ## app/(tabs)/inicio
 
@@ -26,7 +26,7 @@
 
 ## Editar Local app/admin/myplace
 
-- peticion para obtener los datos del local                LISTO
+- peticion para obtener los datos de MI local                
 - peticion para actualizar los nuevos datos del local
 
 ## Informacion detallada de Local app/places/[id]
