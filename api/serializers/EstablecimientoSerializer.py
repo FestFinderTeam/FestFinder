@@ -7,7 +7,7 @@ class EstablecimientoSerializer(serializers.ModelSerializer):
     tipo_fk = TipoEstablecimientoSerializer(read_only=True)  # Agregado para obtener datos completos del tipo
     class Meta:
         model = Establecimiento
-        fields = ['id', 'nombre', 'banner', 'logo', 'direccion', 'coordenada_x', 'coordenada_y', 'tipo_fk', 'rango_de_precios', 'nro_ref', 'em_ref']
+        fields = ['id', 'nombre', 'banner', 'logo', 'direccion', 'coordenada_x', 'coordenada_y', 'tipo_fk', 'usuario','rango_de_precios', 'nro_ref', 'em_ref']
         extra_kwargs = {
             'nombre': {
                 'error_messages': {
@@ -49,6 +49,12 @@ class EstablecimientoSerializer(serializers.ModelSerializer):
                 'error_messages': {
                     'null': 'El tipo de establecimiento es obligatorio.',
                     'does_not_exist': 'El tipo de establecimiento proporcionado no existe.'
+                }
+            },
+            'usuario': {
+                'error_messages': {
+                    'null': 'El usuario es obligatorio.',
+                    'does_not_exist': 'El usuario proporcionado no existe.'
                 }
             },
             'rango_de_precios': {

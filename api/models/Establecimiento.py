@@ -1,5 +1,7 @@
 # mi_app/models/establecimiento.py
 from django.db import models
+
+from .Usuario import Usuario
 from .TipoEstablecimiento import TipoEstablecimiento
 
 class Establecimiento(models.Model):
@@ -10,6 +12,7 @@ class Establecimiento(models.Model):
     coordenada_x = models.DecimalField(max_digits=10, decimal_places=8)
     coordenada_y = models.DecimalField(max_digits=10, decimal_places=8)
     tipo_fk = models.ForeignKey(TipoEstablecimiento, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, default=1)
     rango_de_precios = models.CharField(max_length=5, blank=True)
     nro_ref = models.CharField(max_length=13, blank=True, default='')
     em_ref = models.EmailField(blank=True)
