@@ -27,6 +27,7 @@ type Establecimiento = {
     nombre: string;
     direccion?: string;
     descripcion?: string;
+    tipo_fk?: any;
     nombre_tipo?: string;
     nro_ref?: string;
     banner?: string;
@@ -439,7 +440,7 @@ const Place = () => {
                                         styles.tipoLocal,
                                     ]}
                                 >
-                                    {establecimiento.nombre_tipo}
+                                    {establecimiento.tipo_fk.nombre_tipo}
                                 </Text>
                             </View>
                             <View style={{ top: "-20%", right: "40%" }}>
@@ -674,7 +675,7 @@ const Place = () => {
                                         }}
                                         numberOfLines={2}
                                     >
-                                        {item.nombre}
+                                        {item.nombre_tipo}
                                     </Text>
                                 </Pressable>
                             )}
