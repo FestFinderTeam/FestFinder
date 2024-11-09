@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from ..serializers import HorariosEstablecimientoSerializer
-from ..models import Establecimiento
+from ..models import Establecimiento, Usuario
 from ..serializers import EstablecimientoSerializer
 from ..serializers import EtiquetaSerializer
 from ..models import EtiquetaEstablecimiento, horariosEstablecimiento
@@ -88,6 +88,12 @@ class RegistrarEstablecimiento(APIView):
         
         if serializer.is_valid():
             serializer.save()
+            # Actualizar el campo `duenio` a True para el usuario relacionado
+            usuario_id = request.data.get("usuario")
+            print (usuario_id)
+            Usuario.objects.filter(id_usuario=usuario_id).update(duenio=True)
+            print("Campo `duenio` actualizado a True para el usuario", usuario_id)
+            
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             print("Errores de validación:", serializer.errors)  # Imprime errores de validación

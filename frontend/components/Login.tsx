@@ -40,7 +40,7 @@ const Login = () => {
             });
 
             if (response.ok) {
-                const { email, g_id, id_usuario, imagen, nombre, telefono } =
+                const { email, g_id, id_usuario, imagen, nombre, telefono, duenio } =
                     await response.json();
                 //setUserData(userData);  // Guarda los datos del usuario
                 let imagen_url = "";
@@ -53,7 +53,7 @@ const Login = () => {
                     const fullImageUrl = `${API_URL}${imageData.imagen}`; // URL completa de la imagen
                     imagen_url = fullImageUrl; // Guarda la URI de la imagen
                 }
-                signIn({ id_usuario, imagen_url, nombre, email, telefono });
+                signIn({ id_usuario, imagen_url, nombre, email, telefono, duenio });
             } else {
                 alert("Error en el inicio de sesión");
             }

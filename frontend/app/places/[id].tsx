@@ -26,7 +26,8 @@ type Establecimiento = {
     id: number;
     nombre: string;
     direccion?: string;
-    tipo_fk?: any;
+    tipo_fk?: numb;
+    tipo_fk_detail?: any;
     nombre_tipo?: string;
     nro_ref?: string;
     banner?: string;
@@ -439,7 +440,7 @@ const Place = () => {
                                         styles.tipoLocal,
                                     ]}
                                 >
-                                    {establecimiento.tipo_fk.nombre_tipo}
+                                    {establecimiento.tipo_fk_detail.nombre_tipo}
                                 </Text>
                             </View>
                             <View style={{ top: "-20%", right: "40%" }}>

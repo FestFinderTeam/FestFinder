@@ -25,6 +25,7 @@ interface Evento {
     puntuaciones: number;
     interesados: number;
     id_establecimiento: any;
+    id_establecimiento_detail: any;
 }
 interface Local {
     id: number;
@@ -43,8 +44,8 @@ const Evento = () => {
 
     const obtenerDatosEvento = async (id: string) => {
         const data = await getEventoPorID(id);
-        console.log (data.id_establecimiento);
-        setLocal(data.id_establecimiento);
+        console.log (data.id_establecimiento_detail);
+        setLocal(data.id_establecimiento_detail);
         data.fecha_inicio = new Date(data.fecha_inicio);
         data.fecha_final = new Date(data.fecha_final);
         data.horario_inicio = new Date(`1970-01-01T${data.horario_inicio}Z`);
