@@ -88,7 +88,7 @@ const eventos = () => {
                             <Pressable
                                 onPress={() => {
                                     router.navigate(
-                                        ("/eventos/" + item.id_evento) as Href
+                                        ("/editarEvento/" + item.id_evento) as Href
                                     );
                                 }}
                                 style={{
@@ -162,7 +162,7 @@ const eventos = () => {
                     <Pressable
                         onPress={() => {
                             router.navigate(
-                                ("/eventos/" + item.id_evento) as Href
+                                ("editarEvento/" + item.id_evento) as Href
                             );
                         }}
                         style={{
