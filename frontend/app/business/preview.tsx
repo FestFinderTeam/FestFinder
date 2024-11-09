@@ -17,6 +17,7 @@ import type { ImagePickerAsset } from "expo-image-picker";
 import { getImage, pickImage } from "@/utils/Image";
 import { dateToHHmm, showTime } from "@/utils/DateTime";
 import { useSession } from "@/hooks/ctx";
+import { getDireccion } from "@/utils/Direccion";
 
 const preview = () => {
     //const API_URL = "http://(TU IPv4 PARA PROBAR ANTES QUE RESUBAN LA API):8000/";
@@ -95,17 +96,16 @@ const preview = () => {
     };
 
     const local = useLocalSearchParams();
-    const handleSubmit = async () => {        
+    const handleSubmit = async () => {
         if (session) {
             const { id_usuario } = session;
         }
         // obtener datos del params
-        const data = { ...local};
+        const data = { ...local };
         //const data = { ...local, horarios: obtenerHorarios(), etiquetas: tags };
         const formData = new FormData();
-        
-        try {
 
+        try {
             if (logo) {
                 formData.append("logo", getImage(logo));
             }
@@ -114,28 +114,26 @@ const preview = () => {
                 formData.append("banner", getImage(imageBanner));
             }
 
-
             formData.append("nombre", data.nombre as string);
-            formData.append("direccion","Bolivia")
+            formData.append("direccion", data.direccion as string);
             formData.append("coordenada_x", data.coordenada_x as string);
             formData.append("coordenada_y", data.coordenada_y as string);
             formData.append("descripcion", "Huayllani");
             formData.append("nro_ref", "123456789");
             formData.append("em_ref", data.em_ref as string);
             formData.append("tipo_fk", data.tipo_fk as string);
-            formData.append("rango_de_precios", data.rango_de_precios as string);
+            formData.append(
+                "rango_de_precios",
+                data.rango_de_precios as string
+            );
 
 
-            console.log(formData);
-
-
-            console.log(API_URL);
 
             const response = await fetch(`${API_URL}/api/establecimiento/`, {
                 method: "POST",
                 body: formData,
                 headers: {
-                    'Content-Type': 'multipart/form-data', // Agrega este encabezado
+                    "Content-Type": "multipart/form-data", // Agrega este encabezado
                 },
             });
 
@@ -152,7 +150,6 @@ const preview = () => {
             console.error("Error en el registro del establecimiento:", error);
             return null;
         }
-            
     };
 
     return (
