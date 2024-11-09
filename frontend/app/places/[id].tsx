@@ -37,7 +37,7 @@ type Establecimiento = {
 type Evento = {
     id_evento: number;
     nombre: string;
-    fecha_inicio: Date;
+    fecha_inicio: string;
     horario_inicio?: string;
     logo: any;
 };
@@ -98,12 +98,12 @@ const Place = () => {
         setEstablecimiento(data);
     };
 
-    const obtenerDatosEventos= async (establecimientoId: any) => {
+    const obtenerDatosEventos = async (establecimientoId: any) => {
         const data = await getEventosPorEstablecimiento(establecimientoId);
         console.log(data);
         setProximosEventos(data);
     };
-    
+
     useEffect(() => {
         const prepare = async () => {
             try {
@@ -129,7 +129,7 @@ const Place = () => {
         console.log(id);
         obtenerDatosEstablecimiento(id);
         obtenerDatosEventos(id);
-        
+
 
         // Simulación de llamada a API para etiquetas
         const etiquetas = [
@@ -141,7 +141,7 @@ const Place = () => {
 
         // Simulación de llamada a API para valoraciones
 
-        
+
 
         // Simulación de llamada a API para fotos
         const fotos = [
@@ -286,7 +286,7 @@ const Place = () => {
                     animationType="slide"
                     transparent={true}
                     visible={horarioOpened}
-                    onRequestClose={() => {}}
+                    onRequestClose={() => { }}
                 >
                     <View
                         style={{
@@ -298,7 +298,7 @@ const Place = () => {
                         <View
                             style={{
                                 padding: 20,
-                                paddingTop: 40, 
+                                paddingTop: 40,
                                 backgroundColor: "white",
                                 borderRadius: 10,
                                 elevation: 5,
@@ -656,13 +656,14 @@ const Place = () => {
                                                     fontWeight: "bold",
                                                 }}
                                             >
-                                                {item.fecha_inicio}
+                                                {new Date(item.fecha_inicio).toLocaleDateString("es-ES", {
+                                                    day: "numeric",
+                                                })}
                                             </Text>
                                             <Text style={{ fontSize: 12 }}>
-                                                {item.horario_inicio.toLocaleString(
-                                                    "es-ES",
-                                                    { month: "short" }
-                                                )}
+                                                {new Date(item.fecha_inicio).toLocaleDateString("es-ES", {
+                                                    month: "short",
+                                                })}
                                             </Text>
                                         </View>
                                     </ImageBackground>
@@ -780,7 +781,11 @@ const Place = () => {
                                     }}
                                 >
                                     <Image
-                                        source={item.logo}
+                                        source={
+                                            typeof item.logo === "string"
+                                                ? { uri: item.logo }
+                                                : item.logo
+                                        }
                                         style={{
                                             width: 100,
                                             height: 100,
@@ -788,6 +793,7 @@ const Place = () => {
                                             borderRadius: 100,
                                         }}
                                     />
+
                                     <Text
                                         style={{
                                             fontFamily: "Poppins-Regular",
