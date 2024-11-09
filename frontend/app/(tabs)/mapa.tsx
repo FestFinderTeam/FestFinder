@@ -7,7 +7,7 @@ import { router, type Href } from "expo-router";
 import Styles from "@/globalStyles/styles";
 import { getEstablecimientos } from "@/services/establecimientosServices";
 
-export interface Establecimiento {
+export interface EstablecimientoType {
     id: number;
     coordenada_y: number;
     coordenada_x: number;
@@ -16,12 +16,11 @@ export interface Establecimiento {
 }
 
 const mapa = () => {
-    const [establecimientos, setEstablecimientos] = useState<Establecimiento[]>(
-        []
-    );
+    const [establecimientos, setEstablecimientos] = useState<
+        EstablecimientoType[]
+    >([]);
     const [establecimientoSeleccionado, setEstablecimientoSeleccionado] =
-        useState<Establecimiento | null>(null);
-
+        useState<EstablecimientoType | null>(null);
 
     const obtenerDatosEstablecimiento = async () => {
         const data = await getEstablecimientos();
@@ -30,7 +29,7 @@ const mapa = () => {
     };
 
     useEffect(() => {
-        if(!establecimientos){
+        if (!establecimientos) {
             obtenerDatosEstablecimiento();
         }
     }, []);
@@ -42,7 +41,7 @@ const mapa = () => {
             <GoogleMap
                 establecimientos={establecimientos}
                 onMarkerPress={(establecimiento) => {
-                //    console.log(establecimiento);
+                    //    console.log(establecimiento);
                     setEstablecimientoSeleccionado(establecimiento);
                 }}
             />

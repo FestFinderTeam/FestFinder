@@ -2,46 +2,37 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, type Href } from "expo-router";
 import React from "react";
 import { ImageBackground, Text, View, StyleSheet } from "react-native";
-
-export interface Place {
-    id: number;
-    nombre: string;
-    score: number;
-    views: number;
-    logo: any;
-    tipo_fk?: any;
-    nombre_tipo?: string;
-    direccion?: string;
-}
+import type { EventoType } from "./Evento";
 
 interface Props {
-    establecimiento: Place;
+    evento: EventoType;
 }
 
-const Establecimiento = ({ establecimiento }: Props) => {
+const EventoExtra = ({ evento }: Props) => {
     return (
         <Link
-            href={("/places/" + establecimiento.id) as Href}
+            href={("/places/" + evento.id_evento) as Href}
             style={styles.link}
         >
             <View style={styles.container}>
                 <ImageBackground
                     resizeMode="cover"
-                    source={{ uri: establecimiento.logo }}
+                    source={{ uri: evento.logo }}
                     style={styles.imageBackground}
                 />
                 <View style={styles.details}>
-                    <Text style={styles.nombre}>{establecimiento.nombre}</Text>
-                    <Text style={styles.tipo}>
-                    {establecimiento.tipo_fk.nombre_tipo}
-                    </Text>
+                    <Text style={styles.nombre}>{evento.nombre}</Text>
                     <Text style={styles.puntuacion}>
                         <FontAwesome name="star" color="orange" />
-                        {` ${establecimiento.score} / 10`}
+                        {` ${evento.puntuacion} / 10`}
+                    </Text>
+                    
+                    <Text style={styles.tipo}>
+                    {evento.fecha_final}
                     </Text>
                     <Text style={styles.puntuacion}>
                         <FontAwesome name="circle" color="purple" />
-                        {" " + establecimiento.direccion}</Text>
+                        {" " + evento.direccion}</Text>
                 </View>
             </View>
         </Link>
@@ -83,4 +74,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Establecimiento;
+export default EventoExtra;

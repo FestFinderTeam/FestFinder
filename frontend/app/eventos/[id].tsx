@@ -203,7 +203,17 @@ const Evento = () => {
                             day: "numeric",
                         })}
                     </Text>
-                    <Text style={{ color: "#402158", fontWeight: "bold", fontSize: 16, marginRight: 5 }}> - </Text>
+                    <Text
+                        style={{
+                            color: "#402158",
+                            fontWeight: "bold",
+                            fontSize: 16,
+                            marginRight: 5,
+                        }}
+                    >
+                        {" "}
+                        -{" "}
+                    </Text>
                     <Text style={{ color: "#5A5A5A", fontSize: 16 }}>
                         {evento.fecha_final.toLocaleString("es-ES", {
                             month: "short",

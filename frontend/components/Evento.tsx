@@ -8,6 +8,11 @@ export type EventoType = {
     logo: any;
     fecha_final: any;
     horario_fin: any;
+    precio__min?: number;
+    precio__max?: number;
+    direccion?: number
+    fecha_inicio?: any
+    puntuacion?: string;
 };
 interface Props {
     evento: EventoType;

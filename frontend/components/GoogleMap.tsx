@@ -1,4 +1,4 @@
-import type { Establecimiento } from "@/app/(tabs)/mapa";
+import type { EstablecimientoType } from "@/app/(tabs)/mapa";
 import Styles from "@/globalStyles/styles";
 import React, { useState } from "react";
 import { Alert, Image, Pressable, Text } from "react-native";
@@ -13,8 +13,8 @@ export interface MapProps {
     selectedLocation?: LatLng | null;
     setSelectedLocation?: any;
     onPressConfirmLocation?: any;
-    establecimientos?: Establecimiento[];
-    onMarkerPress?: (establecimiento: Establecimiento) => void;
+    establecimientos?: EstablecimientoType[];
+    onMarkerPress?: (establecimiento: EstablecimientoType) => void;
 }
 const GoogleMap = ({
     selectedLocation,

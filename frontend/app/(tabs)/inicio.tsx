@@ -1,31 +1,16 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, router, type Href } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Image, Modal, } from "react-native";
-import {
-    FlatList,
-    ImageBackground,
-    Pressable,
-    Text,
-    TextInput,
-    View,
-} from "react-native";
+import { ScrollView, StyleSheet, Image, Modal } from "react-native";
+import { FlatList, Pressable, Text, View } from "react-native";
 import Notch from "@/components/Notch";
 import React from "react";
 import { getCategorias } from "@/services/categoriasService";
 import { getEstablecimientos } from "@/services/establecimientosServices";
 import { getEventosDelDia, getEventosDelMes } from "@/services/eventosService";
 import ListadoEventosInicio from "@/components/ListadoEventos";
-import Establecimiento from "@/components/Establecimiento";
+import Establecimiento, { type Place } from "@/components/Establecimiento";
 import type { EventoType } from "@/components/Evento";
-
-interface Place {
-    id: number;
-    name: string;
-    score: number;
-    views: number;
-    logo: any;
-}
 
 interface TipoEstablecimiento {
     id: number;
@@ -137,7 +122,9 @@ const inicio = () => {
                 >
                     <View style={styles.modalBackground}>
                         <View style={styles.modalContainer}>
-                            <Text style={styles.modalTitle}>Seleccionar la ciudad</Text>
+                            <Text style={styles.modalTitle}>
+                                Seleccionar la ciudad
+                            </Text>
                             {cities.map((city) => (
                                 <Pressable
                                     key={city}
@@ -147,17 +134,22 @@ const inicio = () => {
                                     <View
                                         style={[
                                             styles.radioButton,
-                                            selectedCity === city && styles.radioButtonSelected,
+                                            selectedCity === city &&
+                                                styles.radioButtonSelected,
                                         ]}
                                     />
-                                    <Text style={styles.optionText}>{city}</Text>
+                                    <Text style={styles.optionText}>
+                                        {city}
+                                    </Text>
                                 </Pressable>
                             ))}
                             <Pressable
                                 style={styles.closeButton}
                                 onPress={() => setModalVisible(false)}
                             >
-                                <Text style={styles.closeButtonText}>Cerrar</Text>
+                                <Text style={styles.closeButtonText}>
+                                    Cerrar
+                                </Text>
                             </Pressable>
                         </View>
                     </View>
@@ -172,7 +164,7 @@ const inicio = () => {
                     keyExtractor={(item) => JSON.stringify(item)}
                     renderItem={({ item }) => (
                         <Pressable
-                            onPress={() => { }}
+                            onPress={() => {}}
                             style={{
                                 alignItems: "center",
                                 marginHorizontal: 10,
@@ -427,10 +419,10 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         marginVertical: 10,
-        width: "100%", 
-        justifyContent: "flex-start", 
+        width: "100%",
+        justifyContent: "flex-start",
     },
-    
+
     radioButton: {
         width: 20,
         height: 20,
@@ -438,7 +430,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: "#402158",
         marginRight: 10,
-        marginLeft: 10, 
+        marginLeft: 10,
     },
     radioButtonSelected: {
         backgroundColor: "#402158",

@@ -58,7 +58,7 @@ const Establecimiento = ({ establecimiento }: Props) => {
                     </Text>
                 </View>
             </ImageBackground>
-            <Text>{establecimiento.name}</Text>
+            <Text>{establecimiento.nombre}</Text>
         </Link>
     );
 };
