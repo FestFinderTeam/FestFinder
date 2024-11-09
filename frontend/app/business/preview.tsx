@@ -122,6 +122,7 @@ const preview = () => {
             formData.append("nro_ref", "123456789");
             formData.append("em_ref", data.em_ref as string);
             formData.append("tipo_fk", data.tipo_fk as string);
+            formData.append("usuario",data.id_usuario as string);
             formData.append(
                 "rango_de_precios",
                 data.rango_de_precios as string
