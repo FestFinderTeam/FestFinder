@@ -1,7 +1,7 @@
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 export const getEstablecimientos = async (id_tipo = null) => {
-    console.log(API_URL);
+
     try {
         const url = id_tipo 
             ? `${API_URL}/api/establecimientos/?tipo_fk=${id_tipo}` 
@@ -12,7 +12,7 @@ export const getEstablecimientos = async (id_tipo = null) => {
             throw new Error("Error al recuperar los lugares");
         }
         const data = await response.json();
-        console.log(data);
+        //console.log(data);
         return data;
     } catch (error) {
         console.error("Error fetching establecimientos:", error);
@@ -22,7 +22,6 @@ export const getEstablecimientos = async (id_tipo = null) => {
 
 
 export const getEstablecimientoPorId = async (id: any) => {
-    console.log(API_URL);
     try {
         const url = `${API_URL}/api/establecimiento/est_id/${id}/`;
 
@@ -31,7 +30,7 @@ export const getEstablecimientoPorId = async (id: any) => {
             throw new Error("Error al recuperar el lugar");
         }
         const data = await response.json();
-        console.log(data);
+        //console.log(data);
         return data;
     } catch (error) {
         console.error("Error fetching establecimiento:", error);
@@ -52,7 +51,7 @@ export const getEventosPorEstablecimiento = async (idEstablecimiento: string) =>
             return null;
         }
         const data = await response.json();
-        console.log(data);
+        //console.log(data);
         return data;
     } catch (error) {
         console.error("Error al obtener eventos:", error);

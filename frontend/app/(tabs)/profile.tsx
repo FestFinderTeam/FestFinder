@@ -15,7 +15,7 @@ const profile = () => {
     }
 
     const { nombre, imagen_url, email } = session;
-    console.log(imagen_url)
+    //console.log(imagen_url)
 
     return (
         <View>

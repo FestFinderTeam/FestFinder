@@ -102,13 +102,13 @@ const Place = () => {
 
     const obtenerDatosEstablecimiento = async (establecimientoId: any) => {
         const data = await getEstablecimientoPorId(establecimientoId);
-        console.log(data);
+        //console.log(data);
         setEstablecimiento(data);
     };
 
     const obtenerDatosEventos = async (establecimientoId: any) => {
         const data = await getEventosPorEstablecimiento(establecimientoId);
-        console.log(data);
+        //console.log(data);
         setProximosEventos(data);
     };
 
@@ -140,7 +140,7 @@ const Place = () => {
     useEffect(() => {
         // id del establecimiento
         const { id } = params;
-        console.log(id);
+        //console.log(id);
         obtenerDatosEstablecimiento(id);
         obtenerDatosEventos(id);
 
