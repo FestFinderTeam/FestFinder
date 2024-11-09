@@ -33,6 +33,7 @@ type Establecimiento = {
     banner?: string;
     logo?: string;
     puntuacion?: number;
+    etiquetas?: any;
 };
 
 type Evento = {
@@ -57,6 +58,11 @@ export interface HorarioAtencion {
     horario: Horario | null;
 }
 
+export interface Etiqueta {
+    id_etiqueta: number;
+    texto_etiqueta: string;
+}
+
 export const days = [
     "Lunes",
     "Martes",
@@ -72,7 +78,7 @@ const Place = () => {
         useState<any | null>(null);
     const [establecimiento, setEstablecimiento] =
         useState<Establecimiento | null>(null);
-    const [etiquetas, setEtiquetas] = useState<string[]>([]);
+    const [etiquetas, setEtiquetas] = useState<Etiqueta[]>([]);
     const [proximosEventos, setProximosEventos] = useState<Evento[]>([]);
     const [fotos, setFotos] = useState<any[]>([]);
     const [lugaresParecidos, setLugaresParecidos] = useState<Establecimiento[]>(
@@ -107,6 +113,12 @@ const Place = () => {
     };
 
     useEffect(() => {
+        if (establecimiento && establecimiento.etiquetas && !etiquetas) {
+            setEtiquetas(establecimiento.etiquetas);
+        }
+    }, [establecimiento]);
+
+    useEffect(() => {
         const prepare = async () => {
             try {
                 if (!fontsLoaded) {
@@ -131,19 +143,6 @@ const Place = () => {
         console.log(id);
         obtenerDatosEstablecimiento(id);
         obtenerDatosEventos(id);
-
-
-        // Simulación de llamada a API para etiquetas
-        const etiquetas = [
-            "Etiqueta 1",
-            "Etiqueta 2",
-            "Etiqueta 3",
-            "Etiqueta 4",
-        ];
-
-        // Simulación de llamada a API para valoraciones
-
-
 
         // Simulación de llamada a API para fotos
         const fotos = [
@@ -251,7 +250,7 @@ const Place = () => {
 
         // Establecer los estados
         setEstablecimiento(establecimiento);
-        setEtiquetas(etiquetas);
+        setEtiquetas(establecimiento?.etiquetas);
         setProximosEventos(proximosEventos);
         //setFotos(fotos);
         setLugaresParecidos(lugaresParecidos);
@@ -508,9 +507,9 @@ const Place = () => {
                                     justifyContent: "space-around",
                                 }}
                             >
-                                {etiquetas.map((etiqueta) => (
+                                {etiquetas && etiquetas.map((etiqueta) => (
                                     <Text
-                                        key={etiqueta}
+                                        key={etiqueta.id_etiqueta}
                                         style={[
                                             {
                                                 fontFamily: "Poppins-Regular",
@@ -524,7 +523,7 @@ const Place = () => {
                                             },
                                         ]}
                                     >
-                                        {etiqueta}
+                                        {etiqueta.texto_etiqueta}
                                     </Text>
                                 ))}
                             </View>

@@ -14,6 +14,7 @@ interface Evento {
     nombre: string;
     descripcion: string;
     fecha_inicio: Date;
+    fecha_final: Date;
     direccion: string;
     horario_inicio: Date;
     horario_fin: Date;
@@ -45,6 +46,7 @@ const Evento = () => {
     const obtenerDatosEvento = async (id: string) => {
         const data = await getEventoPorID(id);
         data.fecha_inicio = new Date(data.fecha_inicio);
+        data.fecha_final = new Date(data.fecha_final);
         data.horario_inicio = new Date(`1970-01-01T${data.horario_inicio}Z`);
         data.horario_fin = new Date(`1970-01-01T${data.horario_fin}Z`);
         setEvento(data);
@@ -132,6 +134,14 @@ const Evento = () => {
                     <Text style={{ color: "#402158", fontWeight: "bold", fontSize: 16, marginRight: 5 }}>Fecha:</Text>
                     <Text style={{ color: "#5A5A5A", fontSize: 16 }}>
                         {evento.fecha_inicio.toLocaleString("es-ES", {
+                            month: "short",
+                            year: "2-digit",
+                            day: "numeric",
+                        })}
+                    </Text>
+                    <Text style={{ color: "#402158", fontWeight: "bold", fontSize: 16, marginRight: 5 }}> - </Text>
+                    <Text style={{ color: "#5A5A5A", fontSize: 16 }}>
+                        {evento.fecha_final.toLocaleString("es-ES", {
                             month: "short",
                             year: "2-digit",
                             day: "numeric",

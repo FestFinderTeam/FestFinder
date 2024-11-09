@@ -5,13 +5,14 @@ import { Image, Modal, Pressable, ScrollView, Text, View } from "react-native";
 import Popup from "@/components/Popup";
 import { router, type Href } from "expo-router";
 import Styles from "@/globalStyles/styles";
+import { getEstablecimientos } from "@/services/establecimientosServices";
 
 export interface Establecimiento {
     id: number;
-    latitude: number;
-    longitude: number;
+    coordenada_y: number;
+    coordenada_x: number;
     nombre: string;
-    photo: any;
+    logo: any;
 }
 
 const mapa = () => {
@@ -21,17 +22,17 @@ const mapa = () => {
     const [establecimientoSeleccionado, setEstablecimientoSeleccionado] =
         useState<Establecimiento | null>(null);
 
+
+    const obtenerDatosEstablecimiento = async () => {
+        const data = await getEstablecimientos();
+        console.log(data);
+        setEstablecimientos(data);
+    };
+
     useEffect(() => {
-        const establecimientos = [
-            {
-                id: 1,
-                latitude: -17.385494,
-                longitude: -66.058982,
-                nombre: "Luna de Miel Pablo y Fernanda",
-                photo: require("../../assets/images/limachis.jpg"),
-            },
-        ];
-        setEstablecimientos(establecimientos);
+        if(!establecimientos){
+            obtenerDatosEstablecimiento();
+        }
     }, []);
 
     return (
@@ -61,7 +62,7 @@ const mapa = () => {
                             {establecimientoSeleccionado?.nombre}
                         </Text>
                         <Image
-                            source={establecimientoSeleccionado?.photo}
+                            source={{ uri: establecimientoSeleccionado?.logo }}
                             style={{
                                 width: 200,
                                 height: 200,
