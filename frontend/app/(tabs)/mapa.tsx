@@ -41,7 +41,7 @@ const mapa = () => {
             <GoogleMap
                 establecimientos={establecimientos}
                 onMarkerPress={(establecimiento) => {
-                    console.log(establecimiento);
+                //    console.log(establecimiento);
                     setEstablecimientoSeleccionado(establecimiento);
                 }}
             />

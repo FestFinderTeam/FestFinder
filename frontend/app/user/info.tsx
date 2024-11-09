@@ -16,7 +16,7 @@ interface Perfil {
 const info = () => {
     const { session } = useSession();
     const [perfil, setPerfil] = useState<Perfil | null>();
-    console.log(session);
+   // console.log(session);
 
     useEffect(() => {
         if (session) {

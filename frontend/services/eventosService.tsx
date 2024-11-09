@@ -2,7 +2,7 @@ const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 export const getEventosDelMes = async () => {
     try {
-        console.log(new Date().toISOString().split("T")[0] + "");
+        //console.log(new Date().toISOString().split("T")[0] + "");
 
         const response = await fetch(`${API_URL}/api/eventos_mes/`, {
             method: "POST",
@@ -14,7 +14,7 @@ export const getEventosDelMes = async () => {
             }), // Envía la fecha actual
         });
         const data = await response.json();
-        console.log(data);
+        //console.log(data);
         return data;
     } catch (error) {
         console.error(error);
@@ -24,7 +24,7 @@ export const getEventosDelMes = async () => {
 
 export const getEventosDelDia = async () => {
     try {
-        console.log(new Date().toISOString().split("T")[0] + "");
+        //console.log(new Date().toISOString().split("T")[0] + "");
         const response = await fetch(`${API_URL}/api/eventos_hoy/`, {
             method: "POST",
             headers: {
@@ -35,7 +35,7 @@ export const getEventosDelDia = async () => {
             }), // Envía la fecha actual
         });
         const data = await response.json();
-        console.log(data);
+        //console.log(data);
         return data;
     } catch (error) {
         //Alert.alert("Error", "No se pudo obtener los eventos del día");
@@ -46,7 +46,7 @@ export const getEventosDelDia = async () => {
 
 export const getEventoPorID = async (id: string) => {
     try {
-        console.log(API_URL+`/api/eventos/`+id+`/`);
+        //console.log(API_URL+`/api/eventos/`+id+`/`);
         const response = await fetch(`${API_URL}/api/eventos/${id}/`, {
             method: "GET",
             headers: {
@@ -58,7 +58,7 @@ export const getEventoPorID = async (id: string) => {
             return null;
         }
         const data = await response.json();
-        console.log(data);
+        //console.log(data);
         return data;
     } catch (error) {
         console.error("Error al obtener el evento:", error);

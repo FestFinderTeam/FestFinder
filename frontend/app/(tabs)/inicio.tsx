@@ -15,8 +15,9 @@ import React from "react";
 import { getCategorias } from "@/services/categoriasService";
 import { getEstablecimientos } from "@/services/establecimientosServices";
 import { getEventosDelDia, getEventosDelMes } from "@/services/eventosService";
-import type { Evento } from "@/components/ListadoEventos";
 import ListadoEventosInicio from "@/components/ListadoEventos";
+import Establecimiento from "@/components/Establecimiento";
+import type { EventoType } from "@/components/Evento";
 
 interface Place {
     id: number;
@@ -36,8 +37,8 @@ const inicio = () => {
     const [tags, setTags] = useState<TipoEstablecimiento[]>([]);
     const [openSearch, setOpenSearch] = useState(false);
     const [search, setSearch] = useState("");
-    const [eventosDelMes, setEventosDelMes] = useState<Evento[]>([]);
-    const [eventosDelDia, setEventosDelDia] = useState<Evento[]>([]);
+    const [eventosDelMes, setEventosDelMes] = useState<EventoType[]>([]);
+    const [eventosDelDia, setEventosDelDia] = useState<EventoType[]>([]);
     const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
     useEffect(() => {
@@ -64,12 +65,12 @@ const inicio = () => {
 
     const fetchEventosDelDia = async () => {
         const eventos = await getEventosDelDia();
-        console.log(eventos[0].id_evento);
+        //console.log(eventos[0].id_evento);
         setEventosDelDia(eventos); // Ajusta si el campo en tu API tiene otro nombre
     };
 
     const handleSubmitSearch = () => {
-        console.log("buscando " + search);
+        //console.log("buscando " + search);
         setOpenSearch(false);
     };
 
@@ -84,7 +85,6 @@ const inicio = () => {
         <>
             <Notch />
             <ScrollView>
-                
                 <Text style={styles.textoTitulo}>Categorias</Text>
                 <FlatList
                     data={tags}
@@ -255,54 +255,8 @@ const inicio = () => {
                     data={popularPlaces}
                     style={styles.slider}
                     keyExtractor={(item) => JSON.stringify(item)}
-                    renderItem={({ item }) => (
-                        <Link
-                            href={("/places/" + item.id) as Href}
-                            style={{ marginLeft: "3%" }}
-                        >
-                            <ImageBackground
-                                resizeMode="cover"
-                                source={{ uri: `${item.logo}` }}
-                                style={{
-                                    width: 150,
-                                    height: 200,
-                                    borderRadius: 10,
-                                    overflow: "hidden",
-                                }}
-                            >
-                                <View
-                                    style={{
-                                        flex: 1,
-                                        justifyContent: "flex-end",
-                                        alignItems: "center",
-                                        padding: 5,
-                                    }}
-                                >
-                                    <Text
-                                        style={{
-                                            color: "white",
-                                            fontFamily: "Poppins-Regular",
-                                            textAlign: "center",
-                                        }}
-                                    >
-                                        {item.name}
-                                    </Text>
-                                    <Text
-                                        style={{
-                                            color: "white",
-                                            textAlign: "center",
-                                        }}
-                                    >
-                                        <FontAwesome
-                                            name="star"
-                                            color={"yellow"}
-                                        />
-                                        {item.score} / 10
-                                    </Text>
-                                </View>
-                            </ImageBackground>
-                            <Text>{item.name}</Text>
-                        </Link>
+                    renderItem={({ item, index }) => (
+                        <Establecimiento establecimiento={item} key={index} />
                     )}
                     horizontal
                 />
