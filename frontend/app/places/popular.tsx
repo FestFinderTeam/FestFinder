@@ -27,7 +27,7 @@ const popular = () => {
         try {
             const res = await getEstablecimientos();
 
-            setEstablecimientos([...res, ...res, ...res]);
+            setEstablecimientos([...res]);
         } catch (e) {
             console.error("error al obtener los eventos ", e);
         }

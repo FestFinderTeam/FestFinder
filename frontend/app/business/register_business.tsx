@@ -62,10 +62,13 @@ const register_business = () => {
             tipo_fk,
             rango_de_precios,
             id_us,
+            coordenada_x,
+            coordenada_y,
+            direccion,
         ];
         if (dataBusiness.includes("")) {
-            console.log("todos los campos son obligatorios");
-            //return
+            alert("todos los campos son obligatorios");
+            return
         }
         router.push({
             pathname: "/business/preview",

@@ -16,7 +16,7 @@ const popular = () => {
         try {
             const res = await getEventosDelMes();
 
-            setEventos([...res, ...res, ...res, ...res]);
+            setEventos([...res]);
         } catch (e) {
             console.error("error al obtener los eventos ", e);
         }

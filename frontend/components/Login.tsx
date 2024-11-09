@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import Styles from "../globalStyles/styles";
 import React from "react";
 import { useSession } from "@/hooks/ctx";
+import { API_URL } from "@/constants/Url";
 
 const getLoginData = async () => {
     return await SecureStore.getItem("login");
@@ -30,7 +31,6 @@ const Login = () => {
         }
         // Send to the server
         const data = { email, password, g_id: "" };
-        const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
         try {
             const response = await fetch(`${API_URL}/api/logear_usuario/`, {
@@ -40,8 +40,17 @@ const Login = () => {
             });
 
             if (response.ok) {
-                const { email, g_id, id_usuario, imagen, nombre, telefono } =
-                    await response.json();
+                const data = await response.json();
+                const {
+                    email,
+                    g_id,
+                    id_usuario,
+                    imagen,
+                    nombre,
+                    telefono,
+                    duenio,
+                } = data;
+
                 //setUserData(userData);  // Guarda los datos del usuario
                 let imagen_url = "";
                 // Obtener la imagen del usuario
@@ -53,7 +62,14 @@ const Login = () => {
                     const fullImageUrl = `${API_URL}${imageData.imagen}`; // URL completa de la imagen
                     imagen_url = fullImageUrl; // Guarda la URI de la imagen
                 }
-                signIn({ id_usuario, imagen_url, nombre, email, telefono });
+                signIn({
+                    id_usuario,
+                    imagen_url,
+                    nombre,
+                    email,
+                    telefono,
+                    duenio,
+                });
             } else {
                 alert("Error en el inicio de sesión");
             }
