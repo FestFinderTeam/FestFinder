@@ -4,7 +4,7 @@ import React from "react";
 import { ImageBackground, Text, View } from "react-native";
 export interface Place {
     id: number;
-    name: string;
+    nombre: string;
     score: number;
     views: number;
     logo: any;
@@ -45,7 +45,7 @@ const Establecimiento = ({ establecimiento }: Props) => {
                             textAlign: "center",
                         }}
                     >
-                        {establecimiento.name}
+                        {establecimiento.nombre}
                     </Text>
                     <Text
                         style={{
