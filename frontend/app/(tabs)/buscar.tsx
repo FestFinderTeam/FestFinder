@@ -36,7 +36,7 @@ const buscar = () => {
     };
 
     return (
-        <View>
+        <>
             <SearchHeader
                 setSearch={setSearch}
                 handleSearch={handleSearch}
@@ -55,7 +55,7 @@ const buscar = () => {
                         <EventoExtra evento={evento} key={index} />
                     ))}
             </ScrollView>
-        </View>
+        </>
     );
 };
 
