@@ -24,7 +24,7 @@ const buscar = () => {
     };
     const fetchEventos = async () => {
         const res = await getEventosDelMes();
-        setEventos([...res, ...res, ...res]);
+        setEventos(res);
     };
     useEffect(() => {
         fetchEventos();
