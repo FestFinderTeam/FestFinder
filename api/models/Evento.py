@@ -14,6 +14,8 @@ class Evento(models.Model):
     horario_inicio = models.TimeField()
     horario_fin = models.TimeField()
     id_genero_fk = models.ForeignKey(GeneroEvento, on_delete=models.CASCADE)
+    precio_min = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    precio_max = models.DecimalField(max_digits=10, decimal_places=2, default=100.0)
 
     
 
