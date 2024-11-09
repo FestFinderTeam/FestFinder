@@ -41,6 +41,7 @@ type Evento = {
     fecha_inicio: string;
     horario_inicio?: string;
     logo: any;
+    id_genero_fk: any;
 };
 
 type Params = {
@@ -676,7 +677,7 @@ const Place = () => {
                                         }}
                                         numberOfLines={2}
                                     >
-                                        {item.nombre_tipo}
+                                        {item.id_genero_fk.titulo_genero}
                                     </Text>
                                 </Pressable>
                             )}
