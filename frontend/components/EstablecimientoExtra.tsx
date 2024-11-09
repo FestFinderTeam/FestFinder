@@ -9,8 +9,7 @@ export interface Place {
     score: number;
     views: number;
     logo: any;
-    tipo_fk?: any;
-    nombre_tipo?: string;
+    tipo_fk_detail?: any;
     direccion?: string;
 }
 
@@ -33,7 +32,7 @@ const Establecimiento = ({ establecimiento }: Props) => {
                 <View style={styles.details}>
                     <Text style={styles.nombre}>{establecimiento.nombre}</Text>
                     <Text style={styles.tipo}>
-                    {establecimiento.tipo_fk.nombre_tipo}
+                    {establecimiento.tipo_fk_detail.nombre_tipo}
                     </Text>
                     <Text style={styles.puntuacion}>
                         <FontAwesome name="star" color="orange" />
