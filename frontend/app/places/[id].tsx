@@ -26,7 +26,6 @@ type Establecimiento = {
     id: number;
     nombre: string;
     direccion?: string;
-    descripcion?: string;
     tipo_fk?: any;
     nombre_tipo?: string;
     nro_ref?: string;
