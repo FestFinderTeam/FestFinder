@@ -41,6 +41,7 @@ export interface SessionData {
     nombre: string|null;
     email: string|null;
     telefono: string|null;
+    duenio: boolean|null;
 }
 
 export function useStorageState(key: string): UseStateHook<SessionData> {

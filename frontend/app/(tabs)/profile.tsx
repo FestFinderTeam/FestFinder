@@ -14,7 +14,7 @@ const profile = () => {
         return;
     }
 
-    const { nombre, imagen_url, email } = session;
+    const { nombre, imagen_url, email, duenio } = session;
     //console.log(imagen_url)
 
     return (
@@ -84,12 +84,14 @@ const profile = () => {
                 />
                 <ItemProfile
                     onPress={() => {
-                        router.navigate("/business/register_business");
+                        if(!duenio){
+                            router.navigate("/business/register_business");
+                        }
                     }}
-                    color="#7D5683"
+                    color={duenio ? "#D3D3D3" : "#7D5683"}
                     text="Registrar mi local"
                     icon="cart-plus"
-                    textColor="#787878"
+                    textColor={duenio ? "#A9A9A9" : "#787878"}
                 />
                 <ItemProfile
                     onPress={() => {

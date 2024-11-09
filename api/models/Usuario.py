@@ -11,6 +11,7 @@ class Usuario(models.Model):
     p_field = models.CharField(max_length=100, blank=True, null=True)  
     g_id = models.CharField(max_length=100, blank=True, null=True)
     imagen = models.ForeignKey(Imagen, on_delete=models.CASCADE,blank=True, null=True)
+    duenio = models.BooleanField(default=False)
 
 
 def save(self, *args, **kwargs):
