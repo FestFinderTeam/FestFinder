@@ -1,8 +1,10 @@
 import GoogleMap from "@/components/GoogleMap";
 import Styles from "@/globalStyles/styles";
 import { getCategorias } from "@/services/categoriasService";
+import { getDireccion } from "@/utils/Direccion";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { router } from "expo-router";
+import React from "react";
 import { useEffect, useState } from "react";
 import {
     Pressable,
@@ -23,7 +25,7 @@ const register_business = () => {
     const [rango_de_precios, setRango] = useState("");
     const [coordenada_x, setCoordenadaX] = useState<number>();
     const [coordenada_y, setCoordenadaY] = useState<number>();
-
+    const [direccion, setDireccion] = useState("");
     const [toggleMap, setToggleMap] = useState(false);
     const [dataTypesBusiness, setDataTypesBusiness] = useState([]);
 
@@ -34,11 +36,11 @@ const register_business = () => {
         const fetchCategorias = async () => {
             const categorias = await getCategorias();
             // Mapear las categorías al formato que necesita SelectList
-            const formattedCategorias = categorias.map((categoria) => ({
-                key: categoria.id,          // Utiliza "id" como clave única
-                value: categoria.nombre_tipo // Utiliza "nombre_tipo" como el nombre visible
+            const formattedCategorias = categorias.map((categoria: any) => ({
+                key: categoria.id, // Utiliza "id" como clave única
+                value: categoria.nombre_tipo, // Utiliza "nombre_tipo" como el nombre visible
             }));
-       
+
             setDataTypesBusiness(formattedCategorias);
         };
 
@@ -63,12 +65,12 @@ const register_business = () => {
             params: {
                 nombre,
                 nro_ref,
-                direccion:'',
                 em_ref,
                 tipo_fk,
                 rango_de_precios,
                 coordenada_x,
                 coordenada_y,
+                direccion,
             },
         });
     };
@@ -88,11 +90,22 @@ const register_business = () => {
                     <GoogleMap
                         selectedLocation={location}
                         setSelectedLocation={setLocation}
-                        onPressConfirmLocation={() => {
+                        onPressConfirmLocation={async () => {
                             setToggleMap(false);
                             if (location) {
-                                setCoordenadaX(Number(location.longitude.toFixed(8)));
-                                setCoordenadaY(Number(location.latitude.toFixed(8)));
+                                setCoordenadaX(
+                                    Number(location.longitude.toFixed(8))
+                                );
+                                setCoordenadaY(
+                                    Number(location.latitude.toFixed(8))
+                                );
+
+                                setDireccion(
+                                    await getDireccion(
+                                        location.latitude ,
+                                        location.longitude
+                                    )
+                                );
                             }
                         }}
                     />
@@ -167,7 +180,7 @@ const register_business = () => {
                             }}
                         >
                             {location
-                                ? "cambiar Ubicacion"
+                                ? `Cambiar Ubicacion de ${direccion}` || ""
                                 : "Seleccionar ubicación"}
                         </Text>
                     </Pressable>
@@ -180,7 +193,7 @@ const register_business = () => {
                         boxStyles={Styles.input}
                         dropdownStyles={Styles.inputDropDown}
                     />
-                    
+
                     <Text
                         style={[
                             Styles.textDecoration2,

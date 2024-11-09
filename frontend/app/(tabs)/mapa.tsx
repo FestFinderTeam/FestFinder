@@ -41,9 +41,8 @@ const mapa = () => {
             <GoogleMap
                 establecimientos={establecimientos}
                 onMarkerPress={(establecimiento) => {
-                    console.log(establecimiento)
+                    console.log(establecimiento);
                     setEstablecimientoSeleccionado(establecimiento);
-                    
                 }}
             />
 
@@ -52,7 +51,12 @@ const mapa = () => {
                 onClose={() => setEstablecimientoSeleccionado(null)}
             >
                 <ScrollView style={{ backgroundColor: "white" }}>
-                    <View style={{ alignItems: "center", backgroundColor:"white" }}>
+                    <View
+                        style={{
+                            alignItems: "center",
+                            backgroundColor: "white",
+                        }}
+                    >
                         <Text style={Styles.subtitle}>
                             {establecimientoSeleccionado?.nombre}
                         </Text>
@@ -73,11 +77,12 @@ const mapa = () => {
                             }}
                             style={Styles.button}
                         >
-                            <Text style={Styles.buttonText}>Mas Informacion</Text>
+                            <Text style={Styles.buttonText}>
+                                Mas Informacion
+                            </Text>
                         </Pressable>
                     </View>
                 </ScrollView>
-
             </Popup>
         </View>
     );
