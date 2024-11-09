@@ -109,7 +109,7 @@ const popular = () => {
                                 }}
                                 numberOfLines={2}
                             >
-                                {evento.id_genero_fk.titulo_genero}
+                                {evento.id_genero_fk_detail.titulo_genero}
                             </Text>
                         </Pressable>
                     ))}
