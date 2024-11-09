@@ -4,6 +4,7 @@ import {
     ScrollView,
     Text,
     View,
+    StyleSheet
 } from "react-native";
 import Header from "@/components/Header";
 import { useEffect, useState } from "react";
@@ -28,6 +29,9 @@ const popular = () => {
         <>
             <Header title="Eventos populares" />
             <ScrollView>
+                <Text style={[styles.textoTitulo, { marginTop: "5%" }]}>
+                    Eventos populares en Cochabamba
+                </Text>
                 <View
                     style={{
                         marginTop: 15,
@@ -114,5 +118,16 @@ const popular = () => {
         </>
     );
 };
+const styles = StyleSheet.create({
+    textoTitulo: {
+        fontWeight: "bold" as "bold",
+        fontSize: 18,
+        marginLeft: "3%",
+    },
+    slider: {
+        marginLeft: "5%",
+        marginTop: "3%",
+    },
+});
 
 export default popular;
