@@ -84,64 +84,7 @@ const inicio = () => {
         <>
             <Notch />
             <ScrollView>
-                <View
-                    style={{
-                        backgroundColor: "#402158",
-                        paddingVertical: 15,
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        flexDirection: "row",
-                        borderRadius: 5,
-                        shadowColor: "#000",
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.3,
-                        bottom: 5,
-                    }}
-                >
-                    <FontAwesome
-                        style={{ marginLeft: "7%" }}
-                        name="bell"
-                        size={23}
-                        color={"white"}
-                    />
-                    {openSearch ? (
-                        <TextInput
-                            placeholder="Buscar"
-                            value={search}
-                            onChangeText={(text) => setSearch(text)}
-                            placeholderTextColor={"gray"}
-                            autoFocus
-                            onSubmitEditing={handleSubmitSearch}
-                        />
-                    ) : (
-                        <Pressable
-                            style={{ flexDirection: "row" }}
-                            onPress={() => console.log("cambiando de ciudad")}
-                        >
-                            <View style={{ alignItems: "center" }}>
-                                <Text style={{ color: "white" }}>Ciudad</Text>
-                                <Text style={{ color: "white" }}>
-                                    Cochabamba
-                                </Text>
-                            </View>
-                            <FontAwesome
-                                name="sort-down"
-                                size={23}
-                                color="white"
-                            />
-                        </Pressable>
-                    )}
-
-                    <Pressable onPress={searchPress}>
-                        <FontAwesome
-                            name="search"
-                            size={23}
-                            color={"white"}
-                            style={{ marginRight: "7%" }}
-                        />
-                    </Pressable>
-                </View>
-
+                
                 <Text style={styles.textoTitulo}>Categorias</Text>
                 <FlatList
                     data={tags}
