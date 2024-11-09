@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
-import SearchHeader from "@/components/SearchHeader";
+import SearchHeader, { filterSearch } from "@/components/SearchHeader";
 import type { EventoType } from "@/components/Evento";
 import Establecimiento, { type Place } from "@/components/EstablecimientoExtra";
 import { getEstablecimientos } from "@/services/establecimientosServices";
@@ -11,12 +11,9 @@ const buscar = () => {
     const [establecimientos, setEstablecimientos] = useState<Place[]>([]);
     const [eventos, setEventos] = useState<EventoType[]>([]);
     const [search, setSearch] = useState("");
+    const [filtro, setFiltro] = useState<filterSearch>("todo");
 
-    console.log("Buscador");
     const fetchEstablecimientos = async () => {
-        // Fetch establecimientos de la API con el nombre
-        // Example: fetch(`${API_URL}/establecimientos?nombre=${nombre}`)
-        //...
         try {
             const res = await getEstablecimientos();
             console.log(res);
@@ -34,19 +31,29 @@ const buscar = () => {
         fetchEstablecimientos();
     }, []);
 
+    const handleSearch = () => {
+        console.log("Buscando", search);
+    };
+
     return (
         <View>
-            <SearchHeader />
+            <SearchHeader
+                setSearch={setSearch}
+                handleSearch={handleSearch}
+                setFilter={setFiltro}
+            />
             <ScrollView>
-                {establecimientos.map((establecimiento, index) => (
-                    <Establecimiento
-                        establecimiento={establecimiento}
-                        key={index}
-                    />
-                ))}
-                {eventos.map((evento, index) => (
-                    <EventoExtra evento={evento} key={index} />
-                ))}
+                {(filtro === "todo" || filtro === "locales") &&
+                    establecimientos.map((establecimiento, index) => (
+                        <Establecimiento
+                            establecimiento={establecimiento}
+                            key={index}
+                        />
+                    ))}
+                {(filtro === "todo" || filtro === "eventos") &&
+                    eventos.map((evento, index) => (
+                        <EventoExtra evento={evento} key={index} />
+                    ))}
             </ScrollView>
         </View>
     );
