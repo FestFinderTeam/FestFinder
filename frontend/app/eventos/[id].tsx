@@ -44,7 +44,7 @@ const Evento = () => {
 
     const obtenerDatosEvento = async (id: string) => {
         const data = await getEventoPorID(id);
-        console.log (data.id_establecimiento_detail);
+        console.log(data.id_establecimiento_detail);
         setLocal(data.id_establecimiento_detail);
         data.fecha_inicio = new Date(data.fecha_inicio);
         data.fecha_final = new Date(data.fecha_final);
