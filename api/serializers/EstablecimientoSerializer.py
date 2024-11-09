@@ -7,7 +7,7 @@ class EstablecimientoSerializer(serializers.ModelSerializer):
     tipo_fk = TipoEstablecimientoSerializer(read_only=True)  # Agregado para obtener datos completos del tipo
     class Meta:
         model = Establecimiento
-        fields = ['id', 'nombre', 'banner', 'logo', 'direccion', 'coordenada_x', 'coordenada_y', 'descripcion', 'tipo_fk', 'rango_de_precios', 'nro_ref', 'em_ref']
+        fields = ['id', 'nombre', 'banner', 'logo', 'direccion', 'coordenada_x', 'coordenada_y', 'tipo_fk', 'rango_de_precios', 'nro_ref', 'em_ref']
         extra_kwargs = {
             'nombre': {
                 'error_messages': {
@@ -43,11 +43,6 @@ class EstablecimientoSerializer(serializers.ModelSerializer):
                     'invalid': 'La coordenada Y debe ser un número decimal.',
                     'max_digits': 'La coordenada Y no debe tener más de 10 dígitos en total.',
                     'max_decimal_places': 'La coordenada Y no debe tener más de 8 decimales.'
-                }
-            },
-            'descripcion': {
-                'error_messages': {
-                    'blank': 'La descripción puede estar vacía, pero no puede ser nula.'
                 }
             },
             'tipo_fk': {

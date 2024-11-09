@@ -6,34 +6,34 @@
 
 ## app/(tabs)/inicio
 
-- peticion de eventos del dia
-- peticion de lugares populares
-- peticion de eventos populares
+- peticion de eventos del dia       LISTO
+- peticion de lugares populares       LISTO
+- peticion de eventos populares       LISTO
 
 ## registrar local app/business/register_business y preview
 
-- petion para obtener los tipos de negocio en register  
+- petion para obtener los tipos de negocio en register       LISTO  
 - petion de registro de local (la ubicacion solo sera latitud y longitud)
 
 ## Administrar Eventos app/admin/eventos
 
-- peticion de todos los eventos de un local
-- peticion para obtener los eventos activos de un local
+- peticion de todos los eventos de un local                   LISTO
+- peticion para obtener los eventos activos de un local       LISTO
 
 ## Crear Evento app/eventos/crearEvento
 
-- peticion para registrar el evento
+- peticion para registrar el evento       YA ESTABA HECHO
 
 ## Editar Local app/admin/myplace
 
-- peticion para obtener los datos del local
+- peticion para obtener los datos del local                LISTO
 - peticion para actualizar los nuevos datos del local
 
 ## Informacion detallada de Local app/places/[id]
 
-- peticion para obtener los datos del local
+- peticion para obtener los datos del local       LISTO (NO ES LO MISMO?)
 - peticion para obtener los lugares parecidos
 
 ## Informacion detallada de Evento app/eventos/[id]
 
-- peticion para obtener los datos de un evento
+- peticion para obtener los datos de un evento       LISTO

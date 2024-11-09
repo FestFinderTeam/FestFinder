@@ -7,6 +7,7 @@ class Evento(models.Model):
     nombre = models.CharField(max_length=100)
     banner = models.ImageField(upload_to='imagenes/eventos/banners/', blank=True, null=True)
     logo = models.ImageField(upload_to='imagenes/eventos/logos/', blank=True, null=True)
+    descripcion = models.TextField(blank=True)
     fecha_inicio = models.DateField()
     id_establecimiento = models.ForeignKey(Establecimiento, on_delete=models.CASCADE)
     fecha_final = models.DateField()
