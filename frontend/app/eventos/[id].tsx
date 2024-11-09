@@ -9,7 +9,7 @@ import React from "react";
 import { getEventoPorID } from "@/services/eventosService";
 import { getEstablecimientoPorId } from "@/services/establecimientosServices";
 
-interface Evento {
+export interface Evento {
     id_evento: number;
     nombre: string;
     descripcion: string;
@@ -27,7 +27,7 @@ interface Evento {
     id_establecimiento: any;
     id_establecimiento_detail: any;
 }
-interface Local {
+export interface Local {
     id: number;
     nombre: string;
     telefono: string;

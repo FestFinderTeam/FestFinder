@@ -5,7 +5,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import ItemProfile from "@/components/ItemProfile";
 import Header from "@/components/Header";
 import { Href, Link, router } from "expo-router";
-const defaultImage = require("../../assets/images/default-profile.png")
+const defaultImage = require("../../assets/images/default-profile.png");
 const profile = () => {
     const { session, signOut } = useSession();
 
@@ -15,7 +15,7 @@ const profile = () => {
     }
 
     const { nombre, imagen_url, email, duenio } = session;
-    console.log(duenio)
+    console.log(duenio);
 
     return (
         <View>
@@ -39,7 +39,7 @@ const profile = () => {
             <View style={styles.parametros}>
                 <ItemProfile
                     onPress={() => {
-                        router.navigate('/user/info' as Href);
+                        router.navigate("/user/info" as Href);
                     }}
                     color="#7D5683"
                     text="Informacion personal"
@@ -62,14 +62,15 @@ const profile = () => {
                 />
                 <ItemProfile
                     onPress={() => {
-                        if(duenio){
+                        /*if(duenio){
                             router.push("/admin");
-                        }
+                            }*/
+                        router.push("/admin");
                     }}
-                    color={!duenio? "#D3D3D3" : "#7D5683"}
+                    color={!duenio ? "#D3D3D3" : "#7D5683"}
                     text="Administrar mi local"
                     icon="gear"
-                    textColor={!duenio? "#A9A9A9" : "#787878"}
+                    textColor={!duenio ? "#A9A9A9" : "#787878"}
                 />
             </View>
 
@@ -86,7 +87,7 @@ const profile = () => {
                 />
                 <ItemProfile
                     onPress={() => {
-                        if(!duenio){
+                        if (!duenio) {
                             router.navigate("/business/register_business");
                         }
                     }}
