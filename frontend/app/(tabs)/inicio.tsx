@@ -84,6 +84,55 @@ const inicio = () => {
     return (
         <>
             <Notch />
+            <View
+                style={{
+                    backgroundColor: "#402158",
+                    paddingVertical: 15,
+                    alignItems: "center",
+                    flexDirection: "row",
+                    borderRadius: 5,
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.3,
+                    bottom: 4,
+                }}
+            >
+                <FontAwesome
+                    style={{ flex: 1, marginLeft: "7%" }} // Agregamos flex: 1 para centrar
+                    name="bell"
+                    size={23}
+                    color="white"
+                />
+                {openSearch ? (
+                    <TextInput
+                        placeholder="Buscar"
+                        value={search}
+                        onChangeText={(text) => setSearch(text)}
+                        placeholderTextColor="gray"
+                        autoFocus
+                        onSubmitEditing={handleSubmitSearch}
+                        style={{ flex: 3, textAlign: "center" }}
+                    />
+                ) : (
+                    <Pressable
+                        style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flex: 3, 
+                        }}
+                        onPress={() => console.log("cambiando de ciudad")}
+                    >
+                        <View style={{ alignItems: "center" }}>
+                            <Text style={{ color: "white" }}>Ciudad</Text>
+                            <Text style={{ color: "white" }}>Cochabamba</Text>
+                        </View>
+                        <FontAwesome name="sort-down" size={23} color="white" />
+                    </Pressable>
+                )}
+                <View style={{ flex: 1 }} />
+            </View>
+
             <ScrollView>
                 <Text style={styles.textoTitulo}>Categorias</Text>
                 <FlatList
@@ -92,7 +141,7 @@ const inicio = () => {
                     keyExtractor={(item) => JSON.stringify(item)}
                     renderItem={({ item }) => (
                         <Pressable
-                            onPress={() => {}}
+                            onPress={() => { }}
                             style={{
                                 alignItems: "center",
                                 marginHorizontal: 10,
