@@ -49,10 +49,11 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     imageBackground: {
-        width: 100,
-        height: 100,
+        width: 120,
+        height: 160,
         borderRadius: 10,
         overflow: "hidden",
+        marginBottom:5,
     },
     details: {
         marginLeft: 10,

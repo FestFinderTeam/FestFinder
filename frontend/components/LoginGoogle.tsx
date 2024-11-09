@@ -22,40 +22,28 @@ const LoginGoogle = () => {
             // Loguearse con los datos de google para obtener los datos del backend
             // y si no se puede registrar esos datos
 
-            /*
             const data = {
-                name: user.data?.user.name,
+                nombre: user.data?.user.name,
                 email: user.data?.user.email,
-                password: user.data?.user.id,
+                password: "",
+                g_id: user.data?.user.id,
             };
+            const photo = user.data?.user.photo;
 
             const API_URL = process.env.EXPO_PUBLIC_API_URL;
-            const response = await fetch(`${API_URL}/logear_usuario`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+            const response = await fetch(`${API_URL}/api/logear_usuario/`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
             });
 
-            if(!response.ok){     
-                await fetch(API_URL + "/registrar_usuario", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(data),
-                });
-            }
-            */
-
-            if (user.data) {
-                const { email, name, id, photo } = user.data.user;
-                signIn({
-                    email,
-                    imagen_url: photo,
-                    telefono: "",
-                    id_usuario: id,
-                    nombre: name,
-                });
+            if (response.ok) {
+                const { imagen, ...user } = await response.json();
+                //console.log("usuario", user, "imagen", imagen);
+                signIn({ ...user, imagen_url: imagen ? imagen : photo });
                 router.replace("/");
             }
+
         } catch (e) {
             console.error(e);
         }
