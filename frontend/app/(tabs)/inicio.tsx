@@ -1,7 +1,7 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, router, type Href } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Image } from "react-native";
+import { ScrollView, StyleSheet, Image, Modal, } from "react-native";
 import {
     FlatList,
     ImageBackground,
@@ -40,7 +40,13 @@ const inicio = () => {
     const [eventosDelMes, setEventosDelMes] = useState<EventoType[]>([]);
     const [eventosDelDia, setEventosDelDia] = useState<EventoType[]>([]);
     const API_URL = process.env.EXPO_PUBLIC_API_URL;
-
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedCity, setSelectedCity] = useState("Cochabamba");
+    const cities = ["Cochabamba", "Santa Cruz", "La Paz"];
+    const handleCitySelect = (city: string) => {
+        setSelectedCity(city);
+        setModalVisible(false);
+    };
     useEffect(() => {
         fetchCategoriasEstablecimientos();
         fetchEventosDelMes();
@@ -98,39 +104,64 @@ const inicio = () => {
                 }}
             >
                 <FontAwesome
-                    style={{ flex: 1, marginLeft: "7%" }} // Agregamos flex: 1 para centrar
+                    style={{ flex: 1, marginLeft: "7%" }}
                     name="bell"
                     size={23}
                     color="white"
                 />
-                {openSearch ? (
-                    <TextInput
-                        placeholder="Buscar"
-                        value={search}
-                        onChangeText={(text) => setSearch(text)}
-                        placeholderTextColor="gray"
-                        autoFocus
-                        onSubmitEditing={handleSubmitSearch}
-                        style={{ flex: 3, textAlign: "center" }}
-                    />
-                ) : (
-                    <Pressable
-                        style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            flex: 3, 
-                        }}
-                        onPress={() => console.log("cambiando de ciudad")}
-                    >
-                        <View style={{ alignItems: "center" }}>
-                            <Text style={{ color: "white" }}>Ciudad</Text>
-                            <Text style={{ color: "white" }}>Cochabamba</Text>
-                        </View>
-                        <FontAwesome name="sort-down" size={23} color="white" />
-                    </Pressable>
-                )}
+
+                <Pressable
+                    style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flex: 3,
+                    }}
+                    onPress={() => setModalVisible(true)}
+                >
+                    <View style={{ alignItems: "center" }}>
+                        <Text style={{ color: "white" }}>Ciudad</Text>
+                        <Text style={{ color: "white" }}>{selectedCity}</Text>
+                    </View>
+                    <FontAwesome name="sort-down" size={23} color="white" />
+                </Pressable>
+
                 <View style={{ flex: 1 }} />
+
+                {/* Modal para seleccionar la ciudad */}
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => setModalVisible(false)}
+                >
+                    <View style={styles.modalBackground}>
+                        <View style={styles.modalContainer}>
+                            <Text style={styles.modalTitle}>Seleccionar la ciudad</Text>
+                            {cities.map((city) => (
+                                <Pressable
+                                    key={city}
+                                    style={styles.option}
+                                    onPress={() => handleCitySelect(city)}
+                                >
+                                    <View
+                                        style={[
+                                            styles.radioButton,
+                                            selectedCity === city && styles.radioButtonSelected,
+                                        ]}
+                                    />
+                                    <Text style={styles.optionText}>{city}</Text>
+                                </Pressable>
+                            ))}
+                            <Pressable
+                                style={styles.closeButton}
+                                onPress={() => setModalVisible(false)}
+                            >
+                                <Text style={styles.closeButtonText}>Cerrar</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                </Modal>
             </View>
 
             <ScrollView>
@@ -373,6 +404,58 @@ const styles = StyleSheet.create({
     slider: {
         marginLeft: "5%",
         marginTop: "3%",
+    },
+    modalBackground: {
+        flex: 1,
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    modalContainer: {
+        width: 300,
+        backgroundColor: "white",
+        borderRadius: 10,
+        padding: 20,
+        alignItems: "center",
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: "bold",
+        marginBottom: 15,
+    },
+    option: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginVertical: 10,
+        width: "100%", 
+        justifyContent: "flex-start", 
+    },
+    
+    radioButton: {
+        width: 20,
+        height: 20,
+        borderRadius: 10,
+        borderWidth: 2,
+        borderColor: "#402158",
+        marginRight: 10,
+        marginLeft: 10, 
+    },
+    radioButtonSelected: {
+        backgroundColor: "#402158",
+    },
+    optionText: {
+        fontSize: 16,
+    },
+    closeButton: {
+        marginTop: 20,
+        backgroundColor: "#402158",
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+    },
+    closeButtonText: {
+        color: "white",
+        fontWeight: "bold",
     },
 });
 
