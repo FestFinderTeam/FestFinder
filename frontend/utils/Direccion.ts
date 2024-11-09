@@ -9,8 +9,8 @@ export const getDireccion = async (
         if (res.ok) {
             const data = await res.json();
             const address = data.address;
-            return `${address.city || ""}, ${address.road || ""} ${
-                address.house_number || ""
+            return `${address.road || ""} ${address.house_number || "S/N"} ,${
+                address.city || ""
             }`;
         }
     } catch (e) {
