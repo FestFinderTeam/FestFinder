@@ -1,7 +1,7 @@
 import GoogleMap from "@/components/GoogleMap";
 import Notch from "@/components/Notch";
 import React, { useEffect, useState } from "react";
-import { Image, Modal, Pressable, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, Image, Modal, Pressable, ScrollView, Text, View } from "react-native";
 import Popup from "@/components/Popup";
 import { router, type Href } from "expo-router";
 import Styles from "@/globalStyles/styles";
@@ -21,31 +21,51 @@ const mapa = () => {
     >([]);
     const [establecimientoSeleccionado, setEstablecimientoSeleccionado] =
         useState<EstablecimientoType | null>(null);
+    
+    const [isLoading, setIsLoading] = useState<boolean>(true); 
+
 
     const obtenerDatosEstablecimiento = async () => {
-        const data = await getEstablecimientos();
+        console.log('PIDIOENDO');
+        setIsLoading(true);
+        const data = await getEstablecimientos(null);
         console.log(data);
         setEstablecimientos(data);
+        
     };
 
     useEffect(() => {
-        if (!establecimientos) {
-            obtenerDatosEstablecimiento();
+        console.log(establecimientos);
+        if (establecimientos.length > 0) {
+            console.log("cargado");
+            setIsLoading(false); // Cambia el estado de carga solo después de que `establecimientos` tenga datos
         }
+    }, [establecimientos]);
+
+    useEffect(() => {
+        obtenerDatosEstablecimiento();
     }, []);
+
+    if (isLoading) {
+        return (
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                <ActivityIndicator size="large" color="#0000ff" />
+                <Text>Cargando establecimientos...</Text>
+            </View>
+        );
+    }
 
     return (
         <View style={{ position: "relative" }}>
             <Notch />
-
+            
             <GoogleMap
+                
                 establecimientos={establecimientos}
                 onMarkerPress={(establecimiento) => {
-                    //    console.log(establecimiento);
                     setEstablecimientoSeleccionado(establecimiento);
                 }}
             />
-
             <Popup
                 isVisible={establecimientoSeleccionado !== null}
                 onClose={() => setEstablecimientoSeleccionado(null)}
@@ -84,6 +104,7 @@ const mapa = () => {
                     </View>
                 </ScrollView>
             </Popup>
+            
         </View>
     );
 };

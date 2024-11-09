@@ -29,6 +29,7 @@ const GoogleMap = ({
             setSelectedLocation(coordinate);
         }
     };
+    console.log("Datos de establecimientos recibidos:", establecimientos);
 
     return (
         <>
@@ -49,8 +50,8 @@ const GoogleMap = ({
                         <Marker
                             key={place.id}
                             coordinate={{
-                                latitude: place.latitude,
-                                longitude: place.longitude,
+                                latitude: Number(place.coordenada_y),
+                                longitude: Number(place.coordenada_x),
                             }}
                             title={place.nombre}
                             onPress={() =>
@@ -58,7 +59,7 @@ const GoogleMap = ({
                             }
                         >
                             <Image
-                                source={place.photo}
+                                source={{uri: place.logo}}
                                 style={{
                                     width: 40,
                                     height: 40,

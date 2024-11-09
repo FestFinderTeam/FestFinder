@@ -18,8 +18,8 @@ interface Evento {
     direccion: string;
     horario_inicio: Date;
     horario_fin: Date;
-    precioInicial: number;
-    precioFinal: number;
+    precio_min: number;
+    precio_max: number;
     logo: any;
     puntuacion: number;
     puntuaciones: number;
@@ -313,7 +313,7 @@ const Evento = () => {
                             color: "#5A5A5A",
                         }}
                     >
-                        {evento.precioInicial} Bs - {evento.precioFinal} Bs
+                        {evento.precio_min} Bs - {evento.precio_max} Bs
                     </Text>
                 </View>
                 <View

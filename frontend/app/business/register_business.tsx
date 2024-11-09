@@ -6,6 +6,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { router } from "expo-router";
 import React from "react";
 import { useEffect, useState } from "react";
+import { useSession } from "@/hooks/ctx";
 import {
     Pressable,
     Text,
@@ -28,6 +29,8 @@ const register_business = () => {
     const [direccion, setDireccion] = useState("");
     const [toggleMap, setToggleMap] = useState(false);
     const [dataTypesBusiness, setDataTypesBusiness] = useState([]);
+    const { session } = useSession();
+    const [id_us,setID] = useState(''); 
 
     const dataRango = ["Bajo", "Medio", "Alto"];
 
@@ -48,6 +51,9 @@ const register_business = () => {
     }, []);
 
     const handleNext = () => {
+        if(session){
+            setID(session.id_usuario+'')
+        }
         const dataBusiness = [
             nombre,
             location,
@@ -55,6 +61,7 @@ const register_business = () => {
             em_ref,
             tipo_fk,
             rango_de_precios,
+            id_us,
         ];
         if (dataBusiness.includes("")) {
             console.log("todos los campos son obligatorios");
@@ -71,6 +78,7 @@ const register_business = () => {
                 coordenada_x,
                 coordenada_y,
                 direccion,
+                id_usuario: id_us,
             },
         });
     };
