@@ -26,7 +26,7 @@ type Establecimiento = {
     id: number;
     nombre: string;
     direccion?: string;
-    tipo_fk?: numb;
+    tipo_fk?: number;
     tipo_fk_detail?: any;
     nombre_tipo?: string;
     nro_ref?: string;
@@ -42,7 +42,7 @@ type Evento = {
     fecha_inicio: string;
     horario_inicio?: string;
     logo: any;
-    id_genero_fk: any;
+    id_genero_fk_detail: any;
 };
 
 type Params = {
@@ -108,6 +108,7 @@ const Place = () => {
 
     const obtenerDatosEventos = async (establecimientoId: any) => {
         const data = await getEventosPorEstablecimiento(establecimientoId);
+        console.log(data);
         //console.log(data);
         setProximosEventos(data);
     };
@@ -676,7 +677,7 @@ const Place = () => {
                                         }}
                                         numberOfLines={2}
                                     >
-                                        {item.id_genero_fk.titulo_genero}
+                                        {item.id_genero_fk_detail.titulo_genero}
                                     </Text>
                                 </Pressable>
                             )}
