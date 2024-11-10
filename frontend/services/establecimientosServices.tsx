@@ -1,10 +1,10 @@
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
-export const getEstablecimientos = async (id_tipo = null) => {
+export const getEstablecimientos = async (id_tipo:any) => {
 
     try {
         const url = id_tipo 
-            ? `${API_URL}/api/establecimientos/?tipo_fk=${id_tipo}` 
+            ? `${API_URL}/api/establecimientos/tipo/${id_tipo}/` 
             : `${API_URL}/api/establecimientos/`;
 
         const response = await fetch(url);
