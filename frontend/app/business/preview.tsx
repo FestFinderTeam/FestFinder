@@ -84,9 +84,9 @@ const preview = () => {
       .map((_, index) => {
         const horario = openHorario[index]
           ? {
-              inicio_atencion: dateToHHmm(horariosInicio[index]),
-              fin_atencion: dateToHHmm(horariosFin[index]),
-            }
+            inicio_atencion: dateToHHmm(horariosInicio[index]),
+            fin_atencion: dateToHHmm(horariosFin[index]),
+          }
           : null;
         return {
           dia: index,
@@ -135,8 +135,7 @@ const preview = () => {
         // Intentamos extraer información de error del cuerpo de la respuesta
         const errorDetails = await response.json();
         throw new Error(
-          `Error al registrar el establecimiento: ${response.statusText} (${
-            response.status
+          `Error al registrar el establecimiento: ${response.statusText} (${response.status
           }). Detalles: ${JSON.stringify(errorDetails)}`
         );
       }
@@ -212,10 +211,17 @@ const preview = () => {
                 style={Styles.imageBanner}
               />
             ) : (
+              <Image
+                source={require('../../assets/images/defaultBanner.jpg')}
+                style={Styles.imageBanner}
+              />
+            )}
+            {!imageBanner && (
               <View
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
+                  position: "absolute",
                 }}
               >
                 <FontAwesome name="plus" style={{ marginRight: 10 }} />
@@ -227,9 +233,7 @@ const preview = () => {
           <Pressable
             style={[
               Styles.imageRoundedContainer,
-              {
-                left: "-30%",
-              },
+              { left: "-30%" },
             ]}
             onPress={() => {
               pickImage(setimage2, [1, 1]);
@@ -238,7 +242,12 @@ const preview = () => {
             {logo ? (
               <Image source={{ uri: logo.uri }} style={Styles.imageRounded} />
             ) : (
-              <FontAwesome name="camera" size={30} />
+              <>
+                <Image source={require('../../assets/images/default.jpg')} style={Styles.imageRounded} />
+                <View style={styles.overlay}>
+                  <Text style={styles.plusText}>+</Text>
+                </View>
+              </>
             )}
           </Pressable>
 
@@ -394,8 +403,20 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   timeText: {
-    color: "#fff", // Texto blanco
+    color: "#fff", 
     fontWeight: "500",
+  },
+  overlay: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+  },
+  plusText: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#000', 
   },
 });
 

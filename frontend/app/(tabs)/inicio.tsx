@@ -305,20 +305,12 @@ const inicio = () => {
                                     fontSize: 14,
                                     color: "#402158",
                                     marginTop: 15,
+                                    
                                 }}
                             >
-                                Ver más
+                                Ver más &gt;
                             </Text>
-                            <Text
-                                style={{
-                                    fontSize: 16,
-                                    color: "#402158",
-                                    marginLeft: 5,
-                                    marginTop: 15,
-                                }}
-                            >
-                                &gt;
-                            </Text>
+                            
                         </View>
                     </Pressable>
                 </View>
@@ -364,18 +356,9 @@ const inicio = () => {
                                     marginTop: 15,
                                 }}
                             >
-                                Ver más
+                                Ver más &gt;
                             </Text>
-                            <Text
-                                style={{
-                                    fontSize: 16,
-                                    color: "#402158",
-                                    marginLeft: 5,
-                                    marginTop: 15,
-                                }}
-                            >
-                                &gt;
-                            </Text>
+                            
                         </View>
                     </Pressable>
                 </View>
