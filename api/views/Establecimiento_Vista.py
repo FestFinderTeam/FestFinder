@@ -79,6 +79,32 @@ class ListarEstablecimientos(APIView):
             establecimientos_data.append(establecimiento_data)
 
         return Response(establecimientos_data, status=status.HTTP_200_OK)
+    
+
+
+class EstablecimientoPorUsuario(APIView):
+    def get(self, request, usuario_id):
+        try:
+            # Filtra el establecimiento por el ID del usuario
+            establecimiento = Establecimiento.objects.get(usuario=usuario_id)
+            establecimiento_data = EstablecimientoSerializer(establecimiento).data
+
+            # Obtén etiquetas asociadas al establecimiento
+            etiquetas_establecimiento = EtiquetaEstablecimiento.objects.filter(id_establecimiento=establecimiento.id)
+            etiquetas = EtiquetaSerializer([ee.id_etiqueta for ee in etiquetas_establecimiento], many=True).data
+            establecimiento_data['etiquetas'] = etiquetas
+
+            # Obtén horarios asociados al establecimiento
+            horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento.id)
+            horarios_data = HorariosEstablecimientoSerializer(horarios, many=True).data
+            establecimiento_data['horarios'] = horarios_data
+
+            return Response(establecimiento_data, status=status.HTTP_200_OK)
+
+        except Establecimiento.DoesNotExist:
+            return Response({"message": "No se encontró un establecimiento para el usuario especificado."}, status=status.HTTP_404_NOT_FOUND)
+        
+
 
 class RegistrarEstablecimiento(APIView):
     parser_classes = (MultiPartParser, FormParser)
