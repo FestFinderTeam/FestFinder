@@ -18,7 +18,7 @@ const Establecimiento = ({ establecimiento }: Props) => {
     return (
         <Link
             href={("/places/" + establecimiento.id) as Href}
-            style={{ marginLeft: "3%", marginBottom: 15 }}
+            style={{ paddingHorizontal: 5, marginBottom: 15 }}
         >
             <ImageBackground
                 resizeMode="cover"
