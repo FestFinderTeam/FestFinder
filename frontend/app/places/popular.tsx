@@ -6,6 +6,7 @@ import Evento from "@/components/Evento";
 import React from "react";
 import { getEstablecimientos } from "@/services/establecimientosServices";
 import Establecimiento, { type Place } from "@/components/EstablecimientoExtra";
+import LoadingScreen from "@/components/Loading";
 
 type Establecimiento = {
     id: number;
@@ -22,8 +23,10 @@ type Establecimiento = {
 };
 
 const popular = () => {
+    const [loading, setLoading] = useState(false)
     const [establecimientos, setEstablecimientos] = useState<any>([]);
     const fetch = async () => {
+        setLoading(true)
         try {
             const res = await getEstablecimientos();
 
@@ -31,10 +34,12 @@ const popular = () => {
         } catch (e) {
             console.error("error al obtener los eventos ", e);
         }
+        setLoading(false)
     };
     useEffect(() => {
         fetch();
     }, []);
+    if(loading) return <LoadingScreen/>
     return (
         <>
             <Header title="Lugares populares" />
