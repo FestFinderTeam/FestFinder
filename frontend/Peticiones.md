@@ -26,13 +26,13 @@
 
 ## Editar Local app/admin/myplace
 
-- peticion para obtener los datos de MI local                
+- peticion para obtener los datos de MI local          LISTO       
 - peticion para actualizar los nuevos datos del local
 
 ## Informacion detallada de Local app/places/[id]
 
 - peticion para obtener los datos del local       LISTO (NO ES LO MISMO?)
-- peticion para obtener los lugares parecidos
+- peticion para obtener los lugares parecidos       DUDAS?
 
 ## Informacion detallada de Evento app/eventos/[id]
 

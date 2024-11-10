@@ -38,6 +38,23 @@ export const getEstablecimientoPorId = async (id: any) => {
     }
 };
 
+export const getEstablecimientoPorPropietario = async (id: any) => {
+    try {
+        const url = `${API_URL}/api/establecimiento/propietario/${id}/`;
+
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error("Error al recuperar tu lugar");
+        }
+        const data = await response.json();
+        //console.log(data);
+        return data;
+    } catch (error) {
+        console.error("Error fetching establecimiento:", error);
+        return [];
+    }
+};
+
 export const getEventosPorEstablecimiento = async (idEstablecimiento: string) => {
     try {
         const response = await fetch(`${API_URL}/api/eventos/establecimiento/${idEstablecimiento}/`, {
