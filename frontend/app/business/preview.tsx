@@ -18,10 +18,12 @@ import { getImage, pickImage } from "@/utils/Image";
 import { dateToHHmm, showTime } from "@/utils/DateTime";
 import { useSession } from "@/hooks/ctx";
 import { getDireccion } from "@/utils/Direccion";
+import LoadingScreen from "@/components/Loading";
 
 const preview = () => {
   //const API_URL = "http://(TU IPv4 PARA PROBAR ANTES QUE RESUBAN LA API):8000/";
   const API_URL = process.env.EXPO_PUBLIC_API_URL;
+  const [loading, setLoading] = useState(false);
 
   const { session } = useSession();
   const [logo, setimage2] = useState<ImagePickerAsset>();
@@ -105,6 +107,7 @@ const preview = () => {
     //const data = { ...local, horarios: obtenerHorarios(), etiquetas: tags };
     const formData = new FormData();
 
+    setLoading(true)
     try {
       if (logo) {
         formData.append("logo", getImage(logo));
@@ -154,10 +157,12 @@ const preview = () => {
       } else {
         console.error("Error desconocido:", error);
       }
-      return null;
+
     }
+    setLoading(false)
   };
 
+  if(loading) return <LoadingScreen/>
   return (
     <ScrollView>
       <View

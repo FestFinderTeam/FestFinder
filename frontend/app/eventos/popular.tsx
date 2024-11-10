@@ -13,6 +13,7 @@
     import { router, type Href } from "expo-router";
     import Evento from "@/components/EventoExtra";
     import type { EventoType } from "@/components/Evento";
+import LoadingScreen from "@/components/Loading";
 
     type Evento = {
         id_evento: number;
@@ -27,19 +28,24 @@
         puntuacion?: string;
     }
     const popular = () => {
+        const [loading, setLoading] = useState(false);
         const [eventos, setEventos] = useState<EventoType[]>([]);
         const fetch = async () => {
+            setLoading(true);
             try {
                 const res = await getEventosDelMes();
-
                 setEventos([...res]);
             } catch (e) {
                 console.error("error al obtener los eventos ", e);
             }
+            setLoading(false);
         };
         useEffect(() => {
             fetch();
         }, []);
+
+        if(loading)return <LoadingScreen/>
+
         return (
             <>
                 <Header title="Eventos populares" />
