@@ -22,7 +22,7 @@ const Evento = ({ evento }: Props) => {
     return (
         <Link
             href={("/eventos/" + evento.id_evento) as Href}
-            style={{ marginLeft: "3%", marginBottom: 15 }}
+            style={{ paddingHorizontal: 5, marginBottom: 15 }}
         >
             <ImageBackground
                 resizeMode="cover"

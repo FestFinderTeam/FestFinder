@@ -144,7 +144,7 @@ const preview = () => {
       // Procesar la respuesta
       const result = await response.json();
       console.log("Establecimiento registrado:", result);
-      return result;
+      router.navigate('/')
     } catch (error) {
       if (error instanceof Error) {
         console.error(
