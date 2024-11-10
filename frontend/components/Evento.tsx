@@ -32,8 +32,36 @@ const Evento = ({ evento }: Props) => {
                     height: 200,
                     borderRadius: 10,
                     overflow: "hidden",
+                    alignItems: "flex-end", // Alinea contenido del View a la derecha
                 }}
             >
+                <View
+                    style={{
+                        backgroundColor: "white",
+                        width: "35%",
+                        alignItems: "center",
+                        padding: 3,
+                        borderRadius: 10,
+                        marginTop: 5,
+                        marginRight: 5, // Espacio desde el borde derecho
+                    }}
+                >
+                    <Text
+                        style={{
+                            fontSize: 24,
+                            fontWeight: "bold",
+                        }}
+                    >
+                        {new Date(evento.fecha_inicio).toLocaleDateString("es-ES", {
+                            day: "numeric",
+                        })}
+                    </Text>
+                    <Text style={{ fontSize: 12 }}>
+                        {new Date(evento.fecha_inicio).toLocaleDateString("es-ES", {
+                            month: "short",
+                        })}
+                    </Text>
+                </View>
                 <View
                     style={{
                         flex: 1,
