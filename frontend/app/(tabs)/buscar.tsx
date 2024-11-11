@@ -16,8 +16,7 @@ const buscar = () => {
     const fetchEstablecimientos = async () => {
         try {
             const res = await getEstablecimientos();
-            console.log(res);
-            setEstablecimientos([...res, ...res, ...res, ...res]);
+            setEstablecimientos(res);
         } catch (e) {
             console.error("error al obtener los eventos ", e);
         }

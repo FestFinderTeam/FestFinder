@@ -1,7 +1,7 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, router, type Href } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Image, Modal } from "react-native";
+import { ScrollView, StyleSheet, Image, Modal, Alert } from "react-native";
 import { FlatList, Pressable, Text, View } from "react-native";
 import Notch from "@/components/Notch";
 import React from "react";
@@ -39,9 +39,20 @@ const inicio = () => {
         fetchEstablecimientos();
     }, []);
 
-    const fetchEstablecimientos = async () => {
-        const establecimientos = await getEstablecimientos(null);
-        setPopularPlaces(establecimientos); // Ajusta si el campo en tu API tiene otro nombre
+    const fetchEstablecimientos = async (tipoId: number | null = null) => {
+        const establecimientos = await getEstablecimientos(tipoId);
+    
+        if (establecimientos.length === 0) {
+            Alert.alert(
+                "Sin resultados",
+                "No se encontraron establecimientos para esta categoría"
+            );
+            // Vuelve a cargar todos los establecimientos si no hay resultados
+            const todosEstablecimientos = await getEstablecimientos(null);
+            setPopularPlaces(todosEstablecimientos);
+        } else {
+            setPopularPlaces(establecimientos);
+        }
     };
 
     const fetchCategoriasEstablecimientos = async () => {
@@ -70,6 +81,12 @@ const inicio = () => {
             handleSubmitSearch();
         }
         setOpenSearch(!openSearch);
+    };
+
+    const handleCategoryPress = (tipoId: number | null) => {
+        console.log(tipoId);
+        fetchEstablecimientos(tipoId);
+
     };
 
     return (
@@ -164,7 +181,7 @@ const inicio = () => {
                     keyExtractor={(item) => JSON.stringify(item)}
                     renderItem={({ item }) => (
                         <Pressable
-                            onPress={() => {}}
+                            onPress={() => handleCategoryPress(item.id)}
                             style={{
                                 alignItems: "center",
                                 marginHorizontal: 10,

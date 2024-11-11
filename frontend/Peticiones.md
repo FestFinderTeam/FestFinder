@@ -13,7 +13,7 @@
 ## registrar local app/business/register_business y preview
 
 - petion para obtener los tipos de negocio en register       LISTO  
-- petion de registro de local (la ubicacion solo sera latitud y longitud)
+- petion de registro de local (la ubicacion solo sera latitud y longitud)   LISTO
 
 ## Administrar Eventos app/admin/eventos
 
@@ -22,17 +22,17 @@
 
 ## Crear Evento app/eventos/crearEvento
 
-- peticion para registrar el evento       YA ESTABA HECHO
+- peticion para registrar el evento         BLOQUEADO
 
 ## Editar Local app/admin/myplace
 
-- peticion para obtener los datos de MI local                
+- peticion para obtener los datos de MI local          LISTO       
 - peticion para actualizar los nuevos datos del local
 
 ## Informacion detallada de Local app/places/[id]
 
 - peticion para obtener los datos del local       LISTO (NO ES LO MISMO?)
-- peticion para obtener los lugares parecidos
+- peticion para obtener los lugares parecidos       DUDAS?
 
 ## Informacion detallada de Evento app/eventos/[id]
 

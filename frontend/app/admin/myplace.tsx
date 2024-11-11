@@ -23,6 +23,8 @@ import { SelectList } from "react-native-dropdown-select-list";
 import { dateToHHmm, showTime } from "@/utils/DateTime";
 import React from "react";
 import { useSafeAreaFrame } from "react-native-safe-area-context";
+import { getEstablecimientoPorPropietario } from "@/services/establecimientosServices";
+import { getCategorias } from "@/services/categoriasService";
 const image_default = require("../../assets/images/default_image.png");
 
 interface Horario {
@@ -50,7 +52,24 @@ export type Evento = {
     logo: any;
 };
 
+type Establecimiento = {
+    id: number;
+    nombre: string;
+    direccion?: string;
+    tipo_fk?: number;
+    tipo_fk_detail?: any;
+    nombre_tipo?: string;
+    nro_ref?: string;
+    banner?: any;
+    logo?: any;
+    puntuacion?: number;
+    etiquetas?: any;
+    rango_de_precios: string;
+};
+
 const MyPlace = () => {
+    const [establecimiento, setEstablecimiento] =
+        useState<Establecimiento | null>(null);
     const [etiqueta, setEtiqueta] = useState("");
     const [banner, setBanner] = useState();
     const [imagenes, setImagenes] = useState();
@@ -102,108 +121,73 @@ const MyPlace = () => {
     const [tipo_fk, setSelectedBusiness] = useState("");
     const [openHorario, setOpenHorario] = useState(Array(7).fill(false));
 
-    const dataTypesBusiness = [
-        { key: "1", value: "Bar" },
-        { key: "2", value: "Club" },
-        { key: "3", value: "Discoteca" },
-    ];
+    const [dataTypesBusiness, setDataTypesBusiness] = useState<any[]>([]);
+
     const [rango_de_precios, setRango] = useState("");
     const dataRango = ["Bajo", "Medio", "Alto"];
     const [location, setLocation] = useState({ longitude: 0, latitude: 0 });
 
     useEffect(() => {
-        const fotos = [
-            require("../../assets/images/alice-park-1.png"),
-            require("../../assets/images/alice-park-2.png"),
-        ];
-        const horarioAtencion = [
-            {
-                dia: 0,
-                horario: {
-                    inicio_atencion: "09:00",
-                    fin_atencion: "01:00",
-                },
-            },
-            {
-                dia: 1,
-                horario: null,
-            },
-            {
-                dia: 2,
-                horario: null,
-            },
-            {
-                dia: 3,
-                horario: null,
-            },
-            {
-                dia: 4,
-                horario: null,
-            },
-            {
-                dia: 5,
-                horario: {
-                    inicio_atencion: "19:00",
-                    fin_atencion: "01:00",
-                },
-            },
-            {
-                dia: 6,
-                horario: {
-                    inicio_atencion: "19:00",
-                    fin_atencion: "01:00",
-                },
-            },
-        ];
-
-        const etiquetas = [
-            "Etiqueta 1",
-            "Etiqueta 2",
-            "Etiqueta 3",
-            "Etiqueta 4",
-        ];
-        const puntuacion = 9.2;
-
-        const isOpenToday = () => {
-            const today = getDay(new Date());
-            const atencionToday = horarioAtencion.filter(
-                (horario) => horario.dia === today
-            )[0];
-            const horarioToday = atencionToday.horario;
-
-            if (!horarioToday) return false;
-
-            const inicio_atencion = moment(
-                horarioToday.inicio_atencion,
-                "HH:mm"
-            );
-            const fin_atencion = moment(horarioToday.fin_atencion, "HH:mm");
-            const current = moment();
-
-            if (fin_atencion.isBefore(inicio_atencion)) {
-                // Verificar si está entre 'inicio_atencion' y medianoche o entre medianoche y 'fin_atencion'
-                return (
-                    current.isBetween(
-                        inicio_atencion,
-                        moment("23:59:59", "HH:mm")
-                    ) ||
-                    current.isBetween(moment("00:00", "HH:mm"), fin_atencion)
-                );
+        const fetchCategorias = async () => {
+            const categorias = await getCategorias(); // Recuperamos las categorías desde la API
+            if (categorias) {
+                // Marcamos si el tipo_fk coincide con el key de alguna categoría
+                const updatedDataTypes = categorias.map((categoria: any) => ({
+                    key: categoria.id, // Asume que el id es el key
+                    value: categoria.nombre_tipo,
+                    selected: categoria.id === tipo_fk, // Compara tipo_fk
+                }));
+                setDataTypesBusiness(updatedDataTypes);
             }
-
-            // Si no cruza medianoche, comprobar de forma estándar
-            return current.isBetween(inicio_atencion, fin_atencion);
         };
-        setEstablecimientoAbierto(isOpenToday());
-        setBanner(require("../../assets/images/alice-park.png"));
-        setLogo(require("../../assets/images/alice-park.png"));
-        setNombre("Alice Park");
-        setTipo("Tipo de local");
-        setDireccion("Av Melchor Urquidi S/N, Cochabamba");
-        setValoracion(puntuacion);
-        setEtiquetas(etiquetas);
-        setHorarioAtencion(horarioAtencion);
-        setFotos(fotos);
+
+        fetchCategorias();
+    }, [tipo_fk]); // Actualizamos cada vez que tipo_fk cambie
+    
+    
+    useEffect(() => {
+        const fetchEstablecimiento = async () => {
+            const propietarioId = 1; // Reemplaza esto con el ID real del propietario
+            const data = await getEstablecimientoPorPropietario(6);
+            
+            if (data) {
+                setEstablecimiento(data);
+                setBanner(data.banner);
+                setLogo(data.logo);
+                setNombre(data.nombre);
+                setTipo(data.tipo_fk_detail.nombre_tipo);
+                setSelectedBusiness(data.tipo_fk_detail.id);
+                setDireccion(data.direccion);
+                setValoracion(8);
+                setEtiquetas(data.etiquetas.map((etiqueta: any) => etiqueta.texto_etiqueta));
+                setHorarioAtencion(data.horarios);
+                setFotos(data.fotos || []);
+                setRango(data.rango_de_precios);
+
+                const isOpenToday = () => {
+                    const today = getDay(new Date());
+                    const atencionToday = data.horarios.find((horario: any) => horario.dia === today);
+                    
+                    if (!atencionToday || !atencionToday.inicio_atencion || !atencionToday.fin_atencion) return false;
+                    
+                    const inicio_atencion = moment(atencionToday.inicio_atencion, "HH:mm");
+                    const fin_atencion = moment(atencionToday.fin_atencion, "HH:mm");
+                    const current = moment();
+
+                    if (fin_atencion.isBefore(inicio_atencion)) {
+                        return (
+                            current.isBetween(inicio_atencion, moment("23:59:59", "HH:mm")) ||
+                            current.isBetween(moment("00:00", "HH:mm"), fin_atencion)
+                        );
+                    }
+
+                    return current.isBetween(inicio_atencion, fin_atencion);
+                };
+
+                setEstablecimientoAbierto(isOpenToday());
+            }
+        };
+        fetchEstablecimiento();
     }, []);
 
     const guardarImagen = async (imagen: ImagePickerAsset) => {
@@ -256,7 +240,7 @@ const MyPlace = () => {
             <Notch />
             <ScrollView>
                 <ImageBackground
-                    source={banner ? banner : image_default}
+                    source={{uri:establecimiento?.banner}}
                     style={[Styles.imageBanner, { position: "relative" }]}
                 >
                     <Pressable onPress={router.back}>
@@ -294,7 +278,7 @@ const MyPlace = () => {
 
                 </ImageBackground>
                 <ImageBackground
-                    source={logo ? logo : image_default}
+                    source={logo ? {uri:logo} : image_default}
                     style={[
                         styles.redondoImg,
                         styles.contenedorIMG,
@@ -345,7 +329,7 @@ const MyPlace = () => {
                                 data={dataTypesBusiness}
                                 save="key"
                                 searchPlaceholder="Buscar"
-                                placeholder="Tipo de negocio"
+                                placeholder= "Tipo de negocio"
                                 boxStyles={{
                                     ...Styles.input,
                                     width: "90%",
@@ -358,6 +342,10 @@ const MyPlace = () => {
                                     fontWeight: 'bold',
                                     fontFamily: 'Poppins',
                                 }}
+                                defaultOption={dataTypesBusiness.find(
+                                    (item) => item.key == tipo_fk,
+                                    console.log(tipo_fk+"")
+                                )}
                             />
                         </View>
 
@@ -370,7 +358,7 @@ const MyPlace = () => {
                             <View style={{ alignItems: "center", marginTop: "2%" }}>
                                 <TextInput
                                     style={[Styles.input, { width: "90%", fontWeight: 'bold', fontFamily: 'Poppins' }]}
-                                    value={ubicacion} //CARGAR LA UBICACION ACA
+                                    value={direccion+''} //CARGAR LA UBICACION ACA
                                     onChangeText={(text) => setUbicacion(text)}
                                 />
                             </View>
@@ -471,7 +459,7 @@ const MyPlace = () => {
                                         shadowOpacity: 0.1,
                                         shadowRadius: 4,
                                     },
-                                    value === rango_de_precios && { backgroundColor: "#7D5683" },
+                                    value == rango_de_precios && { backgroundColor: "#7D5683" },
                                 ]}
                             >
                                 <Text
@@ -483,7 +471,7 @@ const MyPlace = () => {
                                             fontSize: 14,
                                             marginRight: 5,
                                         },
-                                        value === rango_de_precios && { color: "#fff" },
+                                        value == rango_de_precios && { color: "#fff" },
                                     ]}
                                 >
                                     {value}

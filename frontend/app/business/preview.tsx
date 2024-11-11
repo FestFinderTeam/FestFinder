@@ -25,7 +25,7 @@ const preview = () => {
   const API_URL = process.env.EXPO_PUBLIC_API_URL;
   const [loading, setLoading] = useState(false);
 
-  const { session } = useSession();
+  const { session, signIn } = useSession();
   const [logo, setimage2] = useState<ImagePickerAsset>();
   const [imageBanner, setImageBanner] = useState<ImagePickerAsset>();
   const [tags, setTags] = useState<string[] | []>([]);
@@ -99,9 +99,6 @@ const preview = () => {
 
   const local = useLocalSearchParams();
   const handleSubmit = async () => {
-    if (session) {
-      const { id_usuario } = session;
-    }
     // obtener datos del params
     const data = { ...local };
     //const data = { ...local, horarios: obtenerHorarios(), etiquetas: tags };
@@ -146,6 +143,20 @@ const preview = () => {
       // Procesar la respuesta
       const result = await response.json();
       console.log("Establecimiento registrado:", result);
+
+      if (session) {
+        const { id_usuario, nombre, email, imagen_url, duenio, telefono } = session;
+        signIn({
+          id_usuario: id_usuario,
+          imagen_url: imagen_url,
+          nombre: nombre,
+          email: email,
+          telefono: telefono,
+          duenio: true,
+        });
+      }
+      
+
       router.navigate('/')
     } catch (error) {
       if (error instanceof Error) {

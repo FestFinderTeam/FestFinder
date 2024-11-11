@@ -1,10 +1,10 @@
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
-export const getEstablecimientos = async (id_tipo = null) => {
+export const getEstablecimientos = async (id_tipo:any) => {
 
     try {
         const url = id_tipo 
-            ? `${API_URL}/api/establecimientos/?tipo_fk=${id_tipo}` 
+            ? `${API_URL}/api/establecimientos/tipo/${id_tipo}/` 
             : `${API_URL}/api/establecimientos/`;
 
         const response = await fetch(url);
@@ -28,6 +28,40 @@ export const getEstablecimientoPorId = async (id: any) => {
         const response = await fetch(url);
         if (!response.ok) {
             throw new Error("Error al recuperar el lugar");
+        }
+        const data = await response.json();
+        //console.log(data);
+        return data;
+    } catch (error) {
+        console.error("Error fetching establecimiento:", error);
+        return [];
+    }
+};
+
+export const getEstablecimientosSimilares = async (id: any) => {
+    try {
+        const url = `${API_URL}/api/establecimientos-similares/${id}/`;
+
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error("Error al recuperar lugares parecidos");
+        }
+        const data = await response.json();
+        //console.log(data);
+        return data;
+    } catch (error) {
+        console.error("Error fetching establecimiento:", error);
+        return [];
+    }
+};
+
+export const getEstablecimientoPorPropietario = async (id: any) => {
+    try {
+        const url = `${API_URL}/api/establecimiento/propietario/${id}/`;
+
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error("Error al recuperar tu lugar");
         }
         const data = await response.json();
         //console.log(data);
