@@ -10,7 +10,7 @@ import {
 import { useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Header from "@/components/Header";
-
+import { SelectList } from "react-native-dropdown-select-list";
 import { pickImage } from "@/utils/Image";
 import type { ImagePickerAsset } from "expo-image-picker";
 import {
@@ -26,7 +26,7 @@ import { useSession } from "@/hooks/ctx";
 const imagen_defecto = require("../../assets/images/default_image.png");
 
 const CrearEvento = () => {
-    const {session} = useSession()
+    const { session } = useSession()
     const [nombre, setNombre] = useState("");
     const [logo, setImagenEvento] = useState<ImagePickerAsset>();
     const [horario_inicio, setHoraInicio] = useState<Date>(new Date());
@@ -36,10 +36,13 @@ const CrearEvento = () => {
     const [precioFinal, setPrecioFinal] = useState("0");
     const [ubicacion, setUbicacion] = useState("");
     const [error, setError] = useState("");
+    const [tipo_fk, setSelectedEvent] = useState("");
+    const [dataTypesEvent, setDataTypesEvent] = useState([]);
+
 
     const handleSubmit = async () => {
-        if (session){
-            const {id_usuario} = session
+        if (session) {
+            const { id_usuario } = session
         }
 
         if (logo === undefined) {
@@ -64,7 +67,7 @@ const CrearEvento = () => {
 
         console.log(formData);
         //enviar al servidor
-        
+
         //enviar al los eventos una vez registrado
         //router.push('admin/eventos' as Href)
     };
@@ -117,6 +120,25 @@ const CrearEvento = () => {
                         placeholder="Nombre"
                         onChangeText={(e) => setNombre(e)}
                         style={[Styles.input, { marginTop: "3%" }]}
+                    />
+                    <Text style={{
+                        fontWeight: "600",
+                        fontSize: 18,
+                        color: "#333",
+                        marginTop: "3%",
+                        alignSelf: "flex-start",
+                        marginLeft: "10%"
+                    }}>
+                        Tipo de Evento
+                    </Text>
+                    <SelectList
+                        setSelected={setSelectedEvent}
+                        data={dataTypesEvent}
+                        save="key"
+                        searchPlaceholder="Buscar"
+                        placeholder="Tipo de evento"
+                        boxStyles={Styles.input}
+                        dropdownStyles={Styles.inputDropDown}
                     />
                 </View>
                 <View style={{ flexDirection: "row", paddingHorizontal: 20 }}>
@@ -192,8 +214,8 @@ const CrearEvento = () => {
                     />
                 </View>
                 {error && <Text style={{ color: "red" }}>{error}</Text>}
-                <View style={{alignItems:"center"}}>
-                    <Pressable onPress={handleSubmit} style={[Styles.button,{marginBottom: 30,}]}>
+                <View style={{ alignItems: "center" }}>
+                    <Pressable onPress={handleSubmit} style={[Styles.button, { marginBottom: 30, }]}>
                         <Text style={Styles.buttonText}>Crear nuevo evento</Text>
                     </Pressable>
                 </View>
