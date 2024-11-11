@@ -127,7 +127,8 @@ const CrearEvento = () => {
                         color: "#333",
                         marginTop: "3%",
                         alignSelf: "flex-start",
-                        marginLeft: "10%"
+                        marginLeft: "10%",
+                        marginBottom: "2%"
                     }}>
                         Tipo de Evento
                     </Text>
