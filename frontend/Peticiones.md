@@ -22,7 +22,7 @@
 
 ## Crear Evento app/eventos/crearEvento
 
-- peticion para registrar el evento      
+- peticion para registrar el evento         BLOQUEADO
 
 ## Editar Local app/admin/myplace
 
