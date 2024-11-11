@@ -20,7 +20,7 @@ import {
 } from "react-native";
 
 import Notch from "@/components/Notch";
-import { getEstablecimientoPorId, getEventosPorEstablecimiento } from "@/services/establecimientosServices";
+import { getEstablecimientoPorId, getEstablecimientosSimilares, getEventosPorEstablecimiento } from "@/services/establecimientosServices";
 
 type Establecimiento = {
     id: number;
@@ -106,6 +106,12 @@ const Place = () => {
         setEstablecimiento(data);
     };
 
+    const obtenerEstablecimientosSimialres = async (establecimientoId: any) => {
+        const data = await getEstablecimientosSimilares(establecimientoId);
+        //console.log(data);
+        setLugaresParecidos(data);
+    };
+
     const obtenerDatosEventos = async (establecimientoId: any) => {
         const data = await getEventosPorEstablecimiento(establecimientoId);
         console.log(data);
@@ -144,38 +150,12 @@ const Place = () => {
         //console.log(id);
         obtenerDatosEstablecimiento(id);
         obtenerDatosEventos(id);
+        obtenerEstablecimientosSimialres(id);
 
         // Simulación de llamada a API para fotos
         const fotos = [
             require("../../assets/images/alice-park-1.png"),
             require("../../assets/images/alice-park-2.png"),
-        ];
-
-        const lugaresParecidos = [
-            {
-                id: 10,
-                nombre: "Mandarina",
-                puntuacion: 8,
-                logo: require("../../assets/images/lugar-1.png"),
-            },
-            {
-                id: 11,
-                nombre: "Noma",
-                puntuacion: 9,
-                logo: require("../../assets/images/lugar-2.png"),
-            },
-            {
-                id: 12,
-                nombre: "Euphoria",
-                puntuacion: 9,
-                logo: require("../../assets/images/lugar-3.png"),
-            },
-            {
-                id: 13,
-                nombre: "Mamba",
-                puntuacion: 9,
-                logo: require("../../assets/images/lugar-4.png"),
-            },
         ];
 
         const horarioAtencion = [
