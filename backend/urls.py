@@ -5,7 +5,7 @@ from django.urls import path
 from api.views import SubirImagen
 from api.views import AgregarTipoEstablecimiento
 from api.views import ListarTiposEstablecimiento
-from api.views.Establecimiento_Vista import EstablecimientoPorUsuario, ListarEstablecimientosPorTipo, RecuperarDatosEstablecimiento, RegistrarEstablecimiento, ListarEstablecimientos
+from api.views.Establecimiento_Vista import EstablecimientoPorUsuario, EstablecimientosSimilares, ListarEstablecimientosPorTipo, RecuperarDatosEstablecimiento, RegistrarEstablecimiento, ListarEstablecimientos
 from api.views.Etiqueta_Vista import CrearEtiqueta, ListarEtiquetas
 from api.views.EtiquetaEstablecimiento_Vista import (
     RegistrarRelacion,
@@ -88,6 +88,7 @@ urlpatterns = [
     path('api/establecimientos/tipo/<int:tipo_id>/', ListarEstablecimientosPorTipo.as_view(), name='establecimientos_por_tipo'),
     path('api/establecimientos/<int:establecimiento_id>/horarios/', RecuperarHorariosPorEstablecimiento.as_view(), name='recuperar_horarios'),
     path('api/establecimientos/horarios/registrar/', RegistrarHorarioEstablecimiento.as_view(), name='registrar_horario'),
+    path('api/establecimientos-similares/<int:est_id>/', EstablecimientosSimilares.as_view(), name='establecimientos-similares'),
     path('api/establecimientos/horarios/', RecuperarHorarios.as_view(), name='recuperar_todos_los_horarios'),
     path("api/genero-evento/", CrearGeneroEvento.as_view(), name="crear-genero-evento"),
     path(

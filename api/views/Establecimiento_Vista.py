@@ -2,12 +2,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
+from django.db.models import Q
 
 from ..serializers import HorariosEstablecimientoSerializer
 from ..models import Establecimiento, Usuario
 from ..serializers import EstablecimientoSerializer
 from ..serializers import EtiquetaSerializer
 from ..models import EtiquetaEstablecimiento, horariosEstablecimiento
+from api import models
 
 # Vista para listar establecimientos por tipo
 class ListarEstablecimientosPorTipo(APIView):
@@ -104,6 +106,42 @@ class EstablecimientoPorUsuario(APIView):
         except Establecimiento.DoesNotExist:
             return Response({"message": "No se encontró un establecimiento para el usuario especificado."}, status=status.HTTP_404_NOT_FOUND)
         
+
+class EstablecimientosSimilares(APIView):
+    def get(self, request, est_id):
+        try:
+            # Obtener el establecimiento específico
+            establecimiento = Establecimiento.objects.get(id=est_id)
+            tipo_fk = establecimiento.tipo_fk
+            rango_precios = establecimiento.rango_de_precios
+
+            # Buscar establecimientos que compartan el mismo tipo o rango de precios
+            establecimientos_relacionados = Establecimiento.objects.filter(
+                models.Q(tipo_fk=tipo_fk) | models.Q(rango_de_precios=rango_precios)
+            ).exclude(id=est_id)
+
+            # Serializar los datos de los establecimientos encontrados
+            establecimientos_data = []
+            for establecimiento_relacionado in establecimientos_relacionados:
+                establecimiento_data = EstablecimientoSerializer(establecimiento_relacionado).data
+
+                # Obtener y serializar etiquetas asociadas al establecimiento
+                etiquetas_establecimiento = EtiquetaEstablecimiento.objects.filter(id_establecimiento=establecimiento_relacionado.id)
+                etiquetas = EtiquetaSerializer([ee.id_etiqueta for ee in etiquetas_establecimiento], many=True).data
+                establecimiento_data['etiquetas'] = etiquetas
+
+                # Obtener y serializar horarios de atención
+                horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento_relacionado.id)
+                horarios_data = HorariosEstablecimientoSerializer(horarios, many=True).data
+                establecimiento_data['horarios'] = horarios_data
+
+                establecimientos_data.append(establecimiento_data)
+
+            return Response(establecimientos_data, status=status.HTTP_200_OK)
+
+        except Establecimiento.DoesNotExist:
+            return Response({"error": "Establecimiento no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+
 
 
 class RegistrarEstablecimiento(APIView):
