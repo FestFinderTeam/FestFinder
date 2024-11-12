@@ -9,7 +9,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "backend/asgi.py"
+      "dest": "backend/wsgi.py"
     }
   ]
 }
