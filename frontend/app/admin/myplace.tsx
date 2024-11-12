@@ -1,4 +1,6 @@
 import Notch from "@/components/Notch";
+import { useSession } from "@/hooks/ctx";
+
 import Styles from "@/globalStyles/styles";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { router, type Href } from "expo-router";
@@ -68,6 +70,7 @@ type Establecimiento = {
 };
 
 const MyPlace = () => {
+    const { session} = useSession();
     const [establecimiento, setEstablecimiento] =
         useState<Establecimiento | null>(null);
     const [etiqueta, setEtiqueta] = useState("");
@@ -147,8 +150,8 @@ const MyPlace = () => {
     
     useEffect(() => {
         const fetchEstablecimiento = async () => {
-            const propietarioId = 1; // Reemplaza esto con el ID real del propietario
-            const data = await getEstablecimientoPorPropietario(6);
+            const propietarioId = session?.id_usuario
+            const data = await getEstablecimientoPorPropietario(propietarioId);
             
             if (data) {
                 setEstablecimiento(data);
