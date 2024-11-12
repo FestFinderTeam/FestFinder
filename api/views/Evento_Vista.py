@@ -17,7 +17,10 @@ class CrearEvento(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             print("Errores de validación:", serializer.errors)  # Imprime errores de validación
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"message": "Error en la validación de los datos", "errors": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 # Vista para listar todos los eventos
 class ListarEventos(APIView):

@@ -72,26 +72,25 @@ const CrearEvento = () => {
             formData.append("logo", logoBlob, "logo.png");
         }
 
-        formData.append("id_establecimiento", '1');
-        formData.append("nombre", nombre);
-        formData.append("fecha_inicio", dateToDDMMYYYY(horario_inicio));
-        formData.append("horario_inicio", dateToHHmm(horario_inicio));
-        formData.append("horario_fin", dateToHHmm(horario_fin));
-        formData.append("fecha_fin", dateToDDMMYYYY(horario_inicio));
-        formData.append("descripcion", descripcion);
-        formData.append("precio_min", precioInicial);
-        formData.append("precio_max", precioFinal);
-        formData.append("id_genero_fk", tipo_fk);
+        formData.append("id_establecimiento", "2" as string);
+        formData.append("nombre", nombre as string);
+        formData.append("fecha_inicio", '2024-11-11' as string);
+        formData.append("horario_inicio", dateToHHmm(horario_inicio) as string);
+        formData.append("horario_fin", dateToHHmm(horario_fin) as string);
+        formData.append("fecha_final", '2024-11-11' as string);
+        formData.append("descripcion", descripcion as string);
+        formData.append("precio_min", precioInicial as string);
+        formData.append("precio_max", precioFinal as string);
+        formData.append("id_genero_fk", tipo_fk as string);
 
         console.log(formData);
-        //enviar al servidor
 
         //enviar al los eventos una vez registrado
+        console.log(API_URL);
         const response = await fetch(`${API_URL}/api/evento/`, {
             method: "POST",
             body: formData,
         });
-          
         if (!response.ok) {
             // Intentamos extraer información de error del cuerpo de la respuesta
             const errorDetails = await response.json();
@@ -104,7 +103,7 @@ const CrearEvento = () => {
         const result = await response.json();
         console.log("Establecimiento registrado:", result);
 
-        router.push('admin/eventos' as Href)
+        //router.push('admin/eventos' as Href)
     };
     return (
         <ScrollView>
