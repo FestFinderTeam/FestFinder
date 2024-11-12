@@ -145,9 +145,10 @@ const preview = () => {
       console.log("Establecimiento registrado:", result);
 
       if (session) {
-        const { id_usuario, nombre, email, imagen_url, duenio, telefono } = session;
+        const { id_usuario, nombre, email, imagen_url, duenio, telefono, establecimiento } = session;
         signIn({
           id_usuario: id_usuario,
+          establecimiento: establecimiento,
           imagen_url: imagen_url,
           nombre: nombre,
           email: email,
