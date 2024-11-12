@@ -7,7 +7,7 @@ import {
     ScrollView,
 } from "react-native";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Header from "@/components/Header";
 import { SelectList } from "react-native-dropdown-select-list";
@@ -22,10 +22,12 @@ import {
 import Styles from "@/globalStyles/styles";
 import { router, type Href } from "expo-router";
 import { useSession } from "@/hooks/ctx";
+import { getCategoriasEventos } from "@/services/eventosService";
 
 const imagen_defecto = require("../../assets/images/default_image.png");
 
 const CrearEvento = () => {
+    const API_URL = process.env.EXPO_PUBLIC_API_URL;
     const { session } = useSession()
     const [nombre, setNombre] = useState("");
     const [logo, setImagenEvento] = useState<ImagePickerAsset>();
@@ -39,6 +41,21 @@ const CrearEvento = () => {
     const [tipo_fk, setSelectedEvent] = useState("");
     const [dataTypesEvent, setDataTypesEvent] = useState([]);
 
+    // Llama a getCategoriasEventos al montar el componente para obtener las categorías de los eventos
+    useEffect(() => {
+        const fetchCategoriasEventos = async () => {
+            const categorias = await getCategoriasEventos();
+            // Mapear las categorías al formato que necesita SelectList
+            const formattedCategorias = categorias.map((categoria: any) => ({
+                key: categoria.id_genero_evento, // Utiliza "id" como clave única
+                value: categoria.titulo_genero, // Utiliza "nombre_tipo" como el nombre visible
+            }));
+
+            setDataTypesEvent(formattedCategorias);
+        };
+
+        fetchCategoriasEventos();
+    }, []);
 
     const handleSubmit = async () => {
         if (session) {
@@ -55,21 +72,39 @@ const CrearEvento = () => {
             formData.append("logo", logoBlob, "logo.png");
         }
 
+        formData.append("id_establecimiento", '1');
         formData.append("nombre", nombre);
         formData.append("fecha_inicio", dateToDDMMYYYY(horario_inicio));
         formData.append("horario_inicio", dateToHHmm(horario_inicio));
         formData.append("horario_fin", dateToHHmm(horario_fin));
-
+        formData.append("fecha_fin", dateToDDMMYYYY(horario_inicio));
         formData.append("descripcion", descripcion);
-        formData.append("precioInicial", precioInicial);
-        formData.append("precioFinal", precioFinal);
-        formData.append("ubicacion", ubicacion);
+        formData.append("precio_min", precioInicial);
+        formData.append("precio_max", precioFinal);
+        formData.append("id_genero_fk", tipo_fk);
 
         console.log(formData);
         //enviar al servidor
 
         //enviar al los eventos una vez registrado
-        //router.push('admin/eventos' as Href)
+        const response = await fetch(`${API_URL}/api/evento/`, {
+            method: "POST",
+            body: formData,
+        });
+          
+        if (!response.ok) {
+            // Intentamos extraer información de error del cuerpo de la respuesta
+            const errorDetails = await response.json();
+            throw new Error(
+              `Error al registrar el evento: ${response.statusText} (${response.status
+              }). Detalles: ${JSON.stringify(errorDetails)}`
+            );
+        }
+
+        const result = await response.json();
+        console.log("Establecimiento registrado:", result);
+
+        router.push('admin/eventos' as Href)
     };
     return (
         <ScrollView>

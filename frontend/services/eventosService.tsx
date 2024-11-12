@@ -66,3 +66,16 @@ export const getEventoPorID = async (id: string) => {
     }
 };
 
+export const getCategoriasEventos = async () => {
+    try {
+        const response = await fetch(`${API_URL}/api/generos-evento/`);
+        if (!response.ok) {
+            throw new Error("Error al recuperar las categorias de eventos");
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+};

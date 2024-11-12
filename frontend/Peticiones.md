@@ -31,8 +31,8 @@
 
 ## Informacion detallada de Local app/places/[id]
 
-- peticion para obtener los datos del local       LISTO (NO ES LO MISMO?)
-- peticion para obtener los lugares parecidos       DUDAS?
+- peticion para obtener los datos del local       LISTO 
+- peticion para obtener los lugares parecidos       LISTO
 
 ## Informacion detallada de Evento app/eventos/[id]
 
