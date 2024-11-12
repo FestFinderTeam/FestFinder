@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Header from "@/components/Header";
 import { SelectList } from "react-native-dropdown-select-list";
-import { pickImage } from "@/utils/Image";
+import { getImage, pickImage } from "@/utils/Image";
 import type { ImagePickerAsset } from "expo-image-picker";
 import {
     dateToDDMMYYYY,
@@ -67,9 +67,8 @@ const CrearEvento = () => {
             return;
         }
         const formData = new FormData();
-        if (logo?.uri) {
-            const logoBlob = await fetch(logo.uri).then((res) => res.blob());
-            formData.append("logo", logoBlob, "logo.png");
+        if (logo) {
+            formData.append("logo", getImage(logo));
         }
 
         formData.append("id_establecimiento", "2" as string);
@@ -103,7 +102,7 @@ const CrearEvento = () => {
         const result = await response.json();
         console.log("Establecimiento registrado:", result);
 
-        //router.push('admin/eventos' as Href)
+        router.push('admin/eventos' as Href)
     };
     return (
         <ScrollView>
