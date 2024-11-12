@@ -16,6 +16,7 @@ import type { ImagePickerAsset } from "expo-image-picker";
 import {
     dateToDDMMYYYY,
     dateToHHmm,
+    dateToYYYYMMDD,
     showSingleDate,
     showSingleTime,
 } from "@/utils/DateTime";
@@ -70,10 +71,11 @@ const CrearEvento = () => {
         if (logo) {
             formData.append("logo", getImage(logo));
         }
+        // 
 
         formData.append("id_establecimiento", "2" as string);
         formData.append("nombre", nombre as string);
-        formData.append("fecha_inicio", '2024-11-11' as string);
+        formData.append("fecha_inicio", dateToYYYYMMDD(horario_inicio));
         formData.append("horario_inicio", dateToHHmm(horario_inicio) as string);
         formData.append("horario_fin", dateToHHmm(horario_fin) as string);
         formData.append("fecha_final", '2024-11-11' as string);

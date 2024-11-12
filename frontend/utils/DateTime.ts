@@ -58,7 +58,14 @@ export const dateToHHmm = (date: Date) => {
 
 export const dateToDDMMYYYY = (date: Date) =>
     date.toLocaleDateString("es-ES", {
-        day: "2-digit",
-        month: "2-digit",
         year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
     });
+
+export const dateToYYYYMMDD = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDay();
+    return `${year}-${month}-${day}`;
+};
