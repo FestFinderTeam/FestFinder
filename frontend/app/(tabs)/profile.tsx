@@ -14,8 +14,8 @@ const profile = () => {
         return;
     }
 
-    const { nombre, imagen_url, email, duenio } = session;
-    console.log(duenio);
+    const { nombre, imagen_url, email, duenio, establecimiento } = session;
+    console.log(establecimiento);
 
     return (
         <View>
@@ -67,10 +67,10 @@ const profile = () => {
                             }*/
                         router.push("/admin");
                     }}
-                    color={!duenio ? "#D3D3D3" : "#7D5683"}
+                    color={!establecimiento ? "#D3D3D3" : "#7D5683"}
                     text="Administrar mi local"
                     icon="gear"
-                    textColor={!duenio ? "#A9A9A9" : "#787878"}
+                    textColor={!establecimiento ? "#A9A9A9" : "#787878"}
                 />
             </View>
 
@@ -87,14 +87,14 @@ const profile = () => {
                 />
                 <ItemProfile
                     onPress={() => {
-                        if (!duenio) {
+                        if (!establecimiento) {
                             router.navigate("/business/register_business");
                         }
                     }}
-                    color={duenio ? "#D3D3D3" : "#7D5683"}
+                    color={establecimiento ? "#D3D3D3" : "#7D5683"}
                     text="Registrar mi local"
                     icon="cart-plus"
-                    textColor={duenio ? "#A9A9A9" : "#787878"}
+                    textColor={establecimiento ? "#A9A9A9" : "#787878"}
                 />
                 <ItemProfile
                     onPress={() => {

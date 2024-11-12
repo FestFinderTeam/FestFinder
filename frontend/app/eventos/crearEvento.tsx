@@ -60,7 +60,7 @@ const CrearEvento = () => {
 
     const handleSubmit = async () => {
         if (session) {
-            const { id_usuario } = session
+            const { id_usuario,  establecimiento } = session
         }
 
         if (logo === undefined) {
@@ -73,7 +73,7 @@ const CrearEvento = () => {
         }
         // 
 
-        formData.append("id_establecimiento", "2" as string);
+        formData.append("id_establecimiento", session?.establecimiento as string);
         formData.append("nombre", nombre as string);
         formData.append("fecha_inicio", dateToYYYYMMDD(horario_inicio));
         formData.append("horario_inicio", dateToHHmm(horario_inicio) as string);

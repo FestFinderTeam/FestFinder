@@ -49,6 +49,7 @@ const Login = () => {
                     nombre,
                     telefono,
                     duenio,
+                    establecimiento,
                 } = data;
 
                 //setUserData(userData);  // Guarda los datos del usuario
@@ -69,6 +70,7 @@ const Login = () => {
                     email,
                     telefono,
                     duenio,
+                    establecimiento,
                 });
             } else {
                 alert("Error en el inicio de sesión");
