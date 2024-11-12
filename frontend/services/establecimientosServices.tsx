@@ -1,10 +1,9 @@
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
-export const getEstablecimientos = async (id_tipo:any) => {
-
+export const getEstablecimientos = async (id_tipo: string | null = null) => {
     try {
-        const url = id_tipo 
-            ? `${API_URL}/api/establecimientos/tipo/${id_tipo}/` 
+        const url = id_tipo
+            ? `${API_URL}/api/establecimientos/tipo/${id_tipo}/`
             : `${API_URL}/api/establecimientos/`;
 
         const response = await fetch(url);
@@ -19,7 +18,6 @@ export const getEstablecimientos = async (id_tipo:any) => {
         return [];
     }
 };
-
 
 export const getEstablecimientoPorId = async (id: any) => {
     try {
@@ -72,14 +70,19 @@ export const getEstablecimientoPorPropietario = async (id: any) => {
     }
 };
 
-export const getEventosPorEstablecimiento = async (idEstablecimiento: string) => {
+export const getEventosPorEstablecimiento = async (
+    idEstablecimiento: string
+) => {
     try {
-        const response = await fetch(`${API_URL}/api/eventos/establecimiento/${idEstablecimiento}/`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+        const response = await fetch(
+            `${API_URL}/api/eventos/establecimiento/${idEstablecimiento}/`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
         if (!response.ok) {
             console.error("Error al obtener eventos:", response.status);
             return null;
