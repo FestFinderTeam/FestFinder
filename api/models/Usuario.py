@@ -12,6 +12,13 @@ class Usuario(models.Model):
     g_id = models.CharField(max_length=100, blank=True, null=True)
     imagen = models.ForeignKey(Imagen, on_delete=models.CASCADE,blank=True, null=True)
     duenio = models.BooleanField(default=False)
+    establecimiento = models.OneToOneField(
+        'Establecimiento',  # Usar comillas para evitar dependencia circular
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name='usuario_establecimiento'
+    )
 
 
 def save(self, *args, **kwargs):

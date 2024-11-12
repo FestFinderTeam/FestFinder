@@ -136,12 +136,16 @@ class RegistrarEstablecimiento(APIView):
         print("datos bien enviados")
         
         if serializer.is_valid():
-            serializer.save()
+            establecimiento=serializer.save()
             # Actualizar el campo `duenio` a True para el usuario relacionado
             usuario_id = request.data.get("usuario")
-            print (usuario_id)
-            Usuario.objects.filter(id_usuario=usuario_id).update(duenio=True)
-            print("Campo `duenio` actualizado a True para el usuario", usuario_id)
+            if(usuario_id):
+                print (usuario_id)
+                Usuario.objects.filter(id_usuario=usuario_id).update(
+                    duenio=True,
+                    establecimiento=establecimiento
+                )
+                print("Campo `duenio` actualizado a True para el usuario", usuario_id)
             
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
