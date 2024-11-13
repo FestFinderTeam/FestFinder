@@ -29,7 +29,6 @@ const GoogleMap = ({
             setSelectedLocation(coordinate);
         }
     };
-    console.log("Datos de establecimientos recibidos:", establecimientos);
 
     return (
         <>
