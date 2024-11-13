@@ -39,7 +39,7 @@ const inicio = () => {
         fetchEstablecimientos();
     }, []);
 
-    const fetchEstablecimientos = async (tipoId: number | null = null) => {
+    const fetchEstablecimientos = async (tipoId: string | null = null) => {
         const establecimientos = await getEstablecimientos(tipoId);
     
         if (establecimientos.length === 0) {
@@ -83,7 +83,7 @@ const inicio = () => {
         setOpenSearch(!openSearch);
     };
 
-    const handleCategoryPress = (tipoId: number | null) => {
+    const handleCategoryPress = (tipoId: string| null) => {
         console.log(tipoId);
         fetchEstablecimientos(tipoId);
 
@@ -181,7 +181,7 @@ const inicio = () => {
                     keyExtractor={(item) => JSON.stringify(item)}
                     renderItem={({ item }) => (
                         <Pressable
-                            onPress={() => handleCategoryPress(item.id)}
+                            onPress={() => handleCategoryPress(item.id+'')}
                             style={{
                                 alignItems: "center",
                                 marginHorizontal: 10,
