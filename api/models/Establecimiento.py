@@ -20,5 +20,5 @@ class Establecimiento(models.Model):
     )
     rango_de_precios = models.CharField(max_length=5, blank=True)
     nro_ref = models.CharField(max_length=13, blank=True, default='')
-    em_ref = models.EmailField(blank=True)
+    em_ref = models.EmailField(max_length=100, unique=True)
 
