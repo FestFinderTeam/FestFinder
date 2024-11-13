@@ -30,7 +30,7 @@ const register_business = () => {
     const [toggleMap, setToggleMap] = useState(false);
     const [dataTypesBusiness, setDataTypesBusiness] = useState([]);
     const { session } = useSession();
-    const [id_us,setID] = useState(''); 
+    const [id_us, setID] = useState("");
 
     const dataRango = ["Bajo", "Medio", "Alto"];
 
@@ -51,8 +51,8 @@ const register_business = () => {
     }, []);
 
     const handleNext = () => {
-        if(session){
-            setID(session.id_usuario+'')
+        if (session) {
+            setID(session.id_usuario + "");
         }
         const dataBusiness = [
             nombre,
@@ -64,11 +64,10 @@ const register_business = () => {
             id_us,
             coordenada_x,
             coordenada_y,
-            direccion,
         ];
         if (dataBusiness.includes("")) {
             alert("todos los campos son obligatorios");
-            return
+            return;
         }
         router.push({
             pathname: "/business/preview",
@@ -111,12 +110,11 @@ const register_business = () => {
                                     Number(location.latitude.toFixed(8))
                                 );
 
-                                setDireccion(
-                                    await getDireccion(
-                                        location.latitude ,
-                                        location.longitude
-                                    )
+                                const direccion = await getDireccion(
+                                    location.latitude,
+                                    location.longitude
                                 );
+                                setDireccion(direccion);
                             }
                         }}
                     />
