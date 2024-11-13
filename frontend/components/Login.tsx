@@ -45,7 +45,7 @@ const Login = () => {
                     email,
                     g_id,
                     id_usuario,
-                    imagen,
+                    imagen_detail,
                     nombre,
                     telefono,
                     duenio,
@@ -54,15 +54,10 @@ const Login = () => {
 
                 //setUserData(userData);  // Guarda los datos del usuario
                 let imagen_url = "";
-                // Obtener la imagen del usuario
-                const imageResponse = await fetch(
-                    `${API_URL}/api/imagen/${imagen}/`
-                );
-                if (imageResponse.ok) {
-                    const imageData = await imageResponse.json();
-                    const fullImageUrl = `${API_URL}${imageData.imagen}`; // URL completa de la imagen
-                    imagen_url = fullImageUrl; // Guarda la URI de la imagen
-                }
+                
+                const fullImageUrl = `${API_URL}${imagen_detail.imagen}`; // URL completa de la imagen
+                imagen_url = fullImageUrl; // Guarda la URI de la imagen
+                
                 signIn({
                     id_usuario,
                     imagen_url,
