@@ -12,6 +12,7 @@ from api.views.EtiquetaEstablecimiento_Vista import (
     EtiquetasPorEstablecimiento,
     EstablecimientosPorEtiqueta,
 )
+from api.views.Filtrado_Vista import FiltrarEstablecimientosYEventos
 from api.views.Genero_Evento_Vista import CrearGeneroEvento, ListarGenerosEvento
 from api.views.Evento_Vista import CrearEvento, FiltrarEventos, ListarEventos, ListarEventosHoy, ListarEventosMes, ListarEventosPorCategoria, ListarEventosPorEstablecimiento, ModificarEvento, ObtenerEventoPorID
 from api.views.Entrada_Vista import CrearEntrada, ListarEntradasEvento
@@ -107,6 +108,9 @@ urlpatterns = [
     path('api/eventos/categoria/<int:id_categoria>/', ListarEventosPorCategoria.as_view(), name='listar-eventos-por-categoria'),
     path('api/eventos/filtro/', FiltrarEventos.as_view(), name='filtrar_eventos'),
     path('api/eventos/modificar/<int:id_evento>/', ModificarEvento.as_view(), name='modificar_evento'),
+
+    path('filtrar/establecimientos-eventos/', FiltrarEstablecimientosYEventos.as_view(), name='filtrar-establecimientos-eventos'),
+
 
     path("entrada/", CrearEntrada.as_view(), name="crear-entrada"),
     path(
