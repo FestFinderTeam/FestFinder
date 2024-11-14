@@ -19,6 +19,7 @@ import { SelectList } from "react-native-dropdown-select-list";
 import { LatLng } from "react-native-maps";
 const register_business = () => {
     const [nombre, setName] = useState("");
+    const [nameError, setNameError] = useState(false);
     const [location, setLocation] = useState<LatLng | null>(null);
     const [em_ref, setEmail] = useState("");
     const [nro_ref, setPhone] = useState("");
@@ -54,6 +55,19 @@ const register_business = () => {
         if (session) {
             setID(session.id_usuario + "");
         }
+        if (nombre.length < 3) {
+            alert("El nombre del negocio debe tener al menos 3 caracteres.");
+            return;
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(em_ref)) {
+            alert("El email debe tener un formato válido: local@dominio.");
+            return;
+        }
+        if (!/^\d{8}$/.test(nro_ref)) {
+            alert("El teléfono debe tener solo números y 8 dígitos.");
+            return;
+        }
         const dataBusiness = [
             nombre,
             location,
@@ -66,7 +80,7 @@ const register_business = () => {
             coordenada_y,
         ];
         if (dataBusiness.includes("")) {
-            alert("todos los campos son obligatorios");
+            alert("Todos los campos son obligatorios.");
             return;
         }
         router.push({
@@ -84,6 +98,7 @@ const register_business = () => {
             },
         });
     };
+
     return (
         <>
             {toggleMap && (
@@ -158,7 +173,17 @@ const register_business = () => {
                         keyboardType="default"
                         placeholderTextColor="#402158"
                         style={Styles.input}
-                        onChangeText={setName}
+                        onChangeText={(text) => {
+                            setName(text);
+                            if (text.length >= 3) {
+                                setNameError(false);
+                            }
+                        }}
+                        onEndEditing={() => {
+                            if (nombre.length < 3) {
+                                setNameError(true);
+                            }
+                        }}
                     />
                     <TextInput
                         placeholder="Email del negocio"
@@ -166,13 +191,24 @@ const register_business = () => {
                         placeholderTextColor="#402158"
                         style={Styles.input}
                         onChangeText={setEmail}
+                        onEndEditing={() => {
+                            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                            if (!emailRegex.test(em_ref)) {
+                                alert("El email debe tener un formato válido: local@dominio.");
+                            }
+                        }}
                     />
                     <TextInput
-                        placeholder="Telefono del negocio"
+                        placeholder="Teléfono del negocio"
                         keyboardType="phone-pad"
                         placeholderTextColor="#402158"
                         style={Styles.input}
-                        onChangeText={setPhone}
+                        onChangeText={setPhone} 
+                        onEndEditing={() => {
+                            if (!/^\d{8}$/.test(nro_ref)) {
+                                alert("El teléfono debe tener solo números y 8 dígitos.");
+                            }
+                        }}
                     />
 
                     <Pressable

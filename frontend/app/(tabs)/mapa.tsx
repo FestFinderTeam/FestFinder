@@ -6,6 +6,7 @@ import Popup from "@/components/Popup";
 import { router, type Href } from "expo-router";
 import Styles from "@/globalStyles/styles";
 import { getEstablecimientos } from "@/services/establecimientosServices";
+import { useSession } from "@/hooks/ctx";// Asegúrate de importar el hook de sesión
 
 export interface EstablecimientoType {
     id: number;
@@ -14,37 +15,66 @@ export interface EstablecimientoType {
     nombre: string;
     logo: any;
 }
+interface Perfil {
+    nombre: string | null;
+    email: string | null;
+    telefono: string | null;
+    fecha_nacimiento: string | null;
+    imagen_url: string | null;
+}
 
-const mapa = () => {
-    const [establecimientos, setEstablecimientos] = useState<
-        EstablecimientoType[]
-    >([]);
-    const [establecimientoSeleccionado, setEstablecimientoSeleccionado] =
-        useState<EstablecimientoType | null>(null);
-    
-    const [isLoading, setIsLoading] = useState<boolean>(true); 
-
+const Mapa = () => {
+    const { session } = useSession();
+    const [perfil, setPerfil] = useState<Perfil | null>(null);
+    const [establecimientos, setEstablecimientos] = useState<EstablecimientoType[]>([]);
+    const [establecimientoSeleccionado, setEstablecimientoSeleccionado] = useState<EstablecimientoType | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
 
     const obtenerDatosEstablecimiento = async () => {
-        console.log('PIDIOENDO');
         setIsLoading(true);
         const data = await getEstablecimientos(null);
-        console.log(data);
         setEstablecimientos(data);
-        
+    };
+
+    const obtenerUbicacionActual = async () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    setUserLocation({
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    });
+                },
+                (error) => {
+                    console.error("Error obteniendo la ubicación: ", error);
+                }
+            );
+        }
     };
 
     useEffect(() => {
-        console.log(establecimientos);
-        if (establecimientos.length > 0) {
-            console.log("cargado");
-            setIsLoading(false); // Cambia el estado de carga solo después de que `establecimientos` tenga datos
+        if (session) {
+            setPerfil({
+                nombre: session.nombre,
+                email: session.email,
+                telefono: session.telefono,
+                fecha_nacimiento: "12/09/1991",
+                imagen_url: session.imagen_url,
+            });
         }
-    }, [establecimientos]);
+    }, [session]);
 
     useEffect(() => {
         obtenerDatosEstablecimiento();
+        obtenerUbicacionActual(); // Obtiene la ubicación del usuario cuando se carga el componente
     }, []);
+
+    useEffect(() => {
+        if (establecimientos.length > 0) {
+            setIsLoading(false);
+        }
+    }, [establecimientos]);
 
     if (isLoading) {
         return (
@@ -57,56 +87,42 @@ const mapa = () => {
 
     return (
         <View style={{ position: "relative" }}>
-            <Notch />
-            
+            <Notch />            
             <GoogleMap
-                
                 establecimientos={establecimientos}
                 onMarkerPress={(establecimiento) => {
                     setEstablecimientoSeleccionado(establecimiento);
                 }}
+                userLocation={userLocation} 
+                userIcon={perfil?.imagen_url} 
             />
+            
             <Popup
                 isVisible={establecimientoSeleccionado !== null}
                 onClose={() => setEstablecimientoSeleccionado(null)}
             >
                 <ScrollView style={{ backgroundColor: "white" }}>
-                    <View
-                        style={{
-                            alignItems: "center",
-                            backgroundColor: "white",
-                        }}
-                    >
+                    <View style={{ alignItems: "center", backgroundColor: "white" }}>
                         <Text style={Styles.subtitle}>
                             {establecimientoSeleccionado?.nombre}
                         </Text>
                         <Image
                             source={{ uri: establecimientoSeleccionado?.logo }}
-                            style={{
-                                width: 200,
-                                height: 200,
-                                borderRadius: 100,
-                            }}
+                            style={{ width: 200, height: 200, borderRadius: 100 }}
                         />
                         <Pressable
                             onPress={() => {
-                                router.push(
-                                    ("/places/" +
-                                        establecimientoSeleccionado?.id) as Href
-                                );
+                                router.push(("/places/" + establecimientoSeleccionado?.id) as Href);
                             }}
                             style={Styles.button}
                         >
-                            <Text style={Styles.buttonText}>
-                                Mas Informacion
-                            </Text>
+                            <Text style={Styles.buttonText}>Más Información</Text>
                         </Pressable>
                     </View>
                 </ScrollView>
             </Popup>
-            
         </View>
     );
 };
 
-export default mapa;
+export default Mapa;
