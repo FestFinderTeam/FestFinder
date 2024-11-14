@@ -121,6 +121,8 @@ class FiltrarEventos(APIView):
         nombre = request.data.get("nombre", "").strip()
         id_genero_fk = request.data.get("id_genero_fk", [])
         fecha_actual = request.data.get("fecha_actual")
+        ciudad = request.data.get("ciudad", "").strip()  # Nuevo campo 'ciudad'
+
 
         # Validar que la fecha actual esté presente y tenga un formato correcto
         if not fecha_actual:
@@ -150,6 +152,10 @@ class FiltrarEventos(APIView):
             query &= Q(nombre__icontains=nombre)
         if id_genero_fk:
             query &= Q(id_genero_fk__in=id_genero_fk)
+
+        if ciudad:
+            # Filtrar por ciudad en la dirección del establecimiento relacionado
+            query &= Q(id_establecimiento__direccion__icontains=ciudad)
 
         # Filtrar eventos utilizando la consulta construida
         eventos = Evento.objects.filter(query)
