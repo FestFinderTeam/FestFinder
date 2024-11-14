@@ -155,3 +155,35 @@ class RegistrarEstablecimiento(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+class FiltrarEstablecimientos(APIView):
+    def post(self, request):
+        ciudad = request.data.get("ciudad", "").strip()
+        tipos = request.data.get("tipos", [])
+        rango_de_precios = request.data.get("rango_de_precios", "").strip()
+        nombre = request.data.get("nombre", "").strip()
+
+        # Verificar que 'ciudad' esté presente, ya que es obligatorio
+        if not ciudad:
+            return Response(
+                {"message": "El campo 'ciudad' es requerido."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Construir el filtro inicial para ciudad en dirección
+        query = Q(direccion__icontains=ciudad)
+
+        # Agregar filtros adicionales según estén presentes
+        if tipos:
+            query &= Q(tipo_fk__id__in=tipos)
+        if rango_de_precios:
+            query &= Q(rango_de_precios=rango_de_precios)
+        if nombre:
+            query &= Q(nombre__icontains=nombre)
+
+        # Filtrar eventos utilizando la consulta construida
+        establecimientos = Establecimiento.objects.filter(query)
+
+        # Serializar y devolver los resultados
+        establecimientos_data = EstablecimientoSerializer(establecimientos, many=True).data
+        return Response(establecimientos_data, status=status.HTTP_200_OK)
+    

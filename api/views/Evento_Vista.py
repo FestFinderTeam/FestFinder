@@ -100,3 +100,67 @@ class ListarEventosPorEstablecimiento(APIView):
         # Serializar los eventos encontrados
         serializer = EventoSerializer(eventos, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class ListarEventosPorCategoria(APIView):
+    def get(self, request, id_categoria, *args, **kwargs):
+        # Filtrar eventos por el ID del establecimiento
+        eventos = Evento.objects.filter(id_categoria=id_categoria)
+        
+        if not eventos.exists():
+            return Response({"error": "No se encontraron eventos para esta categoria."}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Serializar los eventos encontrados
+        serializer = EventoSerializer(eventos, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.db.models import Q
+from datetime import timedelta, datetime
+
+from ..models import Evento
+from ..serializers import EventoSerializer
+
+class FiltrarEventos(APIView):
+    def post(self, request):
+        nombre = request.data.get("nombre", "").strip()
+        id_genero_fk = request.data.get("id_genero_fk", [])
+        fecha_actual = request.data.get("fecha_actual")
+
+        # Validar que la fecha actual esté presente y tenga un formato correcto
+        if not fecha_actual:
+            return Response(
+                {"message": "El campo 'fecha_actual' es requerido."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            fecha_actual = datetime.strptime(fecha_actual, "%Y-%m-%d").date()
+        except ValueError:
+            return Response(
+                {"message": "Formato de 'fecha_actual' inválido. Use 'AAAA-MM-DD'."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        fecha_limite = fecha_actual - timedelta(days=30)
+
+        # Construir el filtro inicial para la fecha actual
+        query = Q()
+        # Filtrar por fecha de inicio
+        query &= (Q(fecha_inicio__lte=fecha_actual) | Q(fecha_inicio__gte=fecha_actual, fecha_inicio__lte=fecha_limite))
+        # Filtrar por fecha final (debe ser mayor o igual a la fecha actual)
+        query &= Q(fecha_final__gte=fecha_actual)
+
+        # Agregar filtros adicionales según estén presentes
+        if nombre:
+            query &= Q(nombre__icontains=nombre)
+        if id_genero_fk:
+            query &= Q(id_genero_fk__id__in=id_genero_fk)
+
+        # Filtrar eventos utilizando la consulta construida
+        eventos = Evento.objects.filter(query)
+
+        # Serializar y devolver los resultados
+        eventos_data = EventoSerializer(eventos, many=True).data
+        return Response(eventos_data, status=status.HTTP_200_OK)
