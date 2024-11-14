@@ -9,6 +9,7 @@ from ..models import Establecimiento, Usuario
 from ..serializers import EstablecimientoSerializer
 from ..serializers import EtiquetaSerializer
 from ..models import EtiquetaEstablecimiento, horariosEstablecimiento
+from django.shortcuts import get_object_or_404
 
 # Vista para listar establecimientos por tipo
 class ListarEstablecimientosPorTipo(APIView):
@@ -154,6 +155,8 @@ class RegistrarEstablecimiento(APIView):
                 {"message": "Error en la validación de los datos", "errors": serializer.errors},
                 status=status.HTTP_400_BAD_REQUEST
             )
+        
+
 
 class FiltrarEstablecimientos(APIView):
     def post(self, request):
@@ -187,3 +190,61 @@ class FiltrarEstablecimientos(APIView):
         establecimientos_data = EstablecimientoSerializer(establecimientos, many=True).data
         return Response(establecimientos_data, status=status.HTTP_200_OK)
     
+
+class ModificarEstablecimiento(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+    
+    def put(self, request, *args, **kwargs):
+        # Obtener el ID del establecimiento desde los parámetros de la URL
+        establecimiento_id = kwargs.get('id_establecimiento')
+        
+        # Obtener el establecimiento desde la base de datos
+        establecimiento = get_object_or_404(Establecimiento, id=establecimiento_id)
+        
+        # Obtener los datos que fueron enviados en la petición
+        data = request.data
+        
+        # Comprobar si algún dato ha cambiado
+        fields_to_update = {}
+
+        # Comprobar y asignar nuevos valores si se han enviado
+        if data.get("nombre") and data["nombre"] != establecimiento.nombre:
+            fields_to_update["nombre"] = data["nombre"]
+        
+        if data.get("banner") and data["banner"] != establecimiento.banner.name:
+            fields_to_update["banner"] = data["banner"]
+        
+        if data.get("logo") and data["logo"] != establecimiento.logo.name:
+            fields_to_update["logo"] = data["logo"]
+        
+        if data.get("direccion") and data["direccion"] != establecimiento.direccion:
+            fields_to_update["direccion"] = data["direccion"]
+        
+        if data.get("coordenada_x") and data["coordenada_x"] != str(establecimiento.coordenada_x):
+            fields_to_update["coordenada_x"] = data["coordenada_x"]
+        
+        if data.get("coordenada_y") and data["coordenada_y"] != str(establecimiento.coordenada_y):
+            fields_to_update["coordenada_y"] = data["coordenada_y"]
+        
+        if data.get("tipo_fk") and data["tipo_fk"] != str(establecimiento.tipo_fk.id):
+            fields_to_update["tipo_fk"] = data["tipo_fk"]
+        
+        if data.get("rango_de_precios") and data["rango_de_precios"] != establecimiento.rango_de_precios:
+            fields_to_update["rango_de_precios"] = data["rango_de_precios"]
+        
+        if data.get("nro_ref") and data["nro_ref"] != establecimiento.nro_ref:
+            fields_to_update["nro_ref"] = data["nro_ref"]
+        
+        if data.get("em_ref") and data["em_ref"] != establecimiento.em_ref:
+            fields_to_update["em_ref"] = data["em_ref"]
+        
+        
+        # Si existen campos a actualizar, realizamos la actualización
+        if fields_to_update:
+            for field, value in fields_to_update.items():
+                setattr(establecimiento, field, value)
+            establecimiento.save()
+            return Response(EstablecimientoSerializer(establecimiento).data, status=status.HTTP_200_OK)
+        
+        # Si no hay cambios, respondemos con un mensaje de que no se modificó nada
+        return Response({"message": "No hubo cambios en los datos proporcionados."}, status=status.HTTP_304_NOT_MODIFIED)

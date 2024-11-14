@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -163,3 +164,61 @@ class FiltrarEventos(APIView):
         # Serializar y devolver los resultados
         eventos_data = EventoSerializer(eventos, many=True).data
         return Response(eventos_data, status=status.HTTP_200_OK)
+
+
+class ModificarEvento(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+    
+    def put(self, request, *args, **kwargs):
+        # Obtener el ID del evento desde los parámetros de la URL
+        evento_id = kwargs.get('id_evento')
+        
+        # Obtener el evento desde la base de datos
+        evento = get_object_or_404(Evento, id_evento=evento_id)
+        
+        # Obtener los datos que fueron enviados en la petición
+        data = request.data
+        
+        # Comprobar si algún dato ha cambiado
+        fields_to_update = {}
+
+        # Comprobar y asignar nuevos valores si se han enviado
+        if data.get("nombre") and data["nombre"] != evento.nombre:
+            fields_to_update["nombre"] = data["nombre"]
+        
+        if data.get("logo") and data["logo"] != evento.logo.name:
+            fields_to_update["logo"] = data["logo"]
+        
+        if data.get("descripcion") and data["descripcion"] != evento.descripcion:
+            fields_to_update["descripcion"] = data["descripcion"]
+        
+        if data.get("fecha_inicio") and str(data["fecha_inicio"]) != str(evento.fecha_inicio):
+            fields_to_update["fecha_inicio"] = data["fecha_inicio"]
+        
+        if data.get("fecha_final") and str(data["fecha_final"]) != str(evento.fecha_final):
+            fields_to_update["fecha_final"] = data["fecha_final"]
+        
+        if data.get("horario_inicio") and str(data["horario_inicio"]) != str(evento.horario_inicio):
+            fields_to_update["horario_inicio"] = data["horario_inicio"]
+        
+        if data.get("horario_fin") and str(data["horario_fin"]) != str(evento.horario_fin):
+            fields_to_update["horario_fin"] = data["horario_fin"]
+        
+        if data.get("id_genero_fk") and str(data["id_genero_fk"]) != str(evento.id_genero_fk.id):
+            fields_to_update["id_genero_fk"] = data["id_genero_fk"]
+        
+        if data.get("precio_min") and data["precio_min"] != str(evento.precio_min):
+            fields_to_update["precio_min"] = data["precio_min"]
+        
+        if data.get("precio_max") and data["precio_max"] != str(evento.precio_max):
+            fields_to_update["precio_max"] = data["precio_max"]
+        
+        # Si existen campos a actualizar, realizamos la actualización
+        if fields_to_update:
+            for field, value in fields_to_update.items():
+                setattr(evento, field, value)
+            evento.save()
+            return Response(EventoSerializer(evento).data, status=status.HTTP_200_OK)
+        
+        # Si no hay cambios, respondemos con un mensaje de que no se modificó nada
+        return Response({"message": "No hubo cambios en los datos proporcionados."}, status=status.HTTP_304_NOT_MODIFIED)

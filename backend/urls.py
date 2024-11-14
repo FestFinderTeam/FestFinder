@@ -5,7 +5,7 @@ from django.urls import path
 from api.views import SubirImagen
 from api.views import AgregarTipoEstablecimiento
 from api.views import ListarTiposEstablecimiento
-from api.views.Establecimiento_Vista import EstablecimientoPorUsuario, EstablecimientosSimilares, FiltrarEstablecimientos, ListarEstablecimientosPorTipo, RecuperarDatosEstablecimiento, RegistrarEstablecimiento, ListarEstablecimientos
+from api.views.Establecimiento_Vista import EstablecimientoPorUsuario, EstablecimientosSimilares, FiltrarEstablecimientos, ListarEstablecimientosPorTipo, ModificarEstablecimiento, RecuperarDatosEstablecimiento, RegistrarEstablecimiento, ListarEstablecimientos
 from api.views.Etiqueta_Vista import CrearEtiqueta, ListarEtiquetas
 from api.views.EtiquetaEstablecimiento_Vista import (
     RegistrarRelacion,
@@ -13,7 +13,7 @@ from api.views.EtiquetaEstablecimiento_Vista import (
     EstablecimientosPorEtiqueta,
 )
 from api.views.Genero_Evento_Vista import CrearGeneroEvento, ListarGenerosEvento
-from api.views.Evento_Vista import CrearEvento, FiltrarEventos, ListarEventos, ListarEventosHoy, ListarEventosMes, ListarEventosPorCategoria, ListarEventosPorEstablecimiento, ObtenerEventoPorID
+from api.views.Evento_Vista import CrearEvento, FiltrarEventos, ListarEventos, ListarEventosHoy, ListarEventosMes, ListarEventosPorCategoria, ListarEventosPorEstablecimiento, ModificarEvento, ObtenerEventoPorID
 from api.views.Entrada_Vista import CrearEntrada, ListarEntradasEvento
 from api.views.Consumo_Vista import CrearConsumo, ListarConsumosPorEstablecimiento
 from api.views.HorariosEstablecimiento_Vista import RecuperarHorarios, RecuperarHorariosPorEstablecimiento, RegistrarHorarioEstablecimiento
@@ -82,6 +82,7 @@ urlpatterns = [
     ),
     path("api/categorias-establecimientos/", ListarTiposEstablecimiento.as_view(), name="listar-categorias-establecimiento"),
     path("api/establecimiento/", RegistrarEstablecimiento.as_view(), name="registrar-establecimiento"),
+    path('api/establecimiento/modificar/<int:id_evento>/', ModificarEstablecimiento.as_view(), name='modificar_establecimiento'),
     path("api/establecimientos/", ListarEstablecimientos.as_view(), name="listar-establecimiento"),
     path("api/establecimiento/est_id/<int:est_id>/", RecuperarDatosEstablecimiento.as_view(), name="recuperar-establecimiento"),
     path("api/establecimiento/propietario/<int:usuario_id>/", EstablecimientoPorUsuario.as_view(), name="recuperar-mi-establecimiento"),
@@ -105,7 +106,7 @@ urlpatterns = [
     path('api/eventos/establecimiento/<int:id_establecimiento>/', ListarEventosPorEstablecimiento.as_view(), name='listar-eventos-por-establecimiento'),
     path('api/eventos/categoria/<int:id_categoria>/', ListarEventosPorCategoria.as_view(), name='listar-eventos-por-categoria'),
     path('api/eventos/filtro/', FiltrarEventos.as_view(), name='filtrar_eventos'),
-
+    path('api/eventos/modificar/<int:id_evento>/', ModificarEvento.as_view(), name='modificar_evento'),
 
     path("entrada/", CrearEntrada.as_view(), name="crear-entrada"),
     path(
