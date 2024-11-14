@@ -5,7 +5,7 @@ from .Usuario import Usuario
 from .TipoEstablecimiento import TipoEstablecimiento
 
 class Establecimiento(models.Model):
-    nombre = models.CharField(max_length=100)
+    nombre = models.CharField(max_length=100, unique=True)
     banner = models.ImageField(upload_to='imagenes/establecimientos/banners/', blank=True, null=True)
     logo = models.ImageField(upload_to='imagenes/establecimientos/logos/', blank=True, null=True)
     direccion = models.CharField(max_length=255)
