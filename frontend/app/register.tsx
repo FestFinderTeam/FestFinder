@@ -151,10 +151,10 @@ const Register = () => {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <Image
         source={require("../assets/images/festLogo.png")}
-        style={Styles.festLogo}
+        style={styles.image}
       />
       <TextInputWithHelper
         label={"Nombre"}
@@ -215,24 +215,38 @@ const Register = () => {
         Registrarse
       </Button>
 
-      <View style={styles.lineContainer}>
-        <View style={styles.line} />
-        <Text style={styles.lineText}>Registrarse usando</Text>
-        <View style={styles.line} />
-      </View>
-      <LoginGoogle />
+      <View style={styles.centerContainer}>
+        <View style={styles.lineContainer}>
+          <View style={styles.line} />
+          <Text style={styles.lineText}>Registrarse usando</Text>
+          <View style={styles.line} />
+        </View>
+        <LoginGoogle />
 
-      <View style={Styles.linkContainer}>
-        <Text>Ya tienes una cuenta? </Text>
-        <Link to="/login" style={Styles.textDecoration2}>
-          Iniciar sesion
-        </Link>
+        <View style={Styles.linkContainer}>
+          <Text>Ya tienes una cuenta? </Text>
+          <Link to="/login" style={Styles.textDecoration2}>
+            Iniciar sesion
+          </Link>
+        </View>
       </View>
     </View>
   );
 };
 
 const styles = {
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#fff",
+  },
+  image: {
+    alignSelf: "center" as const,
+    marginVertical: 20,
+  },
+  centerContainer: {
+    alignItems: "center" as const,
+  },
   lineContainer: {
     flexDirection: "row" as const,
     alignItems: "center" as const,
