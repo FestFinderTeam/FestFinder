@@ -5,6 +5,8 @@ from ..models import Evento
 from ..serializers import EventoSerializer
 from datetime import datetime, timedelta
 from rest_framework.parsers import MultiPartParser, FormParser
+from django.db.models import Q
+
 
 
 # Vista para crear un evento
@@ -114,15 +116,6 @@ class ListarEventosPorCategoria(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from django.db.models import Q
-from datetime import timedelta, datetime
-
-from ..models import Evento
-from ..serializers import EventoSerializer
-
 class FiltrarEventos(APIView):
     def post(self, request):
         nombre = request.data.get("nombre", "").strip()
@@ -156,7 +149,7 @@ class FiltrarEventos(APIView):
         if nombre:
             query &= Q(nombre__icontains=nombre)
         if id_genero_fk:
-            query &= Q(id_genero_fk__id__in=id_genero_fk)
+            query &= Q(id_genero_fk__in=id_genero_fk)
 
         # Filtrar eventos utilizando la consulta construida
         eventos = Evento.objects.filter(query)
