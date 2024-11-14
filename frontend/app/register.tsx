@@ -3,9 +3,13 @@ import Styles from "../globalStyles/styles";
 import { Link } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import LoginGoogle from "@/components/LoginGoogle";
-import { API_URL } from "@/constants/Url";
 import TextInputWithHelper from "@/components/TextInputWithHelperText";
-import { Button } from "react-native-paper";
+import { Button, ActivityIndicator, Snackbar } from "react-native-paper";
+import { useRegisterMutation } from "@/api/useApi";
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const phoneRegex = /^\d{8}$/;
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
 interface FormData {
   nombre: string;
@@ -32,11 +36,26 @@ const fieldNames: { [key in keyof FormData]: string } = {
 };
 
 const Register = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showPassword2, setShowPassword2] = useState(false);
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const phoneRegex = /^\d{8}$/;
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+  const [showContraseña, setShowContraseña] = useState(false);
+  const [showConfirmarContraseña, setShowConfirmarContraseña] = useState(false);
+  const [visibleSnackbar, setVisibleSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const onDismissSnackbar = () => setVisibleSnackbar(false);
+  const [register, { data, error, isLoading, isSuccess, isError }] =
+    useRegisterMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log("Usuario registrado:", data);
+      setSnackbarMessage("Usuario registrado con éxito");
+      setVisibleSnackbar(true);
+    } else if (isError) {
+      console.error(error);
+      setSnackbarMessage("Error al registrar");
+      setVisibleSnackbar(true);
+    }
+  }, [isSuccess, isError, error, data]);
+
   const [formData, setFormData] = useState<FormData>({
     nombre: "",
     email: "",
@@ -69,7 +88,7 @@ const Register = () => {
     confirmarContraseña: "",
   });
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     const newErrors = { ...errors };
     Object.keys(formData).forEach((field) => {
       const key = field as keyof FormData;
@@ -121,7 +140,6 @@ const Register = () => {
 
     const hasErrors = Object.values(newErrors).some((error) => error !== "");
     if (!hasErrors) {
-      console.log("Formulario enviado:", formData);
       const data = {
         nombre: formData.nombre,
         email: formData.email,
@@ -129,26 +147,19 @@ const Register = () => {
         p_field: formData.contraseña,
         imagen: 1,
       };
-
-      try {
-        const response = await fetch(API_URL + "/api/usuario/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        });
-
-        if (response.ok) {
-          const userData = await response.json();
-          console.log("Usuario registrado:", userData);
-          alert("Usuario registrado");
-        } else {
-          alert("Error al registrar");
-        }
-      } catch (error) {
-        console.error(error);
-      }
+      setShowContraseña(false);
+      setShowConfirmarContraseña(false);
+      console.log("Formulario enviado:", data);
+      register(data);
     }
   };
+
+  if (isLoading)
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator animating={true} size="large" />
+      </View>
+    );
 
   return (
     <View style={styles.container}>
@@ -192,9 +203,9 @@ const Register = () => {
         mode="outlined"
         error={errors.contraseña !== ""}
         errorText={errors.contraseña}
-        icon={showPassword ? "eye" : "eye-off"}
-        onIconPress={() => setShowPassword(!showPassword)}
-        secureTextEntry={!showPassword}
+        icon={showContraseña ? "eye" : "eye-off"}
+        onIconPress={() => setShowContraseña(!showContraseña)}
+        secureTextEntry={!showContraseña}
       />
 
       <TextInputWithHelper
@@ -206,9 +217,9 @@ const Register = () => {
         mode="outlined"
         error={errors.confirmarContraseña !== ""}
         errorText={errors.confirmarContraseña}
-        icon={showPassword2 ? "eye" : "eye-off"}
-        onIconPress={() => setShowPassword2(!showPassword2)}
-        secureTextEntry={!showPassword2}
+        icon={showConfirmarContraseña ? "eye" : "eye-off"}
+        onIconPress={() => setShowConfirmarContraseña(!showConfirmarContraseña)}
+        secureTextEntry={!showConfirmarContraseña}
       />
 
       <Button mode="contained" onPress={handleSubmit} style={{ marginTop: 20 }}>
@@ -230,6 +241,15 @@ const Register = () => {
           </Link>
         </View>
       </View>
+
+      {/* Snackbar para mostrar mensajes */}
+      <Snackbar
+        visible={visibleSnackbar}
+        onDismiss={onDismissSnackbar}
+        duration={Snackbar.DURATION_SHORT}
+      >
+        {snackbarMessage}
+      </Snackbar>
     </View>
   );
 };
