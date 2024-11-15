@@ -20,7 +20,11 @@ import {
 } from "react-native";
 
 import Notch from "@/components/Notch";
-import { getEstablecimientoPorId, getEstablecimientosSimilares, getEventosPorEstablecimiento } from "@/services/establecimientosServices";
+import {
+    getEstablecimientoPorId,
+    getEstablecimientosSimilares,
+    getEventosPorEstablecimiento,
+} from "@/services/establecimientosServices";
 
 type Establecimiento = {
     id: number;
@@ -74,8 +78,7 @@ export const days = [
 ];
 
 const Place = () => {
-    const [ejemplo, setEjemplo] =
-        useState<any | null>(null);
+    const [ejemplo, setEjemplo] = useState<any | null>(null);
     const [establecimiento, setEstablecimiento] =
         useState<Establecimiento | null>(null);
     const [etiquetas, setEtiquetas] = useState<Etiqueta[]>([]);
@@ -268,7 +271,7 @@ const Place = () => {
                     animationType="slide"
                     transparent={true}
                     visible={horarioOpened}
-                    onRequestClose={() => { }}
+                    onRequestClose={() => {}}
                 >
                     <View
                         style={{
@@ -361,7 +364,11 @@ const Place = () => {
                 {establecimiento && (
                     <>
                         <ImageBackground
-                            source={{ uri: establecimiento.banner }}
+                            source={
+                                establecimiento.banner
+                                    ? { uri: establecimiento.banner }
+                                    : require("../../assets/images/defaultBanner.jpg")
+                            }
                             style={Styles.imageBanner}
                         >
                             <Pressable onPress={router.back}>
@@ -371,7 +378,7 @@ const Place = () => {
                                     size={30}
                                     style={{
                                         position: "absolute",
-                                        top: 40,
+                                        top: 10,
                                         left: 10,
                                     }}
                                 />
@@ -389,7 +396,11 @@ const Place = () => {
                         </ImageBackground>
 
                         <Image
-                            source={{ uri: establecimiento.logo }}
+                            source={
+                                establecimiento.logo
+                                    ? { uri: establecimiento.logo }
+                                    : require("../../assets/images/default.jpg")
+                            }
                             style={[
                                 styles.redondoImg,
                                 styles.contenedorIMG,
@@ -425,7 +436,12 @@ const Place = () => {
                                 </Text>
                             </View>
                             <View style={{ top: "-20%", right: "40%" }}>
-                                <Link href={("https://wa.me/" + establecimiento.nro_ref) as Href}>
+                                <Link
+                                    href={
+                                        ("https://wa.me/" +
+                                            establecimiento.nro_ref) as Href
+                                    }
+                                >
                                     <FontAwesome
                                         name="whatsapp"
                                         color={"green"}
@@ -488,25 +504,27 @@ const Place = () => {
                                     justifyContent: "space-around",
                                 }}
                             >
-                                {etiquetas && etiquetas.map((etiqueta) => (
-                                    <Text
-                                        key={etiqueta.id_etiqueta}
-                                        style={[
-                                            {
-                                                fontFamily: "Poppins-Regular",
-                                                marginTop: "3%",
-                                            },
-                                            {
-                                                backgroundColor:
-                                                    "rgba(235, 182, 255, 0.5)",
-                                                borderRadius: 10,
-                                                paddingHorizontal: 8,
-                                            },
-                                        ]}
-                                    >
-                                        {etiqueta.texto_etiqueta}
-                                    </Text>
-                                ))}
+                                {etiquetas &&
+                                    etiquetas.map((etiqueta) => (
+                                        <Text
+                                            key={etiqueta.id_etiqueta}
+                                            style={[
+                                                {
+                                                    fontFamily:
+                                                        "Poppins-Regular",
+                                                    marginTop: "3%",
+                                                },
+                                                {
+                                                    backgroundColor:
+                                                        "rgba(235, 182, 255, 0.5)",
+                                                    borderRadius: 10,
+                                                    paddingHorizontal: 8,
+                                                },
+                                            ]}
+                                        >
+                                            {etiqueta.texto_etiqueta}
+                                        </Text>
+                                    ))}
                             </View>
                             <Text
                                 style={[
@@ -613,7 +631,11 @@ const Place = () => {
                                     key={item.id_evento}
                                 >
                                     <ImageBackground
-                                        source={{ uri: item.logo }}
+                                        source={
+                                            item.logo
+                                                ? { uri: item.logo }
+                                                : require("../../assets/images/default.jpg")
+                                        }
                                         style={{
                                             height: 200,
                                             width: 150,
@@ -638,12 +660,16 @@ const Place = () => {
                                                     fontWeight: "bold",
                                                 }}
                                             >
-                                                {new Date(item.fecha_inicio).toLocaleDateString("es-ES", {
+                                                {new Date(
+                                                    item.fecha_inicio
+                                                ).toLocaleDateString("es-ES", {
                                                     day: "numeric",
                                                 })}
                                             </Text>
                                             <Text style={{ fontSize: 12 }}>
-                                                {new Date(item.fecha_inicio).toLocaleDateString("es-ES", {
+                                                {new Date(
+                                                    item.fecha_inicio
+                                                ).toLocaleDateString("es-ES", {
                                                     month: "short",
                                                 })}
                                             </Text>
@@ -704,7 +730,11 @@ const Place = () => {
                                     }}
                                 >
                                     <Image
-                                        source={item}
+                                        source={
+                                            item
+                                                ? item
+                                                : require("../../assets/images/default.jpg")
+                                        }
                                         style={{
                                             width: "auto",
                                             height: 150,
@@ -764,9 +794,9 @@ const Place = () => {
                                 >
                                     <Image
                                         source={
-                                            typeof item.logo === "string"
+                                            item.logo
                                                 ? { uri: item.logo }
-                                                : item.logo
+                                                : require("../../assets/images/default.jpg")
                                         }
                                         style={{
                                             width: 100,
@@ -864,4 +894,3 @@ export default Place;
 function setError(message: any) {
     throw new Error("Function not implemented.");
 }
-

@@ -2,6 +2,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, type Href } from "expo-router";
 import React from "react";
 import { ImageBackground, Text, View } from "react-native";
+
 export type EventoType = {
     id_evento: number;
     nombre: string;
@@ -26,7 +27,7 @@ const Evento = ({ evento }: Props) => {
         >
             <ImageBackground
                 resizeMode="cover"
-                source={{ uri: `${evento.logo}` }}
+                source={evento.logo ?{ uri: evento.logo } : require('../assets/images/default.jpg')}
                 style={{
                     width: 150,
                     height: 200,

@@ -13,8 +13,8 @@ const HomeLayout = () => {
         <SessionProvider>
           <SafeAreaView style={styles.container}>
             <StatusBar
-              barStyle="dark-content"
               backgroundColor={theme.colors.primary}
+              
             />
             <Stack screenOptions={{ headerShown: false }}>
               <Stack.Screen name="(tabs)" />
@@ -32,7 +32,7 @@ const HomeLayout = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: StatusBar.currentHeight,
+//    paddingTop: StatusBar.currentHeight,
   },
 });
 

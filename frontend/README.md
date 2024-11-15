@@ -1,5 +1,5 @@
-# Aplicacion necesaria para Android fecha 16/09/2024
-[link de la descarga](https://expo.dev/accounts/jhuniorrg/projects/FestFinder/builds/1c08644f-7aeb-49ca-a671-a5ffd7e96d2b)
+# Aplicacion necesaria para Android fecha 15/11/2024
+[link de la descarga](https://expo.dev/accounts/jhuniorrg/projects/FestFinder/builds/aec194dd-ef2a-4886-a041-57c86a02e79e)
 
 ## Get started
 
