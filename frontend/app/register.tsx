@@ -162,84 +162,97 @@ const Register = () => {
 
 	return (
 		<View style={styles.container}>
-			<Image
-				source={require("../assets/images/festLogoHD.png")}
-				style={{ aspectRatio: 1, width: "100%", height: "auto" }}
-				resizeMode="contain"
-			/>
-			<TextInputWithHelper
-				label={"Nombre"}
-				value={formData.nombre}
-				onChangeText={(e: string) => setFormData({ ...formData, nombre: e })}
-				mode="outlined"
-				error={errors.nombre !== ""}
-				errorText={errors.nombre}
-			/>
+			<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+				<Image
+					source={require("../assets/images/festLogoHD.png")}
+					style={{ width: "100%", height: undefined, aspectRatio: 1 }}
+					resizeMode="contain"
+				/>
+			</View>
 
-			<TextInputWithHelper
-				label={"Email"}
-				value={formData.email}
-				onChangeText={(e: string) => setFormData({ ...formData, email: e })}
-				mode="outlined"
-				error={errors.email !== ""}
-				errorText={errors.email}
-			/>
+			<View style={{ flex: 2 }}>
+				<TextInputWithHelper
+					label={"Nombre"}
+					value={formData.nombre}
+					onChangeText={(e: string) => setFormData({ ...formData, nombre: e })}
+					mode="outlined"
+					error={errors.nombre !== ""}
+					errorText={errors.nombre}
+				/>
 
-			<TextInputWithHelper
-				label={"Teléfono"}
-				value={formData.telefono}
-				onChangeText={(e: string) => setFormData({ ...formData, telefono: e })}
-				mode="outlined"
-				error={errors.telefono !== ""}
-				errorText={errors.telefono}
-			/>
+				<TextInputWithHelper
+					label={"Email"}
+					value={formData.email}
+					onChangeText={(e: string) => setFormData({ ...formData, email: e })}
+					mode="outlined"
+					error={errors.email !== ""}
+					errorText={errors.email}
+				/>
 
-			<TextInputWithHelper
-				label={"Contraseña"}
-				value={formData.contraseña}
-				onChangeText={(e: string) =>
-					setFormData({ ...formData, contraseña: e })
-				}
-				mode="outlined"
-				error={errors.contraseña !== ""}
-				errorText={errors.contraseña}
-				icon={showContraseña ? "eye" : "eye-off"}
-				onIconPress={() => setShowContraseña(!showContraseña)}
-				secureTextEntry={!showContraseña}
-			/>
+				<TextInputWithHelper
+					label={"Teléfono"}
+					value={formData.telefono}
+					onChangeText={(e: string) =>
+						setFormData({ ...formData, telefono: e })
+					}
+					mode="outlined"
+					error={errors.telefono !== ""}
+					errorText={errors.telefono}
+				/>
 
-			<TextInputWithHelper
-				label={"Confirmar Contraseña"}
-				value={formData.confirmarContraseña}
-				onChangeText={(e: string) =>
-					setFormData({ ...formData, confirmarContraseña: e })
-				}
-				mode="outlined"
-				error={errors.confirmarContraseña !== ""}
-				errorText={errors.confirmarContraseña}
-				icon={showConfirmarContraseña ? "eye" : "eye-off"}
-				onIconPress={() => setShowConfirmarContraseña(!showConfirmarContraseña)}
-				secureTextEntry={!showConfirmarContraseña}
-			/>
+				<TextInputWithHelper
+					label={"Contraseña"}
+					value={formData.contraseña}
+					onChangeText={(e: string) =>
+						setFormData({ ...formData, contraseña: e })
+					}
+					mode="outlined"
+					error={errors.contraseña !== ""}
+					errorText={errors.contraseña}
+					icon={showContraseña ? "eye" : "eye-off"}
+					onIconPress={() => setShowContraseña(!showContraseña)}
+					secureTextEntry={!showContraseña}
+				/>
 
-			<Button mode="contained" onPress={handleSubmit} style={{ marginTop: 20 }}>
-				Registrarse
-			</Button>
+				<TextInputWithHelper
+					label={"Confirmar Contraseña"}
+					value={formData.confirmarContraseña}
+					onChangeText={(e: string) =>
+						setFormData({ ...formData, confirmarContraseña: e })
+					}
+					mode="outlined"
+					error={errors.confirmarContraseña !== ""}
+					errorText={errors.confirmarContraseña}
+					icon={showConfirmarContraseña ? "eye" : "eye-off"}
+					onIconPress={() =>
+						setShowConfirmarContraseña(!showConfirmarContraseña)
+					}
+					secureTextEntry={!showConfirmarContraseña}
+				/>
 
-			<View style={styles.centerContainer}>
-				<View style={styles.lineContainer}>
-					<View style={styles.line} />
-					<Text>Registrarse usando</Text>
-					<View style={styles.line} />
-				</View>
+				<Button
+					mode="contained"
+					onPress={handleSubmit}
+					style={{ marginTop: 20 }}
+				>
+					Registrarse
+				</Button>
 
-				<LoginGoogle />
+				<View style={styles.centerContainer}>
+					<View style={styles.lineContainer}>
+						<View style={styles.line} />
+						<Text> Registrarse usando </Text>
+						<View style={styles.line} />
+					</View>
 
-				<View style={Styles.linkContainer}>
-					<Text>Ya tienes una cuenta? </Text>
-					<Link to="/login" style={Styles.textDecoration2}>
-						Iniciar sesion
-					</Link>
+					<LoginGoogle />
+
+					<View style={Styles.linkContainer}>
+						<Text>Ya tienes una cuenta? </Text>
+						<Link to="/login" style={Styles.textDecoration2}>
+							Iniciar sesion
+						</Link>
+					</View>
 				</View>
 			</View>
 
