@@ -1,193 +1,289 @@
-import { Text, TextInput, TouchableOpacity, View, Image, Pressable } from "react-native";
+import { Text, View, Image } from "react-native";
 import Styles from "../globalStyles/styles";
 import { Link } from "@react-navigation/native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoginGoogle from "@/components/LoginGoogle";
-import { API_URL } from "@/constants/Url";
-import { FontAwesome } from '@expo/vector-icons';
+import TextInputWithHelper from "@/components/TextInputWithHelperText";
+import { Button, ActivityIndicator, Snackbar } from "react-native-paper";
+import { useRegisterMutation } from "@/api/useApi";
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const phoneRegex = /^\d{8}$/;
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+
+interface FormData {
+  nombre: string;
+  email: string;
+  telefono: string;
+  contraseña: string;
+  confirmarContraseña: string;
+}
+
+interface Errors {
+  nombre: string;
+  email: string;
+  telefono: string;
+  contraseña: string;
+  confirmarContraseña: string;
+}
+
+const fieldNames: { [key in keyof FormData]: string } = {
+  nombre: "Nombre",
+  email: "Email",
+  telefono: "Teléfono",
+  contraseña: "Contraseña",
+  confirmarContraseña: "Confirmar Contraseña",
+};
+
 const Register = () => {
-    const [nombre, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [p_field, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [telefono, setTelephone] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
-    const [showPassword2, setShowPassword2] = useState(false);
+  const [showContraseña, setShowContraseña] = useState(false);
+  const [showConfirmarContraseña, setShowConfirmarContraseña] = useState(false);
+  const [visibleSnackbar, setVisibleSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const onDismissSnackbar = () => setVisibleSnackbar(false);
+  const [register, { data, error, isLoading, isSuccess, isError }] =
+    useRegisterMutation();
 
-    const handleSubmit = async () => {
-        if ([nombre, email, p_field, confirmPassword, telefono].includes("")) {
-            alert("Todos los campos son obligatorios");
-            return null;
-        }
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
-        if (!passwordRegex.test(p_field)) {
-            alert("La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula y un número.");
-            return null;
-        }
+  useEffect(() => {
+    if (isSuccess) {
+      console.log("Usuario registrado:", data);
+      setSnackbarMessage("Usuario registrado con éxito");
+      setVisibleSnackbar(true);
+    } else if (isError) {
+      console.error(error);
+      setSnackbarMessage("Error al registrar");
+      setVisibleSnackbar(true);
+    }
+  }, [isSuccess, isError, error, data]);
 
-        if (p_field !== confirmPassword) {
-            alert("La confirmación de la contraseña no coincide.");
-            return null;
-        }
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            alert("El email debe tener un formato válido: local@dominio.");
-            return;
-        }
-        if (!/^\d{8}$/.test(telefono)) {
-            alert("El teléfono debe tener solo números y 8 dígitos.");
-            return;
-        }
-        const data = { nombre, email, telefono, p_field, imagen: 1 };
+  const [formData, setFormData] = useState<FormData>({
+    nombre: "",
+    email: "",
+    telefono: "",
+    contraseña: "",
+    confirmarContraseña: "",
+  });
 
-        try {
-            const response = await fetch(API_URL + "/api/usuario/", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-            });
-
-            if (response.ok) {
-                const userData = await response.json();
-                console.log("Usuario registrado:", userData);
-                alert("Usuario registrado");
-            } else {
-                alert("Error al registrar");
-            }
-        } catch (error) {
-            console.error(error);
-        }
+  useEffect(() => {
+    const clearError = (field: keyof FormData) => {
+      if (formData[field]) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [field]: "",
+        }));
+      }
     };
+    // Itera sobre cada campo en formData y limpia su error si tiene valor
+    Object.keys(formData).forEach((key) => {
+      const field = key as keyof FormData;
+      clearError(field);
+    });
+  }, [formData]);
 
+  const [errors, setErrors] = useState<Errors>({
+    nombre: "",
+    email: "",
+    telefono: "",
+    contraseña: "",
+    confirmarContraseña: "",
+  });
 
+  const handleSubmit = () => {
+    const newErrors = { ...errors };
+    Object.keys(formData).forEach((field) => {
+      const key = field as keyof FormData;
+      const value = formData[key].trim();
+
+      if (!value) {
+        // Campo vacío
+        newErrors[key] = `El campo ${fieldNames[key]} es obligatorio`;
+      } else {
+        // Validación específica para cada campo
+        switch (key) {
+          case "email":
+            if (!emailRegex.test(value)) {
+              newErrors[key] = "El formato del correo electrónico es inválido";
+            } else {
+              newErrors[key] = "";
+            }
+            break;
+          case "telefono":
+            if (!phoneRegex.test(value)) {
+              newErrors[key] = "El teléfono debe tener exactamente 8 dígitos";
+            } else {
+              newErrors[key] = "";
+            }
+            break;
+          case "contraseña":
+            if (!passwordRegex.test(value)) {
+              newErrors[key] =
+                "La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula y un número";
+            } else {
+              newErrors[key] = "";
+            }
+            break;
+          case "confirmarContraseña":
+            if (value !== formData.contraseña) {
+              newErrors[key] = "Las contraseñas no coinciden";
+            } else {
+              newErrors[key] = "";
+            }
+            break;
+          default:
+            newErrors[key] = ""; // Limpia cualquier error anterior para campos válidos
+            break;
+        }
+      }
+    });
+
+    setErrors(newErrors);
+
+    const hasErrors = Object.values(newErrors).some((error) => error !== "");
+    if (!hasErrors) {
+      const data = {
+        nombre: formData.nombre,
+        email: formData.email,
+        telefono: formData.telefono,
+        p_field: formData.contraseña,
+        imagen: 1,
+      };
+      setShowContraseña(false);
+      setShowConfirmarContraseña(false);
+      console.log("Formulario enviado:", data);
+      register(data);
+    }
+  };
+
+  if (isLoading)
     return (
-        <View style={Styles.container}>
-            <Image
-                source={require("../assets/images/festLogo.png")}
-                style={Styles.festLogo}
-            />
-            <TextInput
-                placeholder="Nombre"
-                placeholderTextColor="#402158"
-                style={Styles.input}
-                onChangeText={(e: string) => setName(e)}
-            />
-            <TextInput
-                placeholder="Email"
-                keyboardType="email-address"
-                placeholderTextColor="#402158"
-                style={Styles.input}
-                onChangeText={setEmail}
-                onEndEditing={() => {
-                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (!emailRegex.test(email)) {
-                        alert("El email debe tener un formato válido: local@dominio.");
-                    }
-                }}
-            />
-            <TextInput
-                placeholder="Teléfono"
-                keyboardType="phone-pad"
-                placeholderTextColor="#402158"
-                style={Styles.input}
-                onChangeText={setTelephone}
-                onEndEditing={() => {
-                    if (!/^\d{8}$/.test(telefono)) {
-                        alert("El teléfono debe tener solo números y 8 dígitos.");
-                    }
-                }}
-            />
-            <View style={{ width: '80%', position: 'relative' }}>
-                <TextInput
-                    placeholder="Contraseña"
-                    secureTextEntry={!showPassword}
-                    placeholderTextColor="#402158"
-                    style={[Styles.input, { paddingRight: 40, width: '100%' }]}
-                    onChangeText={(e: string) => setPassword(e)}
-                />
-                <Pressable
-                    onPress={() => setShowPassword(!showPassword)}
-                    style={{
-                        position: 'absolute',
-                        right: 10,
-                        top: '40%',
-                        transform: [{ translateY: -10 }],
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }}
-                >
-                    <FontAwesome
-                        name={showPassword ? "eye" : "eye-slash"}
-                        size={20}
-                        color="#402158"
-                    />
-                </Pressable>
-            </View>
-
-            <View style={{ width: '80%', position: 'relative' }}>
-                <TextInput
-                    placeholder="Confirmación de contraseña"
-                    secureTextEntry={!showPassword}
-                    placeholderTextColor="#402158"
-                    style={[Styles.input, { paddingRight: 40, width: '100%' }]}
-                    onChangeText={(e: string) => setConfirmPassword(e)}
-                />
-                <Pressable
-                    onPress={() => setShowPassword2(!showPassword2)}
-                    style={{
-                        position: 'absolute',
-                        right: 10,
-                        top: '40%',
-                        transform: [{ translateY: -10 }],
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }}
-                >
-                    <FontAwesome
-                        name={showPassword ? "eye" : "eye-slash"}
-                        size={20}
-                        color="#402158"
-                    />
-                </Pressable>
-            </View>
-            <TouchableOpacity style={Styles.button} onPress={handleSubmit}>
-                <Text style={Styles.buttonText}>Registrarse</Text>
-            </TouchableOpacity>
-            <View style={styles.lineContainer}>
-                <View style={styles.line} />
-                <Text style={styles.lineText}>Registrarse usando</Text>
-                <View style={styles.line} />
-            </View>
-            <LoginGoogle />
-
-            <View style={Styles.linkContainer}>
-                <Text>Ya tienes una cuenta? </Text>
-                <Link to="/login" style={Styles.textDecoration2}>
-                    Iniciar sesion
-                </Link>
-            </View>
-        </View>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator animating={true} size="large" />
+      </View>
     );
+
+  return (
+    <View style={styles.container}>
+      <Image
+        source={require("../assets/images/festLogo.png")}
+        style={styles.image}
+      />
+      <TextInputWithHelper
+        label={"Nombre"}
+        value={formData.nombre}
+        onChangeText={(e: string) => setFormData({ ...formData, nombre: e })}
+        mode="outlined"
+        error={errors.nombre !== ""}
+        errorText={errors.nombre}
+      />
+
+      <TextInputWithHelper
+        label={"Email"}
+        value={formData.email}
+        onChangeText={(e: string) => setFormData({ ...formData, email: e })}
+        mode="outlined"
+        error={errors.email !== ""}
+        errorText={errors.email}
+      />
+
+      <TextInputWithHelper
+        label={"Teléfono"}
+        value={formData.telefono}
+        onChangeText={(e: string) => setFormData({ ...formData, telefono: e })}
+        mode="outlined"
+        error={errors.telefono !== ""}
+        errorText={errors.telefono}
+      />
+
+      <TextInputWithHelper
+        label={"Contraseña"}
+        value={formData.contraseña}
+        onChangeText={(e: string) =>
+          setFormData({ ...formData, contraseña: e })
+        }
+        mode="outlined"
+        error={errors.contraseña !== ""}
+        errorText={errors.contraseña}
+        icon={showContraseña ? "eye" : "eye-off"}
+        onIconPress={() => setShowContraseña(!showContraseña)}
+        secureTextEntry={!showContraseña}
+      />
+
+      <TextInputWithHelper
+        label={"Confirmar Contraseña"}
+        value={formData.confirmarContraseña}
+        onChangeText={(e: string) =>
+          setFormData({ ...formData, confirmarContraseña: e })
+        }
+        mode="outlined"
+        error={errors.confirmarContraseña !== ""}
+        errorText={errors.confirmarContraseña}
+        icon={showConfirmarContraseña ? "eye" : "eye-off"}
+        onIconPress={() => setShowConfirmarContraseña(!showConfirmarContraseña)}
+        secureTextEntry={!showConfirmarContraseña}
+      />
+
+      <Button mode="contained" onPress={handleSubmit} style={{ marginTop: 20 }}>
+        Registrarse
+      </Button>
+
+      <View style={styles.centerContainer}>
+        <View style={styles.lineContainer}>
+          <View style={styles.line} />
+          <Text style={styles.lineText}>Registrarse usando</Text>
+          <View style={styles.line} />
+        </View>
+        <LoginGoogle />
+
+        <View style={Styles.linkContainer}>
+          <Text>Ya tienes una cuenta? </Text>
+          <Link to="/login" style={Styles.textDecoration2}>
+            Iniciar sesion
+          </Link>
+        </View>
+      </View>
+
+      {/* Snackbar para mostrar mensajes */}
+      <Snackbar
+        visible={visibleSnackbar}
+        onDismiss={onDismissSnackbar}
+        duration={Snackbar.DURATION_SHORT}
+      >
+        {snackbarMessage}
+      </Snackbar>
+    </View>
+  );
 };
 
 const styles = {
-    lineContainer: {
-        flexDirection: "row" as const,
-        alignItems: "center" as const,
-        marginVertical: 10,
-        paddingHorizontal: 20,
-        marginTop: 20,
-    },
-    line: {
-        flex: 1,
-        height: 1,
-        backgroundColor: "#402158",
-    },
-    lineText: {
-        marginHorizontal: 10,
-        color: "#402158",
-        fontWeight: "500" as const,
-    },
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#fff",
+  },
+  image: {
+    alignSelf: "center" as const,
+    marginVertical: 20,
+  },
+  centerContainer: {
+    alignItems: "center" as const,
+  },
+  lineContainer: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    marginVertical: 10,
+    paddingHorizontal: 20,
+    marginTop: 20,
+  },
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#402158",
+  },
+  lineText: {
+    marginHorizontal: 10,
+    color: "#402158",
+    fontWeight: "500" as const,
+  },
 };
 
 export default Register;
