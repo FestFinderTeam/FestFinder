@@ -4,7 +4,7 @@ const userApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     register: builder.mutation({
       query: (data) => ({
-        url: "usuario",
+        url: "usuario/",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
