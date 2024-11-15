@@ -1,11 +1,11 @@
-import { Text, View, Image } from "react-native";
+import { View, Image } from "react-native";
 import Styles from "../globalStyles/styles";
 import { Link } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import LoginGoogle from "@/components/LoginGoogle";
 import TextInputWithHelper from "@/components/TextInputWithHelperText";
-import { Button, ActivityIndicator, Snackbar } from "react-native-paper";
-import { useRegisterMutation } from "@/api/useApi";
+import { Button, ActivityIndicator, Snackbar, Text } from "react-native-paper";
+import { useRegisterMutation } from "@/api/userApi";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneRegex = /^\d{8}$/;
@@ -40,7 +40,6 @@ const Register = () => {
   const [showConfirmarContraseña, setShowConfirmarContraseña] = useState(false);
   const [visibleSnackbar, setVisibleSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const onDismissSnackbar = () => setVisibleSnackbar(false);
   const [register, { data, error, isLoading, isSuccess, isError }] =
     useRegisterMutation();
 
@@ -229,9 +228,10 @@ const Register = () => {
       <View style={styles.centerContainer}>
         <View style={styles.lineContainer}>
           <View style={styles.line} />
-          <Text style={styles.lineText}>Registrarse usando</Text>
+          <Text>Registrarse usando</Text>
           <View style={styles.line} />
         </View>
+
         <LoginGoogle />
 
         <View style={Styles.linkContainer}>
@@ -245,7 +245,7 @@ const Register = () => {
       {/* Snackbar para mostrar mensajes */}
       <Snackbar
         visible={visibleSnackbar}
-        onDismiss={onDismissSnackbar}
+        onDismiss={() => setVisibleSnackbar(false)}
         duration={Snackbar.DURATION_SHORT}
       >
         {snackbarMessage}
