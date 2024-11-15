@@ -143,6 +143,9 @@ const Login = ({ setSnackbarMessage, setVisibleSnackbar }: LoginProps) => {
 				error={errors.email !== ""}
 				errorText={errors.email}
 				autoCapitalize="none"
+				textContentType="emailAddress"
+				keyboardType="email-address"
+				autoComplete="email"
 			/>
 			<TextInputWithHelper
 				label={"Contraseña"}
@@ -157,6 +160,8 @@ const Login = ({ setSnackbarMessage, setVisibleSnackbar }: LoginProps) => {
 				onIconPress={() => setShowContraseña(!showContraseña)}
 				secureTextEntry={!showContraseña}
 				autoCapitalize="none"
+				autoComplete="password"
+				textContentType="password"
 			/>
 
 			<Button mode="contained" onPress={handleSubmit} style={{ marginTop: 20 }}>
