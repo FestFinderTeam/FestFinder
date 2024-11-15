@@ -1,129 +1,189 @@
-import {
-    Button,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-    Image,
-} from "react-native";
+import { Text, View } from "react-native";
+import { ActivityIndicator, Button, Snackbar } from "react-native-paper";
 import LoginGoogle from "./LoginGoogle";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
-import Styles from "../globalStyles/styles";
 import React from "react";
 import { useSession } from "@/hooks/ctx";
-import { API_URL } from "@/constants/Url";
+import { useLoginMutation } from "@/api/userApi";
+import TextInputWithHelper from "./TextInputWithHelperText";
 
-const getLoginData = async () => {
-    return await SecureStore.getItem("login");
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+interface FormData {
+	email: string;
+	contraseña: string;
+}
+
+interface Errors {
+	email: string;
+	contraseña: string;
+}
+
+const fieldNames: { [key in keyof FormData]: string } = {
+	email: "Email",
+	contraseña: "Contraseña",
 };
 
-const Login = () => {
-    const { signIn } = useSession();
-    useEffect(() => {}, []);
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+const getLoginData = async () => {
+	return await SecureStore.getItem("login");
+};
 
-    const handleSubmit = async () => {
-        if ([email, password].includes("")) {
-            alert("Todos los campos son obligatorios");
-            return;
-        }
-        // Send to the server
-        const data = { email, password, g_id: "" };
+interface LoginProps {
+	setSnackbarMessage: (message: string) => void;
+	setVisibleSnackbar: (visible: boolean) => void;
+}
 
-        try {
-            const response = await fetch(`${API_URL}/api/logear_usuario/`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-            });
+const Login = ({ setSnackbarMessage, setVisibleSnackbar }: LoginProps) => {
+	const { signIn } = useSession();
+	const [showContraseña, setShowContraseña] = useState(false);
+	const [login, { data, isSuccess, error, isError, isLoading }] =
+		useLoginMutation();
+	const [formData, setFormData] = useState<FormData>({
+		email: "",
+		contraseña: "",
+	});
+	const [errors, setErrors] = useState<Errors>({
+		email: "",
+		contraseña: "",
+	});
 
-            if (response.ok) {
-                const data = await response.json();
-                const {
-                    email,
-                    g_id,
-                    id_usuario,
-                    imagen_detail,
-                    nombre,
-                    telefono,
-                    duenio,
-                    establecimiento,
-                } = data;
+	useEffect(() => {
+		const clearError = (field: keyof FormData) => {
+			if (formData[field]) {
+				setErrors((prevErrors) => ({
+					...prevErrors,
+					[field]: "",
+				}));
+			}
+		};
+		// Itera sobre cada campo en formData y limpia su error si tiene valor
+		Object.keys(formData).forEach((key) => {
+			const field = key as keyof FormData;
+			clearError(field);
+		});
+	}, [formData]);
 
-                //setUserData(userData);  // Guarda los datos del usuario
-                let imagen_url = "";
-                
-                const fullImageUrl = `${API_URL}${imagen_detail.imagen}`; // URL completa de la imagen
-                imagen_url = fullImageUrl; // Guarda la URI de la imagen
-                
-                signIn({
-                    id_usuario,
-                    imagen_url,
-                    nombre,
-                    email,
-                    telefono,
-                    duenio,
-                    establecimiento,
-                });
-            } else {
-                alert("Error en el inicio de sesión");
-            }
-        } catch (error) {
-            console.error(error);
-            alert("Error de conexión");
-        }
-    };
+	useEffect(() => {
+		if (isSuccess) {
+			console.log("Usuario logueado:", data);
+			setSnackbarMessage("Iniciar sesión con éxito");
+			setVisibleSnackbar(true);
+		} else if (isError) {
+			console.error(error);
+            setSnackbarMessage("Usuario o contraseña incorrecta.");
+			setVisibleSnackbar(true);
+		}
+	}, [isSuccess, isError, error, data]);
 
-    return (
-        <>
-            <TextInput
-                placeholder="Email"
-                keyboardType="email-address"
-                placeholderTextColor="#402158"
-                style={Styles.input}
-                onChangeText={setEmail}
-            />
-            <TextInput
-                placeholder="Contraseña"
-                secureTextEntry={true}
-                placeholderTextColor="#402158"
-                style={Styles.input}
-                onChangeText={setPassword}
-            />
-            <TouchableOpacity style={Styles.button} onPress={handleSubmit}>
-                <Text style={Styles.buttonText}>Iniciar Sesión</Text>
-            </TouchableOpacity>
+	const handleSubmit = async () => {
+		const newErrors = { ...errors };
+		Object.keys(formData).forEach((field) => {
+			const key = field as keyof FormData;
+			const value = formData[key].trim();
 
-            <View style={styles.lineContainer}>
-                <View style={styles.line} />
-                <Text style={styles.lineText}>Inicia sesión usando</Text>
-                <View style={styles.line} />
-            </View>
-            <LoginGoogle />
-        </>
-    );
+			if (!value) {
+				// Campo vacío
+				newErrors[key] = `El campo ${fieldNames[key]} es obligatorio`;
+			} else {
+				// Validación específica para cada campo
+				switch (key) {
+					case "email":
+						if (!emailRegex.test(value)) {
+							newErrors[key] = "El formato del correo electrónico es inválido";
+						} else {
+							newErrors[key] = "";
+						}
+						break;
+					default:
+						newErrors[key] = ""; // Limpia cualquier error anterior para campos válidos
+						break;
+				}
+			}
+		});
+
+		setErrors(newErrors);
+
+		const hasErrors = Object.values(newErrors).some((error) => error !== "");
+		if (!hasErrors) {
+			const data = {
+				email: formData.email,
+				password: formData.contraseña,
+				g_id: "",
+			};
+			setShowContraseña(false);
+			console.log("Formulario enviado:", data);
+			login(data);
+		}
+	};
+
+	if (isLoading)
+		return (
+			<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+				<ActivityIndicator animating={true} size="large" />
+			</View>
+		);
+
+	return (
+		<>
+			<TextInputWithHelper
+				label={"Email"}
+				value={formData.email}
+				onChangeText={(e: string) => setFormData({ ...formData, email: e })}
+				mode="outlined"
+				error={errors.email !== ""}
+				errorText={errors.email}
+			/>
+			<TextInputWithHelper
+				label={"Contraseña"}
+				value={formData.contraseña}
+				onChangeText={(e: string) =>
+					setFormData({ ...formData, contraseña: e })
+				}
+				mode="outlined"
+				error={errors.contraseña !== ""}
+				errorText={errors.contraseña}
+				icon={showContraseña ? "eye" : "eye-off"}
+				onIconPress={() => setShowContraseña(!showContraseña)}
+				secureTextEntry={!showContraseña}
+			/>
+
+			<Button mode="contained" onPress={handleSubmit} style={{ marginTop: 20 }}>
+				Iniciar Sesión
+			</Button>
+			<View style={styles.centerContainer}>
+				<View style={styles.lineContainer}>
+					<View style={styles.line} />
+					<Text style={styles.lineText}>Inicia sesión usando</Text>
+					<View style={styles.line} />
+				</View>
+				<LoginGoogle />
+			</View>
+		</>
+	);
 };
 
 const styles = {
-    lineContainer: {
-        flexDirection: "row" as const,
-        alignItems: "center" as const,
-        marginVertical: 10,
-        paddingHorizontal: 20,
-        marginTop: 20,
-    },
-    line: {
-        flex: 1,
-        height: 1,
-        backgroundColor: "#402158",
-    },
-    lineText: {
-        marginHorizontal: 10,
-        color: "#402158",
-        fontWeight: "500" as const,
-    },
+	lineContainer: {
+		flexDirection: "row" as const,
+		alignItems: "center" as const,
+		marginVertical: 10,
+		paddingHorizontal: 20,
+		marginTop: 20,
+	},
+	centerContainer: {
+		alignItems: "center" as const,
+	},
+	line: {
+		flex: 1,
+		height: 1,
+		backgroundColor: "#402158",
+	},
+	lineText: {
+		marginHorizontal: 10,
+		color: "#402158",
+		fontWeight: "500" as const,
+	},
 };
 
 export default Login;
