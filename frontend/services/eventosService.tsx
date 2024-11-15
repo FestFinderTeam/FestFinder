@@ -79,3 +79,34 @@ export const getCategoriasEventos = async () => {
         return [];
     }
 };
+
+export const filtrarEventos = async (   nombre: string | null = null, 
+                                        id_genero_fk: [string] | null = null, 
+                                        fecha_actual: string | null = null, 
+                                        ciudad: string) => {
+    try {
+        const response = await fetch(`${API_URL}/api/eventos/filtro/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                nombre,
+                id_genero_fk,
+                fecha_actual,
+                ciudad
+            }),
+        });
+        
+        if (!response.ok) {
+            console.error("Error al filtrar eventos:", response.status);
+            return [];
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error al filtrar eventos:", error);
+        return [];
+    }
+};

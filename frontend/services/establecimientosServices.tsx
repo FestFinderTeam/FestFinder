@@ -95,3 +95,39 @@ export const getEventosPorEstablecimiento = async (
         return null;
     }
 };
+
+export const filtrarEstablecimientos = async (   
+                                        nombre: string | null = null, 
+                                        tipos: [string] | null = null, 
+                                        rango_de_precios: string | null = null, 
+                                        ciudad: string
+                                    ) => {
+    try {
+        const response = await fetch(`${API_URL}/api/eventos/filtro/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                nombre,
+                tipos,
+                rango_de_precios,
+                ciudad
+            }),
+        });
+        
+        if (!response.ok) {
+            console.error("Error al filtrar eventos:", response.status);
+            return [];
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error al filtrar eventos:", error);
+        return [];
+    }
+};
+
+
+

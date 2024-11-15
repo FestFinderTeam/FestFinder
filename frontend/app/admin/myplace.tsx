@@ -19,7 +19,7 @@ import {
     View,
 } from "react-native";
 import { Double } from "react-native/Libraries/Types/CodegenTypes";
-import { pickImage } from "@/utils/Image";
+import { getImage, pickImage } from "@/utils/Image";
 import type { ImagePickerAsset } from "expo-image-picker";
 import { SelectList } from "react-native-dropdown-select-list";
 import { dateToHHmm, showTime } from "@/utils/DateTime";
@@ -70,13 +70,15 @@ type Establecimiento = {
 };
 
 const MyPlace = () => {
+    const API_URL = process.env.EXPO_PUBLIC_API_URL;
+
     const { session} = useSession();
     const [establecimiento, setEstablecimiento] =
         useState<Establecimiento | null>(null);
     const [etiqueta, setEtiqueta] = useState("");
-    const [banner, setBanner] = useState();
-    const [imagenes, setImagenes] = useState();
-    const [logo, setLogo] = useState();
+    const [banner, setBanner] = useState<ImagePickerAsset>();
+    const [imagenes, setImagenes] = useState<ImagePickerAsset>();
+    const [logo, setLogo] = useState<ImagePickerAsset>();
     const [nombre, setNombre] = useState<string>();
     const [ubicacion, setUbicacion] = useState<string>();
     const [tipo, setTipo] = useState<String>();
@@ -224,19 +226,62 @@ const MyPlace = () => {
         );
     };
 
-    const handleSubmit = () => {
-        console.log(
-            nombre,
-            tipo_fk,
-            location.latitude,
-            location.longitude,
-            etiquetas,
-            rango_de_precios,
-            horarioAtencion
-        );
-        console.log(banner);
-        console.log(logo);
+    const handleSubmit = async () => {
+        if(establecimiento){
+            try {
+                const formData = new FormData();
+                
+                // Agregar campos de texto
+                formData.append("nombre", nombre+'');
+                formData.append("direccion", direccion+'');
+                formData.append("tipo_fk", tipo_fk);
+                formData.append("rango_de_precios", rango_de_precios);
+                //formData.append("nro_ref", nro_ref+'');  // Falta campo
+                //formData.append("em_ref", em_ref+'');
+        
+                // Agregar coordenadas si las tienes
+                //formData.append("coordenada_x", location.latitude);
+                //formData.append("coordenada_y", location.longitude);      Esta como texto xd
+        
+                // Agregar las imágenes si están presentes
+                if (banner) {
+                    formData.append("banner", getImage(banner));
+                }
+                if (logo) {
+                    formData.append("logo", getImage(logo));
+                }
+        
+                // Agregar etiquetas si las tienes
+                formData.append("etiquetas", JSON.stringify(etiquetas));
+        
+                // Llamar a la API para actualizar el establecimiento
+                const response = await fetch(`${API_URL}/api/establecimientos/${establecimiento.id}/`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                    body: formData,
+                });
+        
+                if (!response.ok) {
+                    throw new Error("Error al modificar el establecimiento");
+                }
+        
+                const data = await response.json();
+                console.log("Establecimiento actualizado:", data);
+                Alert.alert("Éxito", "Establecimiento actualizado correctamente");
+        
+                // Realiza alguna acción con la respuesta, como redirigir o actualizar el estado
+            } catch (error) {
+                console.error("Error al actualizar el establecimiento:", error);
+                Alert.alert("Error", "No se pudo actualizar el establecimiento");
+            }
+        }else{
+            alert("Establecimiento no recuperado. Intente nuevamente");
+        }
+        
     };
+    
 
     return (
         <View>
