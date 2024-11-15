@@ -67,11 +67,20 @@ const Login = ({ setSnackbarMessage, setVisibleSnackbar }: LoginProps) => {
 	useEffect(() => {
 		if (isSuccess) {
 			console.log("Usuario logueado:", data);
-			setSnackbarMessage("Iniciar sesión con éxito");
+			signIn({
+				id_usuario: data.id_usuario,
+				nombre: data.nombre,
+				email: data.email,
+				imagen_url: data.imagen,
+				duenio: data.duenio,
+				establecimiento: data.establecimiento,
+				telefono: data.telefono,
+			});
+			setSnackbarMessage("Sesión iniciada con éxito.");
 			setVisibleSnackbar(true);
 		} else if (isError) {
 			console.error(error);
-            setSnackbarMessage("Usuario o contraseña incorrecta.");
+			setSnackbarMessage("Usuario o contraseña incorrecta.");
 			setVisibleSnackbar(true);
 		}
 	}, [isSuccess, isError, error, data]);
