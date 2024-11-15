@@ -1,14 +1,17 @@
 import type { EstablecimientoType } from "@/app/(tabs)/mapa";
 import Styles from "@/globalStyles/styles";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, Image, Pressable, Text } from "react-native";
+import * as Location from "expo-location";
+
 import MapView, {
     Marker,
     type LatLng,
     type MapPressEvent,
 } from "react-native-maps";
-
-const imagen = require("../assets/images/pablo.png");
+import { useSession } from "@/hooks/ctx";
+import Establecimiento from "./EstablecimientoExtra";
+import EstablecimientoMarker from "./EstablecimientoMarker";
 
 export interface MapProps {
     selectedLocation?: LatLng | null;
@@ -16,10 +19,8 @@ export interface MapProps {
     onPressConfirmLocation?: any;
     establecimientos?: EstablecimientoType[];
     onMarkerPress?: (establecimiento: EstablecimientoType) => void;
-    userLocation?: { lat: number; lng: number } | null;
-    userIcon?: any; 
+    userIcon?: any;
 }
-
 
 const GoogleMap = ({
     selectedLocation,
@@ -27,9 +28,24 @@ const GoogleMap = ({
     onPressConfirmLocation,
     establecimientos,
     onMarkerPress,
-    userLocation, 
-    userIcon,     
 }: MapProps) => {
+    const [userLocation, setUserLocation] = useState<null | LatLng>(null);
+    const { session } = useSession();
+
+    useEffect(() => {
+        const getCurrentLocation = async () => {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== "granted") {
+                console.log(
+                    "El permiso de acceso a la localizacion fue rechazado"
+                );
+            } else {
+                let location = await Location.getCurrentPositionAsync({});
+                setUserLocation(location.coords);
+            }
+        };
+        getCurrentLocation();
+    }, []);
 
     // Manejador para el evento de presionar el mapa
     const handleMapPress = async (event: MapPressEvent) => {
@@ -38,55 +54,64 @@ const GoogleMap = ({
             setSelectedLocation(coordinate);
         }
     };
-
     return (
         <>
             <MapView
                 style={{ width: "100%", height: "100%" }}
-                initialRegion={{
-                    latitude: -17.39453, 
-                    longitude: -66.16754, 
-                    latitudeDelta: 0.0922, 
-                    longitudeDelta: 0.0421, 
-                }}
+                region={
+                    userLocation
+                        ? {
+                              latitude: userLocation.latitude,
+                              longitude: userLocation.longitude,
+                              latitudeDelta: 0.0922,
+                              longitudeDelta: 0.0421,
+                          }
+                        : {
+                              latitude: -17.39453,
+                              longitude: -66.16754,
+                              latitudeDelta: 0.0922,
+                              longitudeDelta: 0.0421,
+                          }
+                }
                 onPress={handleMapPress}
             >
                 {userLocation && (
-                    <Marker 
-                        coordinate={{
-                            latitude: userLocation.lat,   
-                            longitude: userLocation.lng,  
-                        }}
-                    >
+                    <Marker coordinate={userLocation} title="tu">
                         <Image
-                            source={{ uri: userIcon }} 
+                            source={
+                                session
+                                    ? { uri: session.imagen_url }
+                                    : require("../assets/images/default.jpg")
+                            }
                             style={{ width: 40, height: 40, borderRadius: 20 }}
                         />
                     </Marker>
                 )}
+                {selectedLocation && (
+                    <Marker coordinate={selectedLocation}/>
+                )}
                 {establecimientos &&
-                    establecimientos.map((place) => (
-                        <Marker
-                            key={place.id}
-                            coordinate={{
-                                latitude: Number(place.coordenada_y),
-                                longitude: Number(place.coordenada_x),
-                            }}
-                            title={place.nombre}
-                            onPress={() => onMarkerPress && onMarkerPress(place)}
-                        >
-                            <Image
-                                source={{ uri: place.logo }}
-                                style={{ width: 40, height: 40, borderRadius: 20 }}
-                            />
-                        </Marker>
+                    establecimientos.map((place, index) => (
+                        <EstablecimientoMarker
+                            establecimiento={place}
+                            key={index}
+                            onMarkerPress={onMarkerPress}
+                        />
                     ))}
             </MapView>
 
             {selectedLocation && (
                 <Pressable
                     onPress={onPressConfirmLocation}
-                    style={[{ top: -100 }, Styles.button]}
+                    style={[
+                        {
+                            top: -100,
+                            left: 0,
+                            right: 0,
+                            marginHorizontal: "auto",
+                        },
+                        Styles.button,
+                    ]}
                 >
                     <Text style={Styles.buttonText}>Confirmar</Text>
                 </Pressable>

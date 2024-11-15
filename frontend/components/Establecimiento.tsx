@@ -22,7 +22,7 @@ const Establecimiento = ({ establecimiento }: Props) => {
         >
             <ImageBackground
                 resizeMode="cover"
-                source={{ uri: `${establecimiento.logo}` }}
+                source={establecimiento.logo ?{ uri: establecimiento.logo } : require('../assets/images/default.jpg')}
                 style={{
                     width: 150,
                     height: 200,

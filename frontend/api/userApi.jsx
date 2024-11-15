@@ -4,7 +4,17 @@ const userApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     register: builder.mutation({
       query: (data) => ({
-        url: "usuario",
+        url: "usuario/",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }),
+    }),
+    login: builder.mutation({
+      query: (data) => ({
+        url: "logear_usuario/",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -15,4 +25,4 @@ const userApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useRegisterMutation } = userApi;
+export const { useRegisterMutation, useLoginMutation } = userApi;

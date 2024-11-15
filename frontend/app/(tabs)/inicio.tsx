@@ -18,13 +18,12 @@ interface TipoEstablecimiento {
 }
 
 const inicio = () => {
+
     const [popularPlaces, setPopularPlaces] = useState<Place[]>([]);
     const [tags, setTags] = useState<TipoEstablecimiento[]>([]);
     const [openSearch, setOpenSearch] = useState(false);
-    const [search, setSearch] = useState("");
     const [eventosDelMes, setEventosDelMes] = useState<EventoType[]>([]);
     const [eventosDelDia, setEventosDelDia] = useState<EventoType[]>([]);
-    const API_URL = process.env.EXPO_PUBLIC_API_URL;
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedCity, setSelectedCity] = useState("Cochabamba");
     const cities = ["Cochabamba", "Santa Cruz", "La Paz"];
