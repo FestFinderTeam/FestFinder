@@ -13,8 +13,9 @@ const login = () => {
 	return (
 		<View style={{ flex: 1, padding: 20, backgroundColor: "#fff" }}>
 			<Image
-				source={require("../assets/images/festLogo.png")}
-				style={{ alignSelf: "center", marginVertical: 20 }}
+				source={require("../assets/images/festLogoHD.png")}
+				style={{ aspectRatio: 1, width: "100%", height: "auto" }}
+				resizeMode="contain"
 			/>
 			<Login
 				setSnackbarMessage={setSnackbarMessage}

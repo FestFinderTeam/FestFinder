@@ -1,5 +1,5 @@
 import { Text, View } from "react-native";
-import { ActivityIndicator, Button, Snackbar } from "react-native-paper";
+import { ActivityIndicator, Button } from "react-native-paper";
 import LoginGoogle from "./LoginGoogle";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
