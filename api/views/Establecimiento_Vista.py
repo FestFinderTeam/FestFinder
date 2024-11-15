@@ -285,15 +285,16 @@ class RegistrarEstablecimientoC(APIView):
                         inicio_atencion=inicio_atencion,
                         fin_atencion=fin_atencion
                     )
-            
+            print("Horarios Guardados")
             # Manejar etiquetas
             etiquetas = request.data.get("etiquetas", [])
             for etiqueta_texto in etiquetas:
-                etiqueta_obj, created = Etiqueta.objects.get_or_create(texto_etiqueta=etiqueta_texto)
+                etiqueta_obj, created = Etiqueta.objects.get(texto_etiqueta=etiqueta_texto)
                 EtiquetaEstablecimiento.objects.create(
                     id_establecimiento=establecimiento,
                     id_etiqueta=etiqueta_obj
                 )
+            print("Etiquetas Guardadas")
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:

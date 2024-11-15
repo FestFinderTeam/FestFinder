@@ -72,7 +72,9 @@ const preview = () => {
     if (!tag) {
       return;
     }
+    console.log(tag);
     setTag("");
+    console.log(tags);
     setTags([...tags, tag]);
   };
   const removeTag = (tag: string) => {
@@ -91,7 +93,7 @@ const preview = () => {
           }
           : null;
         return {
-          dia: index,
+          dia: index+1,
           horario: horario,
         };
       });
@@ -102,6 +104,10 @@ const preview = () => {
     // obtener datos del params
     const data = { ...local };
     //const data = { ...local, horarios: obtenerHorarios(), etiquetas: tags };
+    
+    // ObtenerHorarios
+    const horarios = obtenerHorarios();
+    
     const formData = new FormData();
 
     setLoading(true)
@@ -124,6 +130,12 @@ const preview = () => {
       formData.append("tipo_fk", data.tipo_fk as string);
       formData.append("usuario", data.id_usuario as string);
       formData.append("rango_de_precios", data.rango_de_precios as string);
+
+      formData.append("horarios", JSON.stringify(horarios));
+      
+      if (tags.length > 0) {
+        formData.append("etiquetas", JSON.stringify(tags));
+      }
 
       const response = await fetch(`${API_URL}/api/establecimiento/`, {
         method: "POST",
