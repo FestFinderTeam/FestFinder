@@ -80,7 +80,7 @@ const Login = ({ setSnackbarMessage, setVisibleSnackbar }: LoginProps) => {
 			setVisibleSnackbar(true);
 		} else if (isError) {
 			console.error(error);
-			setSnackbarMessage("Usuario o contraseña incorrecta.");
+			setSnackbarMessage("Email o contraseña incorrectos.");
 			setVisibleSnackbar(true);
 		}
 	}, [isSuccess, isError, error, data]);
@@ -142,6 +142,7 @@ const Login = ({ setSnackbarMessage, setVisibleSnackbar }: LoginProps) => {
 				mode="outlined"
 				error={errors.email !== ""}
 				errorText={errors.email}
+				autoCapitalize="none"
 			/>
 			<TextInputWithHelper
 				label={"Contraseña"}
@@ -155,6 +156,7 @@ const Login = ({ setSnackbarMessage, setVisibleSnackbar }: LoginProps) => {
 				icon={showContraseña ? "eye" : "eye-off"}
 				onIconPress={() => setShowContraseña(!showContraseña)}
 				secureTextEntry={!showContraseña}
+				autoCapitalize="none"
 			/>
 
 			<Button mode="contained" onPress={handleSubmit} style={{ marginTop: 20 }}>
