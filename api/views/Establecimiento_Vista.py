@@ -5,7 +5,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from django.db.models import Q
 
 from ..serializers import HorariosEstablecimientoSerializer
-from ..models import Establecimiento, Usuario
+from ..models import Establecimiento, Usuario, Etiqueta
 from ..serializers import EstablecimientoSerializer
 from ..serializers import EtiquetaSerializer
 from ..models import EtiquetaEstablecimiento, horariosEstablecimiento
@@ -248,3 +248,57 @@ class ModificarEstablecimiento(APIView):
         
         # Si no hay cambios, respondemos con un mensaje de que no se modificó nada
         return Response({"message": "No hubo cambios en los datos proporcionados."}, status=status.HTTP_304_NOT_MODIFIED)
+
+
+class RegistrarEstablecimientoC(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request, *args, **kwargs):
+        print("se envio")
+        print(request.data)
+        serializer = EstablecimientoSerializer(data=request.data)
+        print("datos bien enviados")
+        
+        if serializer.is_valid():
+            # Guardar el establecimiento
+            establecimiento = serializer.save()
+
+            # Actualizar el campo `duenio` a True para el usuario relacionado
+            usuario_id = request.data.get("usuario")
+            if usuario_id:
+                Usuario.objects.filter(id_usuario=usuario_id).update(
+                    duenio=True,
+                    establecimiento=establecimiento
+                )
+                print("Campo `duenio` actualizado a True para el usuario", usuario_id)
+
+            # Manejar horarios
+            horarios = request.data.get("horarios", [])
+            for horario in horarios:
+                dia_semana = horario.get("dia_semana")
+                inicio_atencion = horario.get("inicio_atencion")
+                fin_atencion = horario.get("fin_atencion")
+                if dia_semana and inicio_atencion and fin_atencion:
+                    horariosEstablecimiento.objects.create(
+                        establecimiento=establecimiento,
+                        dia_semana=dia_semana,
+                        inicio_atencion=inicio_atencion,
+                        fin_atencion=fin_atencion
+                    )
+            
+            # Manejar etiquetas
+            etiquetas = request.data.get("etiquetas", [])
+            for etiqueta_texto in etiquetas:
+                etiqueta_obj, created = Etiqueta.objects.get_or_create(texto_etiqueta=etiqueta_texto)
+                EtiquetaEstablecimiento.objects.create(
+                    id_establecimiento=establecimiento,
+                    id_etiqueta=etiqueta_obj
+                )
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            print("Errores de validación:", serializer.errors)  # Imprime errores de validación
+            return Response(
+                {"message": "Error en la validación de los datos", "errors": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST
+            )
