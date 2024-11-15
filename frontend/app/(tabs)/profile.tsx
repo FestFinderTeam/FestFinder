@@ -1,10 +1,11 @@
 import { useSession } from "@/hooks/ctx";
-import { Image, Text, View } from "react-native";
+import { Image, Text, View, Alert } from "react-native";
 import Styles from "../../globalStyles/styles";
 import ItemProfile from "@/components/ItemProfile";
 import Header from "@/components/Header";
 import { Href, Link, router } from "expo-router";
 const defaultImage = require("../../assets/images/default-profile.png");
+
 const profile = () => {
 	const { session, signOut } = useSession();
 
@@ -87,7 +88,21 @@ const profile = () => {
 				/>
 				<ItemProfile
 					onPress={() => {
-						signOut();
+						Alert.alert(
+							"Confirmar",
+							"¿Está seguro de que desea cerrar sesión?",
+							[
+								{
+									text: "Cancelar",
+									style: "cancel",
+								},
+								{
+									text: "Cerrar sesión",
+									onPress: () => signOut(),
+								},
+							],
+							{ cancelable: true }
+						);
 					}}
 					color="#7D5683"
 					text="Cerrar sesión"
