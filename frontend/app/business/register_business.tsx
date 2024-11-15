@@ -2,7 +2,6 @@ import GoogleMap from "@/components/GoogleMap";
 import Styles from "@/globalStyles/styles";
 import { getCategorias } from "@/services/categoriasService";
 import { getDireccion } from "@/utils/Direccion";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { router } from "expo-router";
 import React from "react";
 import { useEffect, useState } from "react";
@@ -12,11 +11,13 @@ import {
 	Text,
 	TextInput,
 	View,
-	Image,
 	StyleSheet,
 } from "react-native";
 import { SelectList } from "react-native-dropdown-select-list";
 import { LatLng } from "react-native-maps";
+import Header from "@/components/Header";
+import TextInputWithHelper from "@/components/TextInputWithHelperText";
+
 const register_business = () => {
 	const [nombre, setName] = useState("");
 	const [nameError, setNameError] = useState(false);
@@ -131,38 +132,17 @@ const register_business = () => {
 					/>
 				</View>
 			)}
-			<View style={[Styles.container, { justifyContent: "space-between" }]}>
-				<Pressable
-					onPress={router.back}
-					style={{
-						left: "-40%",
-						marginTop: 30,
-						zIndex: 1,
-					}}
-				>
-					<FontAwesome nombre="arrow-left" size={25} />
-				</Pressable>
+			<View
+				style={{
+					flex: 1,
+				}}
+			>
+				<Header title="Registro de establecimiento" />
 				<View
 					style={{
-						width: "100%",
-						alignItems: "center",
-						justifyContent: "center",
+						flex: 1,
 					}}
 				>
-					<Image
-						source={require("@/assets/images/festLogoHD.png")}
-						style={{ aspectRatio: 1, width: "100%", height: "auto" }}
-						resizeMode="contain"
-					/>
-					<Text
-						style={[
-							Styles.subtitle,
-							{ marginLeft: 30, alignSelf: "flex-start" },
-						]}
-					>
-						Registra tu negocio:
-					</Text>
-
 					<TextInput
 						placeholder="Nombre del negocio"
 						keyboardType="default"
@@ -285,21 +265,22 @@ const register_business = () => {
 					<Pressable onPress={handleNext} style={Styles.button}>
 						<Text style={Styles.buttonText}>Siguiente</Text>
 					</Pressable>
-				</View>
-				<View>
-					<View
-						style={[
-							Styles.lineContainer,
-							{
-								marginBottom: 30,
-								flexDirection: "row",
-								justifyContent: "center",
-								gap: 10,
-							},
-						]}
-					>
-						<View style={[Styles.lineSelected, { borderRadius: 10 }]} />
-						<View style={[Styles.line, { borderRadius: 10 }]} />
+
+					<View>
+						<View
+							style={[
+								Styles.lineContainer,
+								{
+									marginBottom: 30,
+									flexDirection: "row",
+									justifyContent: "center",
+									gap: 10,
+								},
+							]}
+						>
+							<View style={[Styles.lineSelected, { borderRadius: 10 }]} />
+							<View style={[Styles.line, { borderRadius: 10 }]} />
+						</View>
 					</View>
 				</View>
 			</View>
