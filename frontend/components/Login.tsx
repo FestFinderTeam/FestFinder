@@ -71,7 +71,7 @@ const Login = ({ setSnackbarMessage, setVisibleSnackbar }: LoginProps) => {
 				id_usuario: data.id_usuario,
 				nombre: data.nombre,
 				email: data.email,
-				imagen_url: data.imagen,
+				imagen_url: data.imagen_detail?.imagen,
 				duenio: data.duenio,
 				establecimiento: data.establecimiento,
 				telefono: data.telefono,
