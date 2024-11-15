@@ -1,21 +1,43 @@
 import { useSession } from "@/hooks/ctx";
 import { Image, Text, View, Alert } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 import Styles from "../../globalStyles/styles";
 import ItemProfile from "@/components/ItemProfile";
 import Header from "@/components/Header";
 import { Href, Link, router } from "expo-router";
+import { useEffect } from "react";
 const defaultImage = require("../../assets/images/default-profile.png");
 
 const profile = () => {
 	const { session, signOut } = useSession();
 
-	if (!session) {
-		router.push("/");
-		return;
-	}
+	useEffect(() => {
+		if (!session) {
+			router.push("/");
+		}
+	}, [session]);
+
+	const handleSignOut = () => {
+		Alert.alert(
+			"Confirmar",
+			"¿Está seguro de que desea cerrar sesión?",
+			[
+				{
+					text: "Cancelar",
+					style: "cancel",
+				},
+				{
+					text: "Cerrar sesión",
+					onPress: () => signOut(),
+				},
+			],
+			{ cancelable: false }
+		);
+	};
+
+	if (!session) return null;
 
 	const { nombre, imagen_url, email, duenio, establecimiento } = session;
-	console.log(session);
 
 	return (
 		<View>
@@ -87,23 +109,7 @@ const profile = () => {
 					textColor="#787878"
 				/>
 				<ItemProfile
-					onPress={() => {
-						Alert.alert(
-							"Confirmar",
-							"¿Está seguro de que desea cerrar sesión?",
-							[
-								{
-									text: "Cancelar",
-									style: "cancel",
-								},
-								{
-									text: "Cerrar sesión",
-									onPress: () => signOut(),
-								},
-							],
-							{ cancelable: true }
-						);
-					}}
+					onPress={handleSignOut}
 					color="#7D5683"
 					text="Cerrar sesión"
 					icon="arrow-circle-right"
