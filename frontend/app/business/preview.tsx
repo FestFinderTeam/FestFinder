@@ -21,7 +21,6 @@ import { getDireccion } from "@/utils/Direccion";
 import LoadingScreen from "@/components/Loading";
 
 const preview = () => {
-  //const API_URL = "http://(TU IPv4 PARA PROBAR ANTES QUE RESUBAN LA API):8000/";
   const API_URL = process.env.EXPO_PUBLIC_API_URL;
   const [loading, setLoading] = useState(false);
 
@@ -100,6 +99,8 @@ const preview = () => {
   };
 
   const local = useLocalSearchParams();
+  console.log(local);
+  
   const handleSubmit = async () => {
     // obtener datos del params
     const data = { ...local };
