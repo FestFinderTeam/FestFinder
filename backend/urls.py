@@ -6,7 +6,7 @@ from api.views import SubirImagen
 from api.views import AgregarTipoEstablecimiento
 from api.views import ListarTiposEstablecimiento
 from api.views.Establecimiento_Vista import EstablecimientoPorUsuario, EstablecimientosSimilares, FiltrarEstablecimientos, ListarEstablecimientosPorTipo, ModificarEstablecimiento, RecuperarDatosEstablecimiento, RegistrarEstablecimiento, ListarEstablecimientos, RegistrarEstablecimientoC
-from api.views.Etiqueta_Vista import CrearEtiqueta, ListarEtiquetas
+from api.views.Etiqueta_Vista import CrearEtiqueta, ListarEtiquetas, ListarEtiquetasPorTexto
 from api.views.EtiquetaEstablecimiento_Vista import (
     RegistrarRelacion,
     EtiquetasPorEstablecimiento,
@@ -66,6 +66,14 @@ urlpatterns = [
     path("api/schema/", schema_view.without_ui(cache_timeout=0), name="schema-json"),
     path("admin/", admin.site.urls),
     path("api/subir-imagen/", SubirImagen.as_view(), name="subir-imagen"),
+    path(
+        "api/etiquetas/all",
+        ListarEtiquetas.as_view(),
+        name="listar-etiquetas",
+    ),
+    
+    path('api/etiquetas/', ListarEtiquetasPorTexto.as_view(), name='listar-etiquetas-por-texto'),
+
     path(
         "api/reg-etiqueta-establecimiento/",
         RegistrarRelacion.as_view(),
