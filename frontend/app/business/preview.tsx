@@ -31,7 +31,7 @@ const preview = () => {
   const [imageBanner, setImageBanner] = useState<ImagePickerAsset>();
   const [tags, setTags] = useState<string[] | []>([]);
   const [tag, setTag] = useState<string>("");
-  const [sugerenciasEtiquetas, setSugerenciasEtiquetas] = useState<string[]>([]);
+  const [sugerenciasEtiquetas, setSugerenciasEtiquetas] = useState<any[]>([]);
   const [openHorario, setOpenHorario] = useState(Array(7).fill(false));
   const [horariosInicio, setHorariosInicio] = useState<Date[]>(
     Array(7).fill(new Date())

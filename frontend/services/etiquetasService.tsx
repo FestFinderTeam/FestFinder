@@ -1,5 +1,5 @@
 // src/services/categoriasService.js
-const API_URL = 'http://192.168.100.3:8000/';
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 export const getEtiquetas = async () => {
     try {

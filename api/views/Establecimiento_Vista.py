@@ -246,6 +246,32 @@ class ModificarEstablecimiento(APIView):
             for field, value in fields_to_update.items():
                 setattr(establecimiento, field, value)
             establecimiento.save()
+            
+        # Procesar las etiquetas
+        if data.get("etiquetas"):
+            # Obtener las etiquetas enviadas
+            etiquetas_recibidas = json.loads(data.get("etiquetas"))
+
+            # Obtener las etiquetas actuales del establecimiento
+            etiquetas_existentes = EtiquetaEstablecimiento.objects.filter(id_establecimiento=establecimiento)
+
+            # Buscar las etiquetas que deben eliminarse
+            etiquetas_a_eliminar = etiquetas_existentes.exclude(id_etiqueta__texto_etiqueta__in=etiquetas_recibidas)
+
+            # Eliminar las relaciones de etiquetas que no están en la lista recibida
+            for etiqueta in etiquetas_a_eliminar:
+                etiqueta.delete()
+
+            # Buscar y agregar nuevas etiquetas
+            for etiqueta_texto in etiquetas_recibidas:
+                # Verificar si la etiqueta ya existe
+                try:
+                    etiqueta_obj = Etiqueta.objects.get(texto_etiqueta=etiqueta_texto)
+                    # Crear la relación si no existe
+                    EtiquetaEstablecimiento.objects.get_or_create(id_establecimiento=establecimiento, id_etiqueta=etiqueta_obj)
+                except Etiqueta.DoesNotExist:
+                    # Si la etiqueta no existe, no hacemos nada
+                    pass
             return Response(EstablecimientoSerializer(establecimiento).data, status=status.HTTP_200_OK)
         
         # Si no hay cambios, respondemos con un mensaje de que no se modificó nada

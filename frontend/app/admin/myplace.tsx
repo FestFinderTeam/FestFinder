@@ -27,6 +27,8 @@ import React from "react";
 import { useSafeAreaFrame } from "react-native-safe-area-context";
 import { getEstablecimientoPorPropietario } from "@/services/establecimientosServices";
 import { getCategorias } from "@/services/categoriasService";
+import { buscarEtiquetas } from "@/services/etiquetasService"; // Importa la función de buscarEtiquetas
+
 const image_default = require("../../assets/images/default_image.png");
 
 interface Horario {
@@ -76,9 +78,12 @@ const MyPlace = () => {
     const [establecimiento, setEstablecimiento] =
         useState<Establecimiento | null>(null);
     const [etiqueta, setEtiqueta] = useState("");
-    const [banner, setBanner] = useState<ImagePickerAsset>();
+    const [banner, setBanner] = useState<string>();
     const [imagenes, setImagenes] = useState<ImagePickerAsset>();
-    const [logo, setLogo] = useState<ImagePickerAsset>();
+    const [logo, setLogo] = useState<string>();
+    const [logoNuevo, setLogoNuevo] = useState<ImagePickerAsset>();
+    const [bannerNuevo, setBannerNuevo] = useState<ImagePickerAsset>();
+
     const [nombre, setNombre] = useState<string>();
     const [ubicacion, setUbicacion] = useState<string>();
     const [tipo, setTipo] = useState<String>();
@@ -122,6 +127,7 @@ const MyPlace = () => {
         },
     ]);
     const [etiquetas, setEtiquetas] = useState<String[]>([]);
+    const [sugerenciasEtiquetas, setSugerenciasEtiquetas] = useState<any[]>([]);
     const [fotos, setFotos] = useState<any[]>([]);
     const [tipo_fk, setSelectedBusiness] = useState("");
     const [openHorario, setOpenHorario] = useState(Array(7).fill(false));
@@ -150,6 +156,44 @@ const MyPlace = () => {
     }, [tipo_fk]); // Actualizamos cada vez que tipo_fk cambie
     
     
+    const handleTagInputChange = async (texto: string) => {
+        setEtiqueta(texto.toLowerCase());  // Actualizar el valor del input
+      
+        if (texto.length >= 0) {  // Realizar la búsqueda solo si el texto tiene más de 3 caracteres
+          try {
+            const etiquetasEncontradas = await buscarEtiquetas(texto);
+            
+            // Si no se encuentra ninguna etiqueta, muestra un guion
+            if (etiquetasEncontradas.length === 0) {
+              setSugerenciasEtiquetas(["-"]);  // Mostrar guion si no hay etiquetas
+            } else {
+              setSugerenciasEtiquetas(etiquetasEncontradas);
+            }
+          } catch (error) {
+            console.error("Error al buscar etiquetas:", error);
+            setSugerenciasEtiquetas(["-"]);  // Mostrar guion en caso de error
+          }
+        } else {
+          setSugerenciasEtiquetas(["-"]);  // Limpiar las sugerencias si el texto es corto
+        }
+      };
+
+
+    const addEtiqueta = () => {
+        if (!etiqueta) {
+          return;
+        }
+        console.log(etiqueta);
+        setEtiqueta("");
+        console.log(etiquetas);
+        setEtiquetas([...etiquetas, etiqueta]);
+    };
+    
+    const removeEtiqueta = (tag: string) => {
+        const newTags = etiquetas.filter((t) => t !== tag);
+        setEtiquetas(newTags);
+    };
+
     useEffect(() => {
         const fetchEstablecimiento = async () => {
             const propietarioId = session?.id_usuario
@@ -193,7 +237,7 @@ const MyPlace = () => {
             }
         };
         fetchEstablecimiento();
-    }, []);
+    }, [session]);
 
     const guardarImagen = async (imagen: ImagePickerAsset) => {
         //guardar en el servidor
@@ -230,6 +274,8 @@ const MyPlace = () => {
         if(establecimiento){
             try {
                 const formData = new FormData();
+
+                console.log('preaprandose');
                 
                 // Agregar campos de texto
                 formData.append("nombre", nombre+'');
@@ -239,23 +285,26 @@ const MyPlace = () => {
                 //formData.append("nro_ref", nro_ref+'');  // Falta campo
                 //formData.append("em_ref", em_ref+'');
         
-                // Agregar coordenadas si las tienes
+                // Agregar coordenadas 
                 //formData.append("coordenada_x", location.latitude);
                 //formData.append("coordenada_y", location.longitude);      Esta como texto xd
         
                 // Agregar las imágenes si están presentes
-                if (banner) {
-                    formData.append("banner", getImage(banner));
+                console.log('datos inciales');
+                if (bannerNuevo) {
+                    formData.append("banner", getImage(bannerNuevo));
                 }
-                if (logo) {
-                    formData.append("logo", getImage(logo));
+                if (logoNuevo) {
+                    formData.append("logo", getImage(logoNuevo));
                 }
-        
+                console.log('falta etiqutas')
                 // Agregar etiquetas si las tienes
                 formData.append("etiquetas", JSON.stringify(etiquetas));
+
+                console.log('enviable');
         
                 // Llamar a la API para actualizar el establecimiento
-                const response = await fetch(`${API_URL}/api/establecimientos/${establecimiento.id}/`, {
+                const response = await fetch(`${API_URL}/api/establecimiento/modificar/${establecimiento.id}/`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "multipart/form-data",
@@ -278,10 +327,8 @@ const MyPlace = () => {
             }
         }else{
             alert("Establecimiento no recuperado. Intente nuevamente");
-        }
-        
+        }  
     };
-    
 
     return (
         <View>
@@ -318,7 +365,7 @@ const MyPlace = () => {
                             paddingHorizontal: 10,
                             paddingVertical: 3,
                         }}
-                        onPress={() => pickImage(setBanner, [16, 9])}
+                        onPress={() => pickImage(setBannerNuevo, [16, 9])}
                     >
                         <FontAwesome name="camera" color={"white"} size={20} />
                         <Text style={{ color: "white", marginLeft: 5 }}>Cambiar Portada</Text>
@@ -354,7 +401,7 @@ const MyPlace = () => {
                                 alignItems: 'center',
                             },
                         ]}
-                        onPress={() => pickImage(setLogo, [1, 1])}
+                        onPress={() => pickImage(setLogoNuevo, [1, 1])}
                     >
                         <FontAwesome name="camera" color={"white"} size={20} />
                     </Pressable>
@@ -406,7 +453,7 @@ const MyPlace = () => {
                             <View style={{ alignItems: "center", marginTop: "2%" }}>
                                 <TextInput
                                     style={[Styles.input, { width: "90%", fontWeight: 'bold', fontFamily: 'Poppins' }]}
-                                    value={direccion+''} //CARGAR LA UBICACION ACA
+                                    value={direccion+''} 
                                     onChangeText={(text) => setUbicacion(text)}
                                 />
                             </View>
@@ -415,18 +462,13 @@ const MyPlace = () => {
                         <View style={{ alignItems: "center", marginTop: "2%" }}>
                             <View style={{ flexDirection: "row", alignItems: "center", width: "90%" }}>
                                 <TextInput
-                                    style={[Styles.input, { flex: 1, fontWeight: 'bold', fontFamily: 'Poppins' }]}
-                                    placeholder="Nueva Etiqueta"
                                     value={etiqueta}
-                                    onChangeText={(text) => setEtiqueta(text)}
+                                    onChangeText={handleTagInputChange}
+                                    placeholder="Etiquetas"
+                                    style={[Styles.input, { width: "90%", fontWeight: 'bold', fontFamily: 'Poppins' }]}
                                 />
                                 <Pressable
-                                    onPress={() => {
-                                        if (etiqueta) {
-                                            setEtiquetas([...etiquetas, etiqueta]);
-                                            setEtiqueta("");
-                                        }
-                                    }}
+                                    onPress={() => addEtiqueta}
                                     style={{
                                         backgroundColor: "#402158",
                                         borderRadius: 10,
@@ -439,6 +481,21 @@ const MyPlace = () => {
                                     <FontAwesome name="plus" color={"white"} />
                                 </Pressable>
                             </View>
+
+                            {/* Mostrar sugerencias solo si hay más de 2 caracteres y resultados */}
+                            {etiqueta.length >= 2 && sugerenciasEtiquetas.length > 0 && (
+                                <View style={styles.suggestionsContainer}>
+                                    {sugerenciasEtiquetas.map((etiqueta, index) => (
+                                        <Pressable
+                                            key={index}
+                                            onPress={() => addEtiqueta}  // Agregar la etiqueta al estado
+                                            style={styles.suggestionItem}
+                                        >
+                                            <Text>{etiqueta.texto_etiqueta}</Text>
+                                        </Pressable>
+                                    ))}
+                                </View>
+                            )}
                         </View>
                         <View style={{ flexDirection: "row", flexWrap: "wrap", width: "100%", justifyContent: "center" }}>
                             {etiquetas.map((etiqueta, index) => (
@@ -477,8 +534,6 @@ const MyPlace = () => {
                                 </View>
                             ))}
                         </View>
-
-
                     </View>
 
                     <Text style={{ color: "#402158", marginLeft: "5%", marginTop: "4%" }}>Rango de precio</Text>
@@ -779,6 +834,22 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "bold",
         color: "#333",
+    },
+    suggestionsContainer: {
+        overflow: "scroll",  // desplazamiento si hay muchas sugerencias
+        backgroundColor: "#fff",
+        borderRadius: 4,
+        marginTop: 5,
+        borderWidth: 1,
+        borderColor: "#ddd",
+        padding: 5,
+        zIndex: 1,
+        width: "80%",
+    },
+    suggestionItem: {
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: "#ddd",
     },
 });
 
