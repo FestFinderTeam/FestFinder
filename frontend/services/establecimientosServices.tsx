@@ -84,7 +84,8 @@ export const getEventosPorEstablecimiento = async (
             }
         );
         if (!response.ok) {
-            console.error("Error al obtener eventos:", response.status);
+            const errorMessage = await response.text();
+            console.error(`Error al obtener eventos: ${response.status} - ${errorMessage}`);
             return null;
         }
         const data = await response.json();

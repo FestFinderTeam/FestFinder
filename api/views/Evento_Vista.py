@@ -97,9 +97,6 @@ class ListarEventosPorEstablecimiento(APIView):
         # Filtrar eventos por el ID del establecimiento
         eventos = Evento.objects.filter(id_establecimiento=id_establecimiento)
         
-        if not eventos.exists():
-            return Response({"error": "No se encontraron eventos para este establecimiento."}, status=status.HTTP_404_NOT_FOUND)
-        
         # Serializar los eventos encontrados
         serializer = EventoSerializer(eventos, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
