@@ -263,17 +263,18 @@ const register_business = () => {
 					</HelperText>
 				)}
 
-				<SelectList
-					setSelected={(selected: string) => {
-						setFormData({ ...formData, tipo: String(selected)});
-					}}
-					data={dataTypesBusiness}
-					save="key"
-					searchPlaceholder="Buscar"
-					placeholder="Tipo de negocio"
-					boxStyles={Styles.input}
-					dropdownStyles={Styles.inputDropDown}
+				<MyDropdown
+					dataTypesBusiness={dataTypesBusiness}
+					setSelectedBusiness={(selected) =>
+						setFormData({ ...formData, tipo: selected })
+					}
+					style={{ marginTop: 10 }}
 				/>
+				{errors.tipo !== "" && (
+					<HelperText type="error" visible={!!(errors.tipo !== "")}>
+						{errors.tipo}
+					</HelperText>
+				)}
 
 				<Text
 					style={[
@@ -287,47 +288,53 @@ const register_business = () => {
 				>
 					Rango de precios del local:
 				</Text>
-
-				<View style={{ flexDirection: "row" }}>
-					{dataRango.map((value, index) => (
-						<Pressable
-							key={index}
-							onPress={() => {
-								setFormData({ ...formData, rango_de_precios: value });
-							}}
-							style={
-								value === formData.rango_de_precios
-									? styles.buttonSelected
-									: styles.button
-							}
-						>
-							<Text
+				<View style={{ alignItems: "center" }}>
+					<View style={{ flexDirection: "row" }}>
+						{dataRango.map((value, index) => (
+							<Pressable
+								key={index}
+								onPress={() => {
+									setFormData({ ...formData, rango_de_precios: value });
+								}}
 								style={
 									value === formData.rango_de_precios
-										? styles.textSelected
-										: styles.text
+										? styles.buttonSelected
+										: styles.button
 								}
 							>
-								{value}
-							</Text>
-							<Text
-								style={
-									value === formData.rango_de_precios
-										? styles.textSelected
-										: styles.text
-								}
-							>
-								{"$".repeat(index + 1)}
-							</Text>
-						</Pressable>
-					))}
+								<Text
+									style={
+										value === formData.rango_de_precios
+											? styles.textSelected
+											: styles.text
+									}
+								>
+									{value}
+								</Text>
+								<Text
+									style={
+										value === formData.rango_de_precios
+											? styles.textSelected
+											: styles.text
+									}
+								>
+									{"$".repeat(index + 1)}
+								</Text>
+							</Pressable>
+						))}
+					</View>
 				</View>
+				{errors.rango_de_precios !== "" && (
+					<HelperText type="error" visible={!!(errors.rango_de_precios !== "")}>
+						{errors.rango_de_precios}
+					</HelperText>
+				)}
 
 				<Button onPress={handleNext} mode="contained" style={{ marginTop: 20 }}>
 					Siguiente
 				</Button>
 
-				<View>
+				<View style={{ alignItems: "center" }}>
 					<View
 						style={[
 							Styles.lineContainer,
