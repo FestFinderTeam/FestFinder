@@ -39,17 +39,18 @@ const buscar = () => {
             <SearchHeader
                 setSearch={setSearch}
                 handleSearch={handleSearch}
+                filtro={filtro}
                 setFilter={setFiltro}
             />
             <ScrollView>
-                {(filtro === "todo" || filtro === "locales") &&
+                {filtro !== "eventos" &&
                     establecimientos.map((establecimiento, index) => (
                         <Establecimiento
                             establecimiento={establecimiento}
                             key={index}
                         />
                     ))}
-                {(filtro === "todo" || filtro === "eventos") &&
+                {filtro !== "locales" &&
                     eventos.map((evento, index) => (
                         <EventoExtra evento={evento} key={index} />
                     ))}

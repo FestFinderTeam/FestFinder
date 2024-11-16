@@ -1,15 +1,18 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import React from "react";
-import { TextInput, View, StyleSheet, Pressable, Text } from "react-native";
+import { TextInput, View, StyleSheet, Pressable, FlatList } from "react-native";
 import Styles from "../globalStyles/styles";
+import { Button } from "react-native-paper";
 export type filterSearch = "todo" | "locales" | "eventos";
+
 interface Props {
 	setSearch: (value: string) => void;
 	handleSearch: () => void;
+	filtro: string;
 	setFilter: (text: filterSearch) => void;
 }
 
-const Header = ({ setSearch, handleSearch, setFilter }: Props) => {
+const Header = ({ setSearch, handleSearch, filtro, setFilter }: Props) => {
 	return (
 		<View>
 			<View
@@ -30,40 +33,26 @@ const Header = ({ setSearch, handleSearch, setFilter }: Props) => {
 					</Pressable>
 				</View>
 			</View>
-			<View style={{ marginTop: "4%", paddingBottom: 10 }}>
-				<View
-					style={{
-						flexDirection: "row",
-						alignItems: "center",
-						marginLeft: 10,
-					}}
-				>
-					<Pressable
-						onPress={() => {
-							setFilter("todo");
-						}}
-						style={styles.typeContainer}
+
+			{/*Filtros*/}
+			<FlatList
+				data={["todo", "eventos", "locales"]}
+				keyExtractor={(item) => item}
+				horizontal
+				showsHorizontalScrollIndicator={false}
+				contentContainerStyle={{
+					gap: 8,
+					padding: 8,
+				}}
+				renderItem={({ item: type }) => (
+					<Button
+						mode={filtro === type ? "contained" : "outlined"}
+						onPress={() => setFilter(type as filterSearch)}
 					>
-						<Text style={styles.types}>Todo</Text>
-					</Pressable>
-					<Pressable
-						onPress={() => {
-							setFilter("eventos");
-						}}
-						style={styles.typeContainer}
-					>
-						<Text style={styles.types}>Eventos</Text>
-					</Pressable>
-					<Pressable
-						onPress={() => {
-							setFilter("locales");
-						}}
-						style={styles.typeContainer}
-					>
-						<Text style={styles.types}>Locales</Text>
-					</Pressable>
-				</View>
-			</View>
+						{type.charAt(0).toUpperCase() + type.slice(1)}
+					</Button>
+				)}
+			/>
 		</View>
 	);
 };
