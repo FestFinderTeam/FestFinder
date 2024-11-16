@@ -219,3 +219,22 @@ class ModificarEvento(APIView):
         
         # Si no hay cambios, respondemos con un mensaje de que no se modificó nada
         return Response({"message": "No hubo cambios en los datos proporcionados."}, status=status.HTTP_304_NOT_MODIFIED)
+    
+
+class BorrarEvento(APIView):
+    def delete(self, request, id_evento, *args, **kwargs):
+        try:
+            # Buscar el evento por su ID
+            evento = Evento.objects.get(id_evento=id_evento)
+        except Evento.DoesNotExist:
+            return Response(
+                {"error": "Evento no encontrado."}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Eliminar el evento
+        evento.delete()
+        return Response(
+            {"message": f"El evento con ID {id_evento} ha sido eliminado con éxito."},
+            status=status.HTTP_200_OK
+        )

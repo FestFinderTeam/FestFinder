@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Styles from "@/globalStyles/styles";
 import { useSession } from "@/hooks/ctx";
+import { getEventoPorID } from "@/services/eventosService";
 import { dateToDDMMYYYY, dateToHHmm, showSingleDate, showSingleTime } from "@/utils/DateTime";
 import { getImage, pickImage } from "@/utils/Image";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -22,13 +23,34 @@ const EditarEvento = () => {
     const [precioFinal, setPrecioFinal] = useState("0");
     const [error, setError] = useState("");
     const {id} = useLocalSearchParams()
-    useEffect(()=>{
-        // hacer el fetch de los datos del local
-    })
+    
+    
+    useEffect(() => {
+        cargarEvento(); // Llama a la función al montar el componente
+    }, [id]);
+
+
+    const cargarEvento = async () => {
+        if (!id) return;
+        const evento = await getEventoPorID(id as string); // Solicita los datos del evento
+        if (evento) {
+            // Actualiza los estados con los datos del evento
+            setNombre(evento.nombre);
+            setDescripcion(evento.descripcion);
+            setPrecioInicial(evento.precio_min?.toString());
+            setPrecioFinal(evento.precio_max?.toString());
+            setHoraInicio(new Date(evento.horario_inicio));
+            setHoraFin(new Date(evento.horario_fin));
+            if (evento.logo) {
+                setImagenEvento({ uri: evento.logo } as ImagePickerAsset);
+            }
+        } else {
+            setError("No se pudieron cargar los datos del evento.");
+        }
+    };
 
     const handleDelete = ()=>{
-        //eliminar con el id
-        console.log("eliminando", id)
+        
     }
 
     const handleSubmit = async () => {
@@ -46,7 +68,7 @@ const EditarEvento = () => {
         }
 
         formData.append("nombre", nombre);
-        formData.append("fecha_inicio", dateToDDMMYYYY(horario_inicio));
+        //formData.append("fecha_inicio", dateToDDMMYYYY(horario_inicio));
         formData.append("horario_inicio", dateToHHmm(horario_inicio));
         formData.append("horario_fin", dateToHHmm(horario_fin));
 
@@ -107,6 +129,7 @@ const EditarEvento = () => {
 
                     <TextInput
                         placeholder="Nombre"
+                        value={nombre}
                         onChangeText={(e) => setNombre(e)}
                         style={[Styles.input, { marginTop: "3%" }]}
                     />
@@ -147,6 +170,7 @@ const EditarEvento = () => {
                     <Text style={{ fontWeight: "600", fontSize: 18, color: "#333", marginBottom: 8 }}>Rango de Precio</Text>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-start" }}>
                         <TextInput
+                            value={precioInicial}
                             onChangeText={(e) => setPrecioInicial(e)}
                             keyboardType="number-pad"
                             placeholder="00"
@@ -154,6 +178,7 @@ const EditarEvento = () => {
                         />
                         <Text>-</Text>
                         <TextInput
+                            value={precioFinal}
                             onChangeText={(e) => setPrecioFinal(e)}
                             keyboardType="number-pad"
                             placeholder="00"
@@ -166,6 +191,7 @@ const EditarEvento = () => {
                 </Text>
                 <View style={{ alignItems: "center", marginTop: 10 }}>
                     <TextInput
+                        value={descripcion}
                         multiline
                         onChangeText={(e) => setDescripcion(e)}
                         placeholder="Ingresa una descripción para tu evento"

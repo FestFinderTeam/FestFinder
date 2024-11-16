@@ -46,7 +46,6 @@ export const getEventosDelDia = async () => {
 
 export const getEventoPorID = async (id: string) => {
     try {
-        //console.log(API_URL+`/api/eventos/`+id+`/`);
         const response = await fetch(`${API_URL}/api/eventos/${id}/`, {
             method: "GET",
             headers: {
@@ -58,13 +57,34 @@ export const getEventoPorID = async (id: string) => {
             return null;
         }
         const data = await response.json();
-        //console.log(data);
         return data;
     } catch (error) {
         console.error("Error al obtener el evento:", error);
         return null;
     }
 };
+
+
+export const deleteEvento = async (id: string) => {
+    try {
+        const response = await fetch(`${API_URL}/api/eventos/${id}/borrar`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        if (!response.ok) {
+            console.error("Error al borrar el evento:", response.status);
+            return null;
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error al eliminar el evento:", error);
+        return null;
+    }
+};
+
 
 export const getCategoriasEventos = async () => {
     try {
@@ -121,3 +141,5 @@ export const filtrarEventos = async (   nombre: string | null = null,
         return [];
     }
 };
+
+
