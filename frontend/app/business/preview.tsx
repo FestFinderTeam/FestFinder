@@ -19,6 +19,8 @@ import { dateToHHmm, showTime } from "@/utils/DateTime";
 import { useSession } from "@/hooks/ctx";
 import { getDireccion } from "@/utils/Direccion";
 import LoadingScreen from "@/components/Loading";
+import { buscarEtiquetas } from "@/services/etiquetasService"; // Importa la función de buscarEtiquetas
+
 
 const preview = () => {
   const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -29,6 +31,7 @@ const preview = () => {
   const [imageBanner, setImageBanner] = useState<ImagePickerAsset>();
   const [tags, setTags] = useState<string[] | []>([]);
   const [tag, setTag] = useState<string>("");
+  const [sugerenciasEtiquetas, setSugerenciasEtiquetas] = useState<string[]>([]);
   const [openHorario, setOpenHorario] = useState(Array(7).fill(false));
   const [horariosInicio, setHorariosInicio] = useState<Date[]>(
     Array(7).fill(new Date())
@@ -66,6 +69,28 @@ const preview = () => {
       horario: null,
     },
   ]);
+
+  const handleTagInputChange = async (texto: string) => {
+    setTag(texto.toLowerCase());  // Actualizar el valor del input
+  
+    if (texto.length >= 0) {  // Realizar la búsqueda solo si el texto tiene más de 3 caracteres
+      try {
+        const etiquetasEncontradas = await buscarEtiquetas(texto);
+        
+        // Si no se encuentra ninguna etiqueta, muestra un guion
+        if (etiquetasEncontradas.length === 0) {
+          setSugerenciasEtiquetas(["-"]);  // Mostrar guion si no hay etiquetas
+        } else {
+          setSugerenciasEtiquetas(etiquetasEncontradas);
+        }
+      } catch (error) {
+        console.error("Error al buscar etiquetas:", error);
+        setSugerenciasEtiquetas(["-"]);  // Mostrar guion en caso de error
+      }
+    } else {
+      setSugerenciasEtiquetas(["-"]);  // Limpiar las sugerencias si el texto es corto
+    }
+  };
 
   const addTag = () => {
     if (!tag) {
@@ -137,8 +162,9 @@ const preview = () => {
       if (tags.length > 0) {
         formData.append("etiquetas", JSON.stringify(tags));
       }
-
-      const response = await fetch(`${API_URL}/api/establecimiento/`, {
+      console.log(formData);
+      console.log(API_URL);
+      const response = await fetch(`${API_URL}/api/establecimiento/registro/`, {
         method: "POST",
         body: formData,
       });
@@ -307,7 +333,7 @@ const preview = () => {
           <View style={[Styles.input, Styles.tag]}>
             <TextInput
               value={tag}
-              onChangeText={setTag}
+              onChangeText={handleTagInputChange}
               placeholder="Etiquetas"
               style={[{ color: "#402158", width: "80%" }]}
             />
@@ -315,6 +341,23 @@ const preview = () => {
               <FontAwesome color={"white"} name="plus" />
             </Pressable>
           </View>
+          {tag.length >= 2 && sugerenciasEtiquetas.length > 0 && (
+            <View style={styles.suggestionsContainer}>
+              {sugerenciasEtiquetas.map((etiqueta, index) => (
+                <Pressable
+                  key={index}
+                  onPress={() => {
+                    setTags([...tags, etiqueta.texto_etiqueta]);  // Agregar la etiqueta al estado
+                    setTag("");  // Limpiar el campo de texto
+                    setSugerenciasEtiquetas([]);  // Limpiar las sugerencias
+                  }}
+                  style={styles.suggestionItem}
+                >
+                  <Text>{etiqueta.texto_etiqueta+''}</Text>
+                </Pressable>
+              ))}
+            </View>
+          )}
           <View style={styles.container}>
             {horarioAtencion.map((horario, index) => (
               <View key={index} style={styles.scheduleContainer}>
@@ -390,6 +433,22 @@ const preview = () => {
   );
 };
 const styles = StyleSheet.create({
+  suggestionsContainer: {
+    overflow: "scroll",  // desplazamiento si hay muchas sugerencias
+    backgroundColor: "#fff",
+    borderRadius: 4,
+    marginTop: 5,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    padding: 5,
+    zIndex: 1,
+    width: "80%",
+  },
+  suggestionItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+  },
   container: {
     padding: 24,
     backgroundColor: "#f9f9f9",

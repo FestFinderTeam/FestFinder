@@ -1,3 +1,5 @@
+import ast
+import json
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -263,6 +265,36 @@ class RegistrarEstablecimientoC(APIView):
             # Guardar el establecimiento
             establecimiento = serializer.save()
 
+            # Parsear los horarios (se recibe como una cadena JSON)
+            horarios = json.loads(request.data.get("horarios", "[]"))
+            for horario in horarios:
+                dia_semana = horario.get("dia", None)
+                horario_data = horario.get("horario", None)
+                
+                # Solo guardar si hay horario
+                if horario_data and dia_semana:
+                    inicio_atencion = horario_data.get("inicio_atencion")
+                    fin_atencion = horario_data.get("fin_atencion")
+                    
+                    if inicio_atencion and fin_atencion:
+                        horariosEstablecimiento.objects.create(
+                            establecimiento=establecimiento,
+                            dia_semana=str(dia_semana),  # Usar dia_semana como string
+                            inicio_atencion=inicio_atencion,
+                            fin_atencion=fin_atencion
+                        )
+            print("Horarios Guardados")
+
+            # Parsear las etiquetas (se recibe como una cadena JSON)
+            etiquetas = json.loads(request.data.get("etiquetas", "[]"))
+            for etiqueta_texto in etiquetas:
+                etiqueta_obj, created = Etiqueta.objects.get_or_create(texto_etiqueta=etiqueta_texto)
+                EtiquetaEstablecimiento.objects.create(
+                    id_establecimiento=establecimiento,
+                    id_etiqueta=etiqueta_obj
+                )
+            print("Etiquetas Guardadas")
+
             # Actualizar el campo `duenio` a True para el usuario relacionado
             usuario_id = request.data.get("usuario")
             if usuario_id:
@@ -271,30 +303,6 @@ class RegistrarEstablecimientoC(APIView):
                     establecimiento=establecimiento
                 )
                 print("Campo `duenio` actualizado a True para el usuario", usuario_id)
-
-            # Manejar horarios
-            horarios = request.data.get("horarios", [])
-            for horario in horarios:
-                dia_semana = horario.get("dia_semana")
-                inicio_atencion = horario.get("inicio_atencion")
-                fin_atencion = horario.get("fin_atencion")
-                if dia_semana and inicio_atencion and fin_atencion:
-                    horariosEstablecimiento.objects.create(
-                        establecimiento=establecimiento,
-                        dia_semana=dia_semana,
-                        inicio_atencion=inicio_atencion,
-                        fin_atencion=fin_atencion
-                    )
-            print("Horarios Guardados")
-            # Manejar etiquetas
-            etiquetas = request.data.get("etiquetas", [])
-            for etiqueta_texto in etiquetas:
-                etiqueta_obj, created = Etiqueta.objects.get(texto_etiqueta=etiqueta_texto)
-                EtiquetaEstablecimiento.objects.create(
-                    id_establecimiento=establecimiento,
-                    id_etiqueta=etiqueta_obj
-                )
-            print("Etiquetas Guardadas")
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
