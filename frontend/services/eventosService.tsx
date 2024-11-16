@@ -81,21 +81,32 @@ export const getCategoriasEventos = async () => {
 };
 
 export const filtrarEventos = async (   nombre: string | null = null, 
-                                        id_genero_fk: [string] | null = null, 
+                                        id_genero_fk: string[] | null = null, 
                                         fecha_actual: string | null = null, 
                                         ciudad: string) => {
     try {
+        const fecha = fecha_actual || new Date().toISOString().split("T")[0];
+        console.log(fecha);
+
+        const body: { [key: string]: any } = { ciudad }; // 'ciudad' siempre es obligatorio
+
+        if (nombre) {
+            body.nombre = nombre;
+        }
+        if (id_genero_fk) {
+            body.id_genero_fk = id_genero_fk;
+        }
+        if (fecha) {
+            body.fecha_actual = fecha;
+        }
+        console.log(ciudad + ' - ' + nombre + ' - ' + id_genero_fk?.toString() + ' - '+ fecha)
+        
         const response = await fetch(`${API_URL}/api/eventos/filtro/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-                nombre,
-                id_genero_fk,
-                fecha_actual,
-                ciudad
-            }),
+            body: JSON.stringify(body),
         });
         
         if (!response.ok) {

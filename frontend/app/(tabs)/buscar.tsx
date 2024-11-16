@@ -3,8 +3,8 @@ import { ScrollView, Text, View } from "react-native";
 import SearchHeader, { filterSearch } from "@/components/SearchHeader";
 import type { EventoType } from "@/components/Evento";
 import Establecimiento, { type Place } from "@/components/EstablecimientoExtra";
-import { getEstablecimientos } from "@/services/establecimientosServices";
-import { getEventosDelMes } from "@/services/eventosService";
+import { filtrarEstablecimientos, getEstablecimientos } from "@/services/establecimientosServices";
+import { filtrarEventos, getEventosDelMes } from "@/services/eventosService";
 import EventoExtra from "@/components/EventoExtra";
 
 const buscar = () => {
@@ -30,8 +30,31 @@ const buscar = () => {
         fetchEstablecimientos();
     }, []);
 
-    const handleSearch = () => {
+    const handleSearch = async () => {
         console.log("Buscando", search);
+        try {
+            if (filtro === "locales") {
+                const establecimientosFiltrados = await filtrarEstablecimientos(
+                    search || null, // Nombre
+                    null,           // Tipos (opcional, no implementado aún)
+                    null,           // Rango de precios (opcional, no implementado aún)
+                    "Cochabamba" // Cambiar por la ciudad seleccionada
+                );
+                setEstablecimientos(establecimientosFiltrados);
+            }
+
+            if (filtro === "eventos") {
+                const eventosFiltrados = await filtrarEventos(
+                    search || null, // Nombre
+                    null,           // Géneros
+                    null,           // Fecha actual 
+                    "Cochabamba" // Cambiar por la ciudad seleccionada
+                );
+                setEventos(eventosFiltrados);
+            }
+        } catch (error) {
+            console.error("Error al buscar:", error);
+        }
     };
 
     return (

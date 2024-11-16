@@ -99,26 +99,34 @@ export const getEventosPorEstablecimiento = async (
 
 export const filtrarEstablecimientos = async (   
                                         nombre: string | null = null, 
-                                        tipos: [string] | null = null, 
+                                        tipos: string[] | null = null, 
                                         rango_de_precios: string | null = null, 
                                         ciudad: string
                                     ) => {
     try {
-        const response = await fetch(`${API_URL}/api/eventos/filtro/`, {
+        const body: { [key: string]: any } = { ciudad }; // 'ciudad' siempre es obligatorio
+
+        if (nombre) {
+            body.nombre = nombre;
+        }
+        if (tipos) {
+            body.tipos = tipos;
+        }
+        if (rango_de_precios) {
+            body.rango_de_precios = rango_de_precios;
+        }
+        console.log(ciudad + ' - ' + nombre + ' - ' + tipos?.toString() + ' - '+ rango_de_precios)
+
+        const response = await fetch(`${API_URL}/api/establecimientos/filtro/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-                nombre,
-                tipos,
-                rango_de_precios,
-                ciudad
-            }),
+            body: JSON.stringify(body),
         });
         
         if (!response.ok) {
-            console.error("Error al filtrar eventos:", response.status);
+            console.error("Error al filtrar establecimientos:", response.status);
             return [];
         }
 
