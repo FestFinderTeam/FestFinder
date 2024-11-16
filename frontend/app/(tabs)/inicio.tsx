@@ -1,9 +1,8 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Link, router, type Href } from "expo-router";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Image, Modal, Alert } from "react-native";
 import { FlatList, Pressable, Text, View } from "react-native";
-import Notch from "@/components/Notch";
 import React from "react";
 import { getCategorias } from "@/services/categoriasService";
 import { getEstablecimientos } from "@/services/establecimientosServices";
@@ -11,6 +10,7 @@ import { getEventosDelDia, getEventosDelMes } from "@/services/eventosService";
 import ListadoEventosInicio from "@/components/ListadoEventos";
 import Establecimiento, { type Place } from "@/components/Establecimiento";
 import type { EventoType } from "@/components/Evento";
+import { Button } from "react-native-paper";
 
 interface TipoEstablecimiento {
 	id: number;
@@ -161,38 +161,25 @@ const inicio = () => {
 				</Modal>
 			</View>
 
-			<ScrollView>
+			<ScrollView style={{ padding: 10 }}>
 				<Text style={styles.textoTitulo}>Categorias</Text>
 				<FlatList
 					data={tags}
-					style={styles.slider}
+					horizontal
+					showsHorizontalScrollIndicator={false}
+					contentContainerStyle={{
+						gap: 8,
+						padding: 8,
+					}}
 					keyExtractor={(item) => JSON.stringify(item)}
 					renderItem={({ item }) => (
-						<Pressable
+						<Button
+							mode="outlined"
 							onPress={() => handleCategoryPress(item.id + "")}
-							style={{
-								alignItems: "center",
-								marginHorizontal: 10,
-							}}
 						>
-							<Text
-								style={{
-									fontFamily: "Poppins-Regular",
-									textAlign: "center",
-									borderRadius: 20,
-									borderWidth: 2,
-									borderColor: "#956ca3",
-									color: "#956ca3",
-									paddingHorizontal: 10,
-									paddingVertical: 4,
-									lineHeight: 24,
-								}}
-							>
-								{item.nombre_tipo}
-							</Text>
-						</Pressable>
+							{item.nombre_tipo}
+						</Button>
 					)}
-					horizontal
 				/>
 
 				<Text style={[styles.textoTitulo, { marginTop: "5%" }]}>
@@ -281,18 +268,17 @@ const inicio = () => {
 						</View>
 					</View>
 				</View>
+
 				<View
 					style={{
 						flexDirection: "row",
 						alignItems: "center",
 						justifyContent: "space-between",
 						width: "100%",
-						paddingHorizontal: "5%",
+						marginBottom: "2%",
 					}}
 				>
-					<Text style={[styles.textoTitulo, { marginTop: "5%" }]}>
-						Lugares populares
-					</Text>
+					<Text style={[styles.textoTitulo]}>Lugares populares</Text>
 					<Pressable
 						onPress={() => {
 							router.navigate("/places/popular");
@@ -320,12 +306,11 @@ const inicio = () => {
 
 				<FlatList
 					data={popularPlaces}
-					style={styles.slider}
+					horizontal
 					keyExtractor={(item) => JSON.stringify(item)}
 					renderItem={({ item, index }) => (
 						<Establecimiento establecimiento={item} key={index} />
 					)}
-					horizontal
 				/>
 
 				<View
@@ -334,10 +319,9 @@ const inicio = () => {
 						alignItems: "center",
 						justifyContent: "space-between",
 						width: "100%",
-						paddingHorizontal: "5%",
 					}}
 				>
-					<Text style={[styles.textoTitulo, { marginTop: "5%" }]}>
+					<Text style={[styles.textoTitulo]}>
 						Eventos populares del mes
 					</Text>
 					<Pressable

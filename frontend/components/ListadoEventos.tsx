@@ -13,7 +13,6 @@ const ListadoEventosInicio = ({ eventos }: Props) => {
     return (
         <FlatList
             data={eventos}
-            style={Styles.slider}
             keyExtractor={(item) => JSON.stringify(item)}
             renderItem={({ item, index }) => (
                 <Evento evento={item} key={index} />
