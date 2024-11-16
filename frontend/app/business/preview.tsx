@@ -22,7 +22,7 @@ import LoadingScreen from "@/components/Loading";
 
 const preview = () => {
   //const API_URL = "http://(TU IPv4 PARA PROBAR ANTES QUE RESUBAN LA API):8000/";
-  const API_URL = process.env.EXPO_PUBLIC_API_URL;
+  const API_URL = 'http://192.168.100.3:8000';
   const [loading, setLoading] = useState(false);
 
   const { session, signIn } = useSession();
@@ -136,8 +136,9 @@ const preview = () => {
       if (tags.length > 0) {
         formData.append("etiquetas", JSON.stringify(tags));
       }
-
-      const response = await fetch(`${API_URL}/api/establecimiento/`, {
+      console.log(formData);
+      console.log(API_URL);
+      const response = await fetch(`${API_URL}/api/establecimiento/registro/`, {
         method: "POST",
         body: formData,
       });
