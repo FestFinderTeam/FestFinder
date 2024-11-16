@@ -6,44 +6,93 @@ import { router } from "expo-router";
 import React from "react";
 import { useEffect, useState } from "react";
 import { useSession } from "@/hooks/ctx";
-import {
-	Pressable,
-	Text,
-	TextInput,
-	View,
-	StyleSheet,
-} from "react-native";
+import { Pressable, View, StyleSheet } from "react-native";
 import { SelectList } from "react-native-dropdown-select-list";
 import { LatLng } from "react-native-maps";
 import Header from "@/components/Header";
 import TextInputWithHelper from "@/components/TextInputWithHelperText";
+import { Button, HelperText, useTheme, Text } from "react-native-paper";
+import MyDropdown from "@/components/MyDropDown";
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const phoneRegex = /^\d{8}$/;
+
+interface FormData {
+	nombre: string;
+	email: string;
+	telefono: string;
+	direccion: string;
+	rango_de_precios: string;
+	tipo: string;
+}
+
+interface Errors {
+	nombre: string;
+	email: string;
+	telefono: string;
+	direccion: string;
+	rango_de_precios: string;
+	tipo: string;
+}
+
+const fieldNames: { [key in keyof FormData]: string } = {
+	nombre: "Nombre",
+	email: "Email",
+	telefono: "Teléfono",
+	direccion: "Dirección",
+	rango_de_precios: "Rango de precios",
+	tipo: "Tipo de establecimiento",
+};
 
 const register_business = () => {
-	const [nombre, setName] = useState("");
-	const [nameError, setNameError] = useState(false);
+	const { session } = useSession();
+	const theme = useTheme();
 	const [location, setLocation] = useState<LatLng | null>(null);
-	const [em_ref, setEmail] = useState("");
-	const [nro_ref, setPhone] = useState("");
-	const [tipo_fk, setSelectedBusiness] = useState("");
-	const [rango_de_precios, setRango] = useState("");
 	const [coordenada_x, setCoordenadaX] = useState<number>();
 	const [coordenada_y, setCoordenadaY] = useState<number>();
-	const [direccion, setDireccion] = useState("");
 	const [toggleMap, setToggleMap] = useState(false);
 	const [dataTypesBusiness, setDataTypesBusiness] = useState([]);
-	const { session } = useSession();
-	const [id_us, setID] = useState("");
-
 	const dataRango = ["Bajo", "Medio", "Alto"];
 
-	// Llama a getCategorias al montar el componente para obtener las categorías
+	const [formData, setFormData] = useState<FormData>({
+		nombre: "",
+		email: "",
+		telefono: "",
+		direccion: "",
+		rango_de_precios: "",
+		tipo: "",
+	});
+	const [errors, setErrors] = useState<Errors>({
+		nombre: "",
+		email: "",
+		telefono: "",
+		direccion: "",
+		rango_de_precios: "",
+		tipo: "",
+	});
+
+	useEffect(() => {
+		const clearError = (field: keyof FormData) => {
+			if (formData[field]) {
+				setErrors((prevErrors) => ({
+					...prevErrors,
+					[field]: "",
+				}));
+			}
+		};
+		// Itera sobre cada campo en formData y limpia su error si tiene valor
+		Object.keys(formData).forEach((key) => {
+			const field = key as keyof FormData;
+			clearError(field);
+		});
+	}, [formData]);
+
 	useEffect(() => {
 		const fetchCategorias = async () => {
 			const categorias = await getCategorias();
-			// Mapear las categorías al formato que necesita SelectList
 			const formattedCategorias = categorias.map((categoria: any) => ({
-				key: categoria.id, // Utiliza "id" como clave única
-				value: categoria.nombre_tipo, // Utiliza "nombre_tipo" como el nombre visible
+				key: categoria.id,
+				value: categoria.nombre_tipo,
 			}));
 
 			setDataTypesBusiness(formattedCategorias);
@@ -53,55 +102,67 @@ const register_business = () => {
 	}, []);
 
 	const handleNext = () => {
-		if (session) {
-			setID(session.id_usuario + "");
-		}
-		if (nombre.length < 3) {
-			alert("El nombre del negocio debe tener al menos 3 caracteres.");
-			return;
-		}
-		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		if (!emailRegex.test(em_ref)) {
-			alert("El email debe tener un formato válido: local@dominio.");
-			return;
-		}
-		if (!/^\d{8}$/.test(nro_ref)) {
-			alert("El teléfono debe tener solo números y 8 dígitos.");
-			return;
-		}
-		const dataBusiness = [
-			nombre,
-			location,
-			nro_ref,
-			em_ref,
-			tipo_fk,
-			rango_de_precios,
-			id_us,
-			coordenada_x,
-			coordenada_y,
-		];
-		if (dataBusiness.includes("")) {
-			alert("Todos los campos son obligatorios.");
-			return;
-		}
-		router.push({
-			pathname: "/business/preview",
-			params: {
-				nombre,
-				nro_ref,
-				em_ref,
-				tipo_fk,
-				rango_de_precios,
-				coordenada_x,
-				coordenada_y,
-				direccion,
-				id_usuario: id_us,
-			},
+		const newErrors = { ...errors };
+		Object.keys(formData).forEach((field) => {
+			const key = field as keyof FormData;
+			const value = formData[key].trim();
+
+			if (!value) {
+				// Campo vacío
+				newErrors[key] = `El campo ${fieldNames[key]} es obligatorio`;
+			} else {
+				// Validación específica para cada campo
+				switch (key) {
+					case "email":
+						if (!emailRegex.test(value)) {
+							newErrors[key] = "El formato del correo electrónico es inválido";
+						} else {
+							newErrors[key] = "";
+						}
+						break;
+					case "telefono":
+						if (!phoneRegex.test(value)) {
+							newErrors[key] = "El teléfono debe tener exactamente 8 dígitos";
+						} else {
+							newErrors[key] = "";
+						}
+						break;
+					default:
+						newErrors[key] = ""; // Limpia cualquier error anterior para campos válidos
+						break;
+				}
+			}
 		});
+
+		setErrors(newErrors);
+
+		const hasErrors = Object.values(newErrors).some((error) => error !== "");
+		if (!hasErrors) {
+			const dataBusiness = {
+				nombre: formData.nombre,
+				direccion: formData.direccion,
+				nro_ref: formData.telefono,
+				em_ref: formData.email,
+				tipo_fk: formData.tipo,
+				rango_de_precios: formData.rango_de_precios,
+				id_usuario: session?.id_usuario,
+				coordenada_x: coordenada_x,
+				coordenada_y: coordenada_y,
+			};
+
+			router.push({
+				pathname: "/business/preview",
+				params: dataBusiness,
+			});
+		}
 	};
 
 	return (
-		<>
+		<View
+			style={{
+				flex: 1,
+			}}
+		>
 			{toggleMap && (
 				<View
 					style={{
@@ -126,165 +187,164 @@ const register_business = () => {
 									location.latitude,
 									location.longitude
 								);
-								setDireccion(direccion);
+								setFormData({ ...formData, direccion: direccion });
 							}
 						}}
 					/>
 				</View>
 			)}
+
+			<Header title="Registro de establecimiento" />
 			<View
 				style={{
 					flex: 1,
+					padding: 20,
 				}}
 			>
-				<Header title="Registro de establecimiento" />
-				<View
+				<TextInputWithHelper
+					label={"Nombre"}
+					value={formData.nombre}
+					onChangeText={(e: string) => setFormData({ ...formData, nombre: e })}
+					mode="outlined"
+					error={errors.nombre !== ""}
+					errorText={errors.nombre}
+				/>
+
+				<TextInputWithHelper
+					label={"Email"}
+					value={formData.email}
+					onChangeText={(e: string) => setFormData({ ...formData, email: e })}
+					mode="outlined"
+					error={errors.email !== ""}
+					errorText={errors.email}
+					autoCapitalize="none"
+					textContentType="emailAddress"
+					keyboardType="email-address"
+					autoComplete="email"
+				/>
+
+				<TextInputWithHelper
+					label={"Teléfono"}
+					value={formData.telefono}
+					onChangeText={(e: string) =>
+						setFormData({ ...formData, telefono: e })
+					}
+					mode="outlined"
+					error={errors.telefono !== ""}
+					errorText={errors.telefono}
+					keyboardType="numeric"
+				/>
+
+				<Button
+					mode="outlined"
+					onPress={() => {
+						setToggleMap(true);
+					}}
 					style={{
-						flex: 1,
+						marginTop: 10,
+						borderColor: errors.direccion
+							? theme.colors.error
+							: theme.colors.primary,
 					}}
 				>
-					<TextInput
-						placeholder="Nombre del negocio"
-						keyboardType="default"
-						placeholderTextColor="#402158"
-						style={Styles.input}
-						onChangeText={(text) => {
-							setName(text);
-							if (text.length >= 3) {
-								setNameError(false);
-							}
-						}}
-						onEndEditing={() => {
-							if (nombre.length < 3) {
-								setNameError(true);
-							}
-						}}
-					/>
-					<TextInput
-						placeholder="Email del negocio"
-						keyboardType="email-address"
-						placeholderTextColor="#402158"
-						style={Styles.input}
-						onChangeText={setEmail}
-						onEndEditing={() => {
-							const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-							if (!emailRegex.test(em_ref)) {
-								alert("El email debe tener un formato válido: local@dominio.");
-							}
-						}}
-					/>
-					<TextInput
-						placeholder="Teléfono del negocio"
-						keyboardType="phone-pad"
-						placeholderTextColor="#402158"
-						style={Styles.input}
-						onChangeText={setPhone}
-						onEndEditing={() => {
-							if (!/^\d{8}$/.test(nro_ref)) {
-								alert("El teléfono debe tener solo números y 8 dígitos.");
-							}
-						}}
-					/>
-
-					<Pressable
-						onPress={() => {
-							setToggleMap(true);
-						}}
-						style={Styles.input}
-					>
-						<Text
-							style={{
-								color: "#402158",
-								paddingTop: 2,
-								paddingBottom: 2,
-							}}
-						>
-							{location
-								? `Cambiar Ubicacion de ${direccion}` || ""
-								: "Seleccionar ubicación"}
-						</Text>
-					</Pressable>
-					<SelectList
-						setSelected={setSelectedBusiness}
-						data={dataTypesBusiness}
-						save="key"
-						searchPlaceholder="Buscar"
-						placeholder="Tipo de negocio"
-						boxStyles={Styles.input}
-						dropdownStyles={Styles.inputDropDown}
-					/>
-
 					<Text
+						style={{
+							color: errors.direccion
+								? theme.colors.error
+								: theme.colors.primary,
+						}}
+					>
+						{location ? formData.direccion : "Seleccionar ubicación"}
+					</Text>
+				</Button>
+				{errors.direccion !== "" && (
+					<HelperText type="error" visible={!!(errors.direccion !== "")}>
+						{errors.direccion}
+					</HelperText>
+				)}
+
+				<SelectList
+					setSelected={(selected: string) => {
+						setFormData({ ...formData, tipo: String(selected)});
+					}}
+					data={dataTypesBusiness}
+					save="key"
+					searchPlaceholder="Buscar"
+					placeholder="Tipo de negocio"
+					boxStyles={Styles.input}
+					dropdownStyles={Styles.inputDropDown}
+				/>
+
+				<Text
+					style={[
+						Styles.textDecoration2,
+						{
+							marginBottom: 10,
+							marginLeft: 30,
+							alignSelf: "flex-start",
+						},
+					]}
+				>
+					Rango de precios del local:
+				</Text>
+
+				<View style={{ flexDirection: "row" }}>
+					{dataRango.map((value, index) => (
+						<Pressable
+							key={index}
+							onPress={() => {
+								setFormData({ ...formData, rango_de_precios: value });
+							}}
+							style={
+								value === formData.rango_de_precios
+									? styles.buttonSelected
+									: styles.button
+							}
+						>
+							<Text
+								style={
+									value === formData.rango_de_precios
+										? styles.textSelected
+										: styles.text
+								}
+							>
+								{value}
+							</Text>
+							<Text
+								style={
+									value === formData.rango_de_precios
+										? styles.textSelected
+										: styles.text
+								}
+							>
+								{"$".repeat(index + 1)}
+							</Text>
+						</Pressable>
+					))}
+				</View>
+
+				<Button onPress={handleNext} mode="contained" style={{ marginTop: 20 }}>
+					Siguiente
+				</Button>
+
+				<View>
+					<View
 						style={[
-							Styles.textDecoration2,
+							Styles.lineContainer,
 							{
-								marginBottom: 10,
-								marginLeft: 30,
-								alignSelf: "flex-start",
+								marginBottom: 30,
+								flexDirection: "row",
+								justifyContent: "center",
+								gap: 10,
 							},
 						]}
 					>
-						Rango de precios del local:
-					</Text>
-
-					<View style={{ flexDirection: "row" }}>
-						{dataRango.map((value, index) => (
-							<Pressable
-								key={index}
-								onPress={() => {
-									setRango(value);
-								}}
-								style={
-									value === rango_de_precios
-										? styles.buttonSelected
-										: styles.button
-								}
-							>
-								<Text
-									style={
-										value === rango_de_precios
-											? styles.textSelected
-											: styles.text
-									}
-								>
-									{value}
-								</Text>
-								<Text
-									style={
-										value === rango_de_precios
-											? styles.textSelected
-											: styles.text
-									}
-								>
-									{"$".repeat(index + 1)}
-								</Text>
-							</Pressable>
-						))}
-					</View>
-
-					<Pressable onPress={handleNext} style={Styles.button}>
-						<Text style={Styles.buttonText}>Siguiente</Text>
-					</Pressable>
-
-					<View>
-						<View
-							style={[
-								Styles.lineContainer,
-								{
-									marginBottom: 30,
-									flexDirection: "row",
-									justifyContent: "center",
-									gap: 10,
-								},
-							]}
-						>
-							<View style={[Styles.lineSelected, { borderRadius: 10 }]} />
-							<View style={[Styles.line, { borderRadius: 10 }]} />
-						</View>
+						<View style={[Styles.lineSelected, { borderRadius: 10 }]} />
+						<View style={[Styles.line, { borderRadius: 10 }]} />
 					</View>
 				</View>
 			</View>
-		</>
+		</View>
 	);
 };
 
