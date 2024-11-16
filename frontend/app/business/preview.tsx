@@ -22,7 +22,7 @@ import LoadingScreen from "@/components/Loading";
 
 const preview = () => {
   //const API_URL = "http://(TU IPv4 PARA PROBAR ANTES QUE RESUBAN LA API):8000/";
-  const API_URL = 'http://192.168.100.3:8000';
+  const API_URL = process.env.EXPO_PUBLIC_API_URL;
   const [loading, setLoading] = useState(false);
 
   const { session, signIn } = useSession();
