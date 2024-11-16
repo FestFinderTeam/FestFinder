@@ -1,20 +1,11 @@
 import GoogleMap from "@/components/GoogleMap";
-import Notch from "@/components/Notch";
-import React, { useEffect, useState } from "react";
-import {
-	ActivityIndicator,
-	Image,
-	Modal,
-	Pressable,
-	ScrollView,
-	Text,
-	View,
-} from "react-native";
-import Popup from "@/components/Popup";
-import { router, type Href } from "expo-router";
-import Styles from "@/globalStyles/styles";
+import React, { useEffect, useState, useRef, useMemo } from "react";
+import { Pressable, Text, View, Image } from "react-native";
 import { getEstablecimientos } from "@/services/establecimientosServices";
-import { useSession } from "@/hooks/ctx"; // Asegúrate de importar el hook de sesión
+import { ActivityIndicator, Button } from "react-native-paper";
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import { router, Href } from "expo-router";
+import Styles from "@/globalStyles/styles";
 
 export interface EstablecimientoType {
 	id: number;
@@ -32,13 +23,15 @@ interface Perfil {
 }
 
 const Mapa = () => {
+	const snapPoints = useMemo(() => ["42%"], []);
+	const bottomSheetRef = useRef<BottomSheet>(null);
+	const [isLoading, setIsLoading] = useState<boolean>(true);
+	const [isBottomSheetOpen, setIsBottomSheetOpen] = useState<boolean>(false);
 	const [establecimientos, setEstablecimientos] = useState<
 		EstablecimientoType[]
 	>([]);
 	const [establecimientoSeleccionado, setEstablecimientoSeleccionado] =
 		useState<EstablecimientoType | null>(null);
-	const [isLoading, setIsLoading] = useState<boolean>(true);
-
 	const obtenerDatosEstablecimiento = async () => {
 		setIsLoading(true);
 		const data = await getEstablecimientos();
@@ -50,20 +43,21 @@ const Mapa = () => {
 		obtenerDatosEstablecimiento();
 	}, []);
 
-	if (isLoading) {
+	useEffect(() => {
+		if (establecimientoSeleccionado) {
+			bottomSheetRef.current?.expand();
+		} else {
+			bottomSheetRef.current?.close();
+		}
+	}, [establecimientoSeleccionado]);
+
+	if (isLoading)
 		return (
-			<View
-				style={{
-					flex: 1,
-					justifyContent: "center",
-					alignItems: "center",
-				}}
-			>
-				<ActivityIndicator size="large" color="#0000ff" />
+			<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+				<ActivityIndicator animating={true} size="large" />
 				<Text>Cargando establecimientos...</Text>
 			</View>
 		);
-	}
 
 	return (
 		<View style={{ position: "relative" }}>
@@ -75,15 +69,32 @@ const Mapa = () => {
 				}}
 			/>
 
-			<Popup
-				isVisible={establecimientoSeleccionado !== null}
+			<BottomSheet
+				ref={bottomSheetRef}
+				snapPoints={snapPoints}
+				enablePanDownToClose={true}
+				backdropComponent={(props) =>
+					!isBottomSheetOpen ? null : (
+						<Pressable
+							style={[
+								props.style,
+								{
+									flex: 1,
+									backgroundColor: "rgba(0, 0, 0, 0.1)",
+								},
+							]}
+							onPress={() => bottomSheetRef.current?.close()}
+						/>
+					)
+				}
 				onClose={() => setEstablecimientoSeleccionado(null)}
+				onChange={(index) => setIsBottomSheetOpen(index >= 0)}
+				index={-1}
 			>
-				<ScrollView style={{ backgroundColor: "white" }}>
+				<BottomSheetView>
 					<View
 						style={{
 							alignItems: "center",
-							backgroundColor: "white",
 						}}
 					>
 						<Text style={Styles.subtitle}>
@@ -93,7 +104,7 @@ const Mapa = () => {
 							source={
 								establecimientoSeleccionado?.logo
 									? { uri: establecimientoSeleccionado.logo }
-									: require("../../assets/images/default.jpg")
+									: require("@/assets/images/default.jpg")
 							}
 							style={{
 								width: 200,
@@ -101,19 +112,20 @@ const Mapa = () => {
 								borderRadius: 100,
 							}}
 						/>
-						<Pressable
+						<Button
 							onPress={() => {
 								router.push(
 									("/places/" + establecimientoSeleccionado?.id) as Href
 								);
 							}}
-							style={Styles.button}
+							mode="contained"
+							style={{ marginTop: 10 }}
 						>
-							<Text style={Styles.buttonText}>Más Información</Text>
-						</Pressable>
+							Más Información
+						</Button>
 					</View>
-				</ScrollView>
-			</Popup>
+				</BottomSheetView>
+			</BottomSheet>
 		</View>
 	);
 };
