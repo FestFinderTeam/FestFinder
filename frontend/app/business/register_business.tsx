@@ -263,17 +263,12 @@ const register_business = () => {
 					</HelperText>
 				)}
 
-				<SelectList
-					setSelected={(selected: string) => {
-						setFormData({ ...formData, tipo: String(selected)});
-					}}
-					data={dataTypesBusiness}
-					save="key"
-					searchPlaceholder="Buscar"
-					placeholder="Tipo de negocio"
-					boxStyles={Styles.input}
-					dropdownStyles={Styles.inputDropDown}
-				/>
+				<MyDropdown dataTypesBusiness={dataTypesBusiness} setSelectedBusiness={(selected) => setFormData({ ...formData, tipo: selected })} style={{marginTop: 10}}/>
+				{errors.tipo !== "" && (
+					<HelperText type="error" visible={!!(errors.tipo !== "")}>
+						{errors.tipo}
+					</HelperText>
+				)}
 
 				<Text
 					style={[
@@ -322,6 +317,11 @@ const register_business = () => {
 						</Pressable>
 					))}
 				</View>
+				{errors.rango_de_precios !== "" && (
+					<HelperText type="error" visible={!!(errors.rango_de_precios !== "")}>
+						{errors.rango_de_precios}
+					</HelperText>
+				)}
 
 				<Button onPress={handleNext} mode="contained" style={{ marginTop: 20 }}>
 					Siguiente
