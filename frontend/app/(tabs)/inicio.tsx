@@ -5,7 +5,7 @@ import { ScrollView, StyleSheet, Image, Modal, Alert } from "react-native";
 import { FlatList, Pressable, Text, View } from "react-native";
 import React from "react";
 import { getCategorias } from "@/services/categoriasService";
-import { getEstablecimientos } from "@/services/establecimientosServices";
+import { filtrarEstablecimientos, getEstablecimientos } from "@/services/establecimientosServices";
 import { getEventosDelDia, getEventosDelMes } from "@/services/eventosService";
 import ListadoEventosInicio from "@/components/ListadoEventos";
 import Establecimiento, { type Place } from "@/components/Establecimiento";
@@ -29,21 +29,26 @@ const inicio = () => {
 	const handleCitySelect = (city: string) => {
 		setSelectedCity(city);
 		setModalVisible(false);
+		fetchEventosDelMes();
+		fetchEventosDelDia();
+		fetchEstablecimientos(null, city)
 	};
 	useEffect(() => {
 		fetchCategoriasEstablecimientos();
 		fetchEventosDelMes();
 		fetchEventosDelDia();
-		fetchEstablecimientos();
+		fetchEstablecimientos(null, selectedCity||'Cochabamba');
 	}, []);
 
-	const fetchEstablecimientos = async (tipoId: string | null = null) => {
-		const establecimientos = await getEstablecimientos(tipoId);
+	const fetchEstablecimientos = async (tipoId: string | null = null, ciudad: string) => {
+		const tipos = tipoId? [tipoId+''] : null;
+		console.log(tipos + ' '+ciudad)
+		const establecimientos = await filtrarEstablecimientos(null, tipos, null, ciudad);
 
 		if (establecimientos.length === 0) {
 			Alert.alert(
 				"Sin resultados",
-				"No se encontraron establecimientos para esta categoría"
+				"No se encontraron establecimientos para esta ciudad "
 			);
 			// Vuelve a cargar todos los establecimientos si no hay resultados
 			const todosEstablecimientos = await getEstablecimientos(null);
@@ -82,7 +87,7 @@ const inicio = () => {
 
 	const handleCategoryPress = (tipoId: string | null) => {
 		console.log(tipoId);
-		fetchEstablecimientos(tipoId);
+		fetchEstablecimientos(tipoId, selectedCity);
 	};
 
 	return (
