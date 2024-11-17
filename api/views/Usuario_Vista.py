@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.hashers import check_password
+from ..utils import ResponseFormatter
 
 from api.models import Imagen
 from ..models import Usuario
@@ -18,9 +19,16 @@ class CrearUsuario(APIView):
         serializer = UsuarioSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+            return ResponseFormatter.success(
+                data=serializer.data,
+                message="Usuario creado exitosamente",
+                status_code=status.HTTP_201_CREATED
+            )
+        return ResponseFormatter.error(
+            message="Error de validacion",
+            errors=serializer.errors,
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY
+        )
 
 #Devolver todos los usuarios
 class ListarUsuarios(APIView):

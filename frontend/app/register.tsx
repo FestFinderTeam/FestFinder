@@ -11,6 +11,13 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneRegex = /^\d{8}$/;
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
+interface ApiResponse {
+	status: number;
+	message: string;
+	errors: any | null;
+	data: any | null;
+}
+
 interface FormData {
 	nombre: string;
 	email: string;
@@ -45,12 +52,18 @@ const Register = () => {
 
 	useEffect(() => {
 		if (isSuccess) {
+			const apiData = data as ApiResponse;
 			console.log("Usuario registrado:", data);
-			setSnackbarMessage("Usuario registrado con éxito");
+			setSnackbarMessage(apiData.message);
 			setVisibleSnackbar(true);
 		} else if (isError) {
-			console.error(error);
-			setSnackbarMessage("Error al registrar");
+			const apiError = error as ApiResponse;
+			console.error(apiError);
+			setErrors((prevErrors) => ({
+				...prevErrors,
+				...apiError.errors,
+			}));
+			setSnackbarMessage(apiError.message);
 			setVisibleSnackbar(true);
 		}
 	}, [isSuccess, isError, error, data]);
