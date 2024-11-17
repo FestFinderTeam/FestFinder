@@ -1,6 +1,6 @@
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
-export const getEventosDelMes = async () => {
+export const getEventosDelMes = async (ciudad: string) => {
     try {
         //console.log(new Date().toISOString().split("T")[0] + "");
 
@@ -11,6 +11,7 @@ export const getEventosDelMes = async () => {
             },
             body: JSON.stringify({
                 fecha: new Date().toISOString().split("T")[0],
+                ciudad: ciudad+'',
             }), // Envía la fecha actual
         });
         const data = await response.json();
@@ -22,7 +23,7 @@ export const getEventosDelMes = async () => {
     }
 };
 
-export const getEventosDelDia = async () => {
+export const getEventosDelDia = async (ciudad: string) => {
     try {
         //console.log(new Date().toISOString().split("T")[0] + "");
         const response = await fetch(`${API_URL}/api/eventos_hoy/`, {
@@ -32,6 +33,7 @@ export const getEventosDelDia = async () => {
             },
             body: JSON.stringify({
                 fecha: new Date().toISOString().split("T")[0],
+                ciudad: ciudad+'',
             }), // Envía la fecha actual
         });
         const data = await response.json();

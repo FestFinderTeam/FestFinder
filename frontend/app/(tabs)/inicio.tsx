@@ -59,12 +59,12 @@ const inicio = () => {
 	};
 
 	const fetchEventosDelMes = async () => {
-		const eventos = await getEventosDelMes();
+		const eventos = await getEventosDelMes(selectedCity);
 		setEventosDelMes(eventos);
 	};
 
 	const fetchEventosDelDia = async () => {
-		const eventos = await getEventosDelDia();
+		const eventos = await getEventosDelDia(selectedCity);
 		//console.log(eventos[0].id_evento);
 		setEventosDelDia(eventos);
 	};
