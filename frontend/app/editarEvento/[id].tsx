@@ -1,14 +1,14 @@
 import Header from "@/components/Header";
 import Styles from "@/globalStyles/styles";
 import { useSession } from "@/hooks/ctx";
-import { getEventoPorID } from "@/services/eventosService";
+import { deleteEvento, getEventoPorID, updateEvento } from "@/services/eventosService";
 import { dateToDDMMYYYY, dateToHHmm, showSingleDate, showSingleTime } from "@/utils/DateTime";
 import { getImage, pickImage } from "@/utils/Image";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import type { ImagePickerAsset } from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { ImageBackground, Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { Alert, ImageBackground, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 
 const imagen_defecto = require("../../assets/images/default_image.png");
 
@@ -49,9 +49,37 @@ const EditarEvento = () => {
         }
     };
 
-    const handleDelete = ()=>{
+    const handleDelete = async () => {
+        if (!id) {
+            setError("No se proporcionó un ID válido para el evento.");
+            return;
+        }
+        console.log("hay id");
         
-    }
+        Alert.alert(
+            "Confirmar eliminación",
+            "¿Estás seguro de que deseas eliminar este evento? Esta acción no se puede deshacer.",
+            [
+                {
+                    text: "Cancelar",
+                    style: "cancel",
+                },
+                {
+                    text: "Eliminar",
+                    style: "destructive",
+                    onPress: async () => {
+                        const resultado = await deleteEvento(id); // Llama a la función de eliminación
+                        if (resultado) {
+                            alert("Evento eliminado con éxito.");
+                            router.push("/admin/eventos"); // Redirige a la lista de eventos después de la eliminación
+                        } else {
+                            setError("Hubo un problema al eliminar el evento. Intenta nuevamente.");
+                        }
+                    },
+                },
+            ]
+        );
+    };
 
     const handleSubmit = async () => {
         if (session){
@@ -69,18 +97,25 @@ const EditarEvento = () => {
 
         formData.append("nombre", nombre);
         //formData.append("fecha_inicio", dateToDDMMYYYY(horario_inicio));
-        formData.append("horario_inicio", dateToHHmm(horario_inicio));
-        formData.append("horario_fin", dateToHHmm(horario_fin));
+        //formData.append("horario_inicio", dateToHHmm(horario_inicio));
+        //formData.append("horario_fin", dateToHHmm(horario_fin));
 
         formData.append("descripcion", descripcion);
-        formData.append("precioInicial", precioInicial);
-        formData.append("precioFinal", precioFinal);
+        formData.append("precio_min", precioInicial);
+        formData.append("precio_max", precioFinal);
 
         console.log(formData);
         //enviar al servidor
-        
+        const resultado = await updateEvento(id as string, formData); // Llamamos a la función de actualización.
+
         //enviar al los eventos una vez registrado
         //router.push('admin/eventos' as Href)
+        if (resultado) {
+            alert("Evento actualizado con éxito.");
+            router.push("/admin/eventos"); // Redirige a la lista de eventos después de la actualización.
+        } else {
+            setError("Hubo un problema al actualizar el evento. Intenta nuevamente.");
+        }
     };
     return (
         <ScrollView>

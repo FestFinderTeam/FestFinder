@@ -65,10 +65,10 @@ export const getEventoPorID = async (id: string) => {
 };
 
 
-export const deleteEvento = async (id: string) => {
+export const deleteEvento = async (id: any) => {
     try {
-        const response = await fetch(`${API_URL}/api/eventos/${id}/borrar`, {
-            method: "GET",
+        const response = await fetch(`${API_URL}/api/eventos/${id}/borrar/`, {
+            method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -143,3 +143,22 @@ export const filtrarEventos = async (   nombre: string | null = null,
 };
 
 
+export const updateEvento = async (id: string, data: FormData) => {
+    try {
+        const response = await fetch(`${API_URL}/api/eventos/modificar/${id}/`, {
+            method: "PUT",
+            body: data,
+        });
+
+        if (!response.ok) {
+            console.error("Error al modificar el evento:", response.status);
+            return null;
+        }
+
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.error("Error al modificar el evento:", error);
+        return null;
+    }
+};
