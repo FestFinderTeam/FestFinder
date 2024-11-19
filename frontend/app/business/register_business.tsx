@@ -106,7 +106,9 @@ const register_business = () => {
         const newErrors = { ...errors };
         Object.keys(formData).forEach((field) => {
             const key = field as keyof FormData;
-            const value = formData[key].trim();
+
+			console.log()
+            const value = formData[key].toString().trim();
 
             if (!value) {
                 // Campo vacío
