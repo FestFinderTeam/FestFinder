@@ -33,6 +33,7 @@ import GoogleMap from "@/components/GoogleMap";
 import { getDireccion } from "@/utils/Direccion";
 
 const image_default = require("../../assets/images/default_image.png");
+const bannerDefault = require("../../assets/images/defaultBanner.jpg");
 
 interface Horario {
     inicio_atencion: string;
@@ -410,7 +411,7 @@ const MyPlace = () => {
 
             <ScrollView>
                 <ImageBackground
-                    source={{ uri: establecimiento?.banner }}
+                    source={bannerNuevo || (establecimiento?.banner && {uri: establecimiento.banner}) || bannerDefault}
                     style={[Styles.imageBanner, { position: "relative" }]}
                 >
                     <Pressable onPress={router.back}>
@@ -449,7 +450,7 @@ const MyPlace = () => {
                     </Pressable>
                 </ImageBackground>
                 <ImageBackground
-                    source={logo ? { uri: logo } : image_default}
+                    source={logo ? {uri:logo} : image_default}
                     style={[
                         styles.redondoImg,
                         styles.contenedorIMG,
