@@ -19,4 +19,4 @@ class EventoSerializer(serializers.ModelSerializer):
                   'id_establecimiento', 'id_establecimiento_detail',  # Mostramos tanto el ID como el detalle
                   'fecha_final', 'horario_inicio', 'horario_fin', 
                   'id_genero_fk', 'id_genero_fk_detail',  # Mostramos tanto el ID como el detalle
-                  'precio_min', 'precio_max']
+                  'precio_min', 'precio_max', 'interesados']

@@ -15,6 +15,7 @@ class Evento(models.Model):
     id_genero_fk = models.ForeignKey(GeneroEvento, on_delete=models.CASCADE)
     precio_min = models.DecimalField(max_digits=10, decimal_places=2)
     precio_max = models.DecimalField(max_digits=10, decimal_places=2)
+    interesados = models.IntegerField(default=0)
 
     
 
