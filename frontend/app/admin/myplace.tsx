@@ -28,6 +28,9 @@ import { useSafeAreaFrame } from "react-native-safe-area-context";
 import { getEstablecimientoPorPropietario } from "@/services/establecimientosServices";
 import { getCategorias } from "@/services/categoriasService";
 import { buscarEtiquetas } from "@/services/etiquetasService"; // Importa la función de buscarEtiquetas
+import type { LatLng } from "react-native-maps";
+import GoogleMap from "@/components/GoogleMap";
+import { getDireccion } from "@/utils/Direccion";
 
 const image_default = require("../../assets/images/default_image.png");
 
@@ -73,8 +76,12 @@ type Establecimiento = {
 
 const MyPlace = () => {
     const API_URL = process.env.EXPO_PUBLIC_API_URL;
+    const [location, setLocation] = useState<LatLng | null>(null);
+    const [coordenada_x, setCoordenadaX] = useState<number>();
+    const [coordenada_y, setCoordenadaY] = useState<number>();
+    const [toggleMap, setToggleMap] = useState(false);
 
-    const { session} = useSession();
+    const { session } = useSession();
     const [establecimiento, setEstablecimiento] =
         useState<Establecimiento | null>(null);
     const [etiqueta, setEtiqueta] = useState("");
@@ -136,7 +143,6 @@ const MyPlace = () => {
 
     const [rango_de_precios, setRango] = useState("");
     const dataRango = ["Bajo", "Medio", "Alto"];
-    const [location, setLocation] = useState({ longitude: 0, latitude: 0 });
 
     useEffect(() => {
         const fetchCategorias = async () => {
@@ -154,41 +160,40 @@ const MyPlace = () => {
 
         fetchCategorias();
     }, [tipo_fk]); // Actualizamos cada vez que tipo_fk cambie
-    
-    
-    const handleTagInputChange = async (texto: string) => {
-        setEtiqueta(texto.toLowerCase());  // Actualizar el valor del input
-      
-        if (texto.length >= 0) {  // Realizar la búsqueda solo si el texto tiene más de 3 caracteres
-          try {
-            const etiquetasEncontradas = await buscarEtiquetas(texto);
-            
-            // Si no se encuentra ninguna etiqueta, muestra un guion
-            if (etiquetasEncontradas.length === 0) {
-              setSugerenciasEtiquetas(["-"]);  // Mostrar guion si no hay etiquetas
-            } else {
-              setSugerenciasEtiquetas(etiquetasEncontradas);
-            }
-          } catch (error) {
-            console.error("Error al buscar etiquetas:", error);
-            setSugerenciasEtiquetas(["-"]);  // Mostrar guion en caso de error
-          }
-        } else {
-          setSugerenciasEtiquetas(["-"]);  // Limpiar las sugerencias si el texto es corto
-        }
-      };
 
+    const handleTagInputChange = async (texto: string) => {
+        setEtiqueta(texto.toLowerCase()); // Actualizar el valor del input
+
+        if (texto.length >= 0) {
+            // Realizar la búsqueda solo si el texto tiene más de 3 caracteres
+            try {
+                const etiquetasEncontradas = await buscarEtiquetas(texto);
+
+                // Si no se encuentra ninguna etiqueta, muestra un guion
+                if (etiquetasEncontradas.length === 0) {
+                    setSugerenciasEtiquetas(["-"]); // Mostrar guion si no hay etiquetas
+                } else {
+                    setSugerenciasEtiquetas(etiquetasEncontradas);
+                }
+            } catch (error) {
+                console.error("Error al buscar etiquetas:", error);
+                setSugerenciasEtiquetas(["-"]); // Mostrar guion en caso de error
+            }
+        } else {
+            setSugerenciasEtiquetas(["-"]); // Limpiar las sugerencias si el texto es corto
+        }
+    };
 
     const addEtiqueta = () => {
         if (!etiqueta) {
-          return;
+            return;
         }
         console.log(etiqueta);
         setEtiqueta("");
         console.log(etiquetas);
         setEtiquetas([...etiquetas, etiqueta]);
     };
-    
+
     const removeEtiqueta = (tag: string) => {
         const newTags = etiquetas.filter((t) => t !== tag);
         setEtiquetas(newTags);
@@ -196,10 +201,13 @@ const MyPlace = () => {
 
     useEffect(() => {
         const fetchEstablecimiento = async () => {
-            const propietarioId = session?.id_usuario
+            const propietarioId = session?.id_usuario;
             const data = await getEstablecimientoPorPropietario(propietarioId);
+            console.log(data.coordenada_x,data.coordenada_y)
             
             if (data) {
+                setLocation({latitude:Number(data.coordenada_y),longitude:Number(data.coordenada_x)});
+
                 setEstablecimiento(data);
                 setBanner(data.banner);
                 setLogo(data.logo);
@@ -208,25 +216,48 @@ const MyPlace = () => {
                 setSelectedBusiness(data.tipo_fk_detail.id);
                 setDireccion(data.direccion);
                 setValoracion(8);
-                setEtiquetas(data.etiquetas.map((etiqueta: any) => etiqueta.texto_etiqueta));
+                setEtiquetas(
+                    data.etiquetas.map(
+                        (etiqueta: any) => etiqueta.texto_etiqueta
+                    )
+                );
                 setHorarioAtencion(data.horarios);
                 setFotos(data.fotos || []);
                 setRango(data.rango_de_precios);
 
                 const isOpenToday = () => {
                     const today = getDay(new Date());
-                    const atencionToday = data.horarios.find((horario: any) => horario.dia === today);
-                    
-                    if (!atencionToday || !atencionToday.inicio_atencion || !atencionToday.fin_atencion) return false;
-                    
-                    const inicio_atencion = moment(atencionToday.inicio_atencion, "HH:mm");
-                    const fin_atencion = moment(atencionToday.fin_atencion, "HH:mm");
+                    const atencionToday = data.horarios.find(
+                        (horario: any) => horario.dia === today
+                    );
+
+                    if (
+                        !atencionToday ||
+                        !atencionToday.inicio_atencion ||
+                        !atencionToday.fin_atencion
+                    )
+                        return false;
+
+                    const inicio_atencion = moment(
+                        atencionToday.inicio_atencion,
+                        "HH:mm"
+                    );
+                    const fin_atencion = moment(
+                        atencionToday.fin_atencion,
+                        "HH:mm"
+                    );
                     const current = moment();
 
                     if (fin_atencion.isBefore(inicio_atencion)) {
                         return (
-                            current.isBetween(inicio_atencion, moment("23:59:59", "HH:mm")) ||
-                            current.isBetween(moment("00:00", "HH:mm"), fin_atencion)
+                            current.isBetween(
+                                inicio_atencion,
+                                moment("23:59:59", "HH:mm")
+                            ) ||
+                            current.isBetween(
+                                moment("00:00", "HH:mm"),
+                                fin_atencion
+                            )
                         );
                     }
 
@@ -271,71 +302,115 @@ const MyPlace = () => {
     };
 
     const handleSubmit = async () => {
-        if(establecimiento){
+        if (establecimiento) {
             try {
                 const formData = new FormData();
 
-                console.log('preaprandose');
-                
+                console.log("preaprandose");
+
                 // Agregar campos de texto
-                formData.append("nombre", nombre+'');
-                formData.append("direccion", direccion+'');
+                formData.append("nombre", nombre + "");
+                formData.append("direccion", direccion + "");
                 formData.append("tipo_fk", tipo_fk);
                 formData.append("rango_de_precios", rango_de_precios);
                 //formData.append("nro_ref", nro_ref+'');  // Falta campo
                 //formData.append("em_ref", em_ref+'');
-        
-                // Agregar coordenadas 
+
+                // Agregar coordenadas
                 //formData.append("coordenada_x", location.latitude);
                 //formData.append("coordenada_y", location.longitude);      Esta como texto xd
-        
+
                 // Agregar las imágenes si están presentes
-                console.log('datos inciales');
+                console.log("datos inciales");
                 if (bannerNuevo) {
                     formData.append("banner", getImage(bannerNuevo));
                 }
                 if (logoNuevo) {
                     formData.append("logo", getImage(logoNuevo));
                 }
-                console.log('falta etiqutas')
+                console.log("falta etiqutas");
                 // Agregar etiquetas si las tienes
                 formData.append("etiquetas", JSON.stringify(etiquetas));
 
-                console.log('enviable');
-        
+                console.log("enviable");
+
                 // Llamar a la API para actualizar el establecimiento
-                const response = await fetch(`${API_URL}/api/establecimiento/modificar/${establecimiento.id}/`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                    body: formData,
-                });
-        
+                const response = await fetch(
+                    `${API_URL}/api/establecimiento/modificar/${establecimiento.id}/`,
+                    {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                        body: formData,
+                    }
+                );
+
                 if (!response.ok) {
                     throw new Error("Error al modificar el establecimiento");
                 }
-        
+
                 const data = await response.json();
                 console.log("Establecimiento actualizado:", data);
-                Alert.alert("Éxito", "Establecimiento actualizado correctamente");
-        
+                Alert.alert(
+                    "Éxito",
+                    "Establecimiento actualizado correctamente"
+                );
+
                 // Realiza alguna acción con la respuesta, como redirigir o actualizar el estado
             } catch (error) {
                 console.error("Error al actualizar el establecimiento:", error);
-                Alert.alert("Error", "No se pudo actualizar el establecimiento");
+                Alert.alert(
+                    "Error",
+                    "No se pudo actualizar el establecimiento"
+                );
             }
-        }else{
+        } else {
             alert("Establecimiento no recuperado. Intente nuevamente");
-        }  
+        }
     };
 
     return (
         <View>
+            {toggleMap && (
+                <View
+                    style={{
+                        position: "absolute",
+                        width: "100%",
+                        height: "100%",
+                        top: 0,
+                        zIndex: 10,
+                        flex: 1,
+                    }}
+                >
+                    <GoogleMap
+                        selectedLocation={location}
+                        setSelectedLocation={setLocation}
+                        onPressConfirmLocation={async () => {
+                            setToggleMap(false);
+                            if (location) {
+                                setCoordenadaX(
+                                    Number(location.longitude.toFixed(8))
+                                );
+                                setCoordenadaY(
+                                    Number(location.latitude.toFixed(8))
+                                );
+
+                                const direccion = await getDireccion(
+                                    location.latitude,
+                                    location.longitude
+                                );
+                                setDireccion(direccion);
+                            }
+                        }}
+                    />
+                </View>
+            )}
             <Notch />
+
             <ScrollView>
                 <ImageBackground
-                    source={{uri:establecimiento?.banner}}
+                    source={{ uri: establecimiento?.banner }}
                     style={[Styles.imageBanner, { position: "relative" }]}
                 >
                     <Pressable onPress={router.back}>
@@ -368,12 +443,13 @@ const MyPlace = () => {
                         onPress={() => pickImage(setBannerNuevo, [16, 9])}
                     >
                         <FontAwesome name="camera" color={"white"} size={20} />
-                        <Text style={{ color: "white", marginLeft: 5 }}>Cambiar Portada</Text>
+                        <Text style={{ color: "white", marginLeft: 5 }}>
+                            Cambiar Portada
+                        </Text>
                     </Pressable>
-
                 </ImageBackground>
                 <ImageBackground
-                    source={logo ? {uri:logo} : image_default}
+                    source={logo ? { uri: logo } : image_default}
                     style={[
                         styles.redondoImg,
                         styles.contenedorIMG,
@@ -382,7 +458,7 @@ const MyPlace = () => {
                             width: 120,
                             height: 120,
                             borderRadius: 75,
-                            overflow: 'hidden',
+                            overflow: "hidden",
                         },
                     ]}
                 >
@@ -390,15 +466,15 @@ const MyPlace = () => {
                         style={[
                             styles.changeImage,
                             {
-                                position: 'absolute',
+                                position: "absolute",
                                 bottom: 10,
                                 right: 10,
                                 backgroundColor: "#402158",
                                 borderRadius: 50,
                                 width: 40,
                                 height: 40,
-                                justifyContent: 'center',
-                                alignItems: 'center',
+                                justifyContent: "center",
+                                alignItems: "center",
                             },
                         ]}
                         onPress={() => pickImage(setLogoNuevo, [1, 1])}
@@ -407,24 +483,35 @@ const MyPlace = () => {
                     </Pressable>
                 </ImageBackground>
 
-                <View style={{ top: -70, marginTop: "10%", }}>
+                <View style={{ top: -70, marginTop: "10%" }}>
                     <View>
-                        <Text style={{ color: "#402158", marginLeft: "5%" }}>Nombre del Local</Text>
+                        <Text style={{ color: "#402158", marginLeft: "5%" }}>
+                            Nombre del Local
+                        </Text>
                         <View style={{ alignItems: "center", marginTop: "2%" }}>
                             <TextInput
-                                style={[Styles.input, { width: "90%", fontWeight: 'bold', fontFamily: 'Poppins' }]}
+                                style={[
+                                    Styles.input,
+                                    {
+                                        width: "90%",
+                                        fontWeight: "bold",
+                                        fontFamily: "Poppins",
+                                    },
+                                ]}
                                 value={nombre}
                                 onChangeText={(text) => setNombre(text)}
                             />
                         </View>
-                        <Text style={{ color: "#402158", marginLeft: "5%" }}>Tipo de negocio</Text>
+                        <Text style={{ color: "#402158", marginLeft: "5%" }}>
+                            Tipo de negocio
+                        </Text>
                         <View style={{ alignItems: "center", marginTop: "2%" }}>
                             <SelectList
                                 setSelected={setSelectedBusiness}
                                 data={dataTypesBusiness}
                                 save="key"
                                 searchPlaceholder="Buscar"
-                                placeholder= "Tipo de negocio"
+                                placeholder="Tipo de negocio"
                                 boxStyles={{
                                     ...Styles.input,
                                     width: "90%",
@@ -434,38 +521,66 @@ const MyPlace = () => {
                                     width: "90%",
                                 }}
                                 inputStyles={{
-                                    fontWeight: 'bold',
-                                    fontFamily: 'Poppins',
+                                    fontWeight: "bold",
+                                    fontFamily: "Poppins",
                                 }}
                                 defaultOption={dataTypesBusiness.find(
                                     (item) => item.key == tipo_fk,
-                                    console.log(tipo_fk+"")
+                                    console.log(tipo_fk + "")
                                 )}
                             />
                         </View>
+                        <Text style={{ color: "#402158", marginLeft: "5%" }}>
+                            Ubicacion del local
+                        </Text>
 
-                        <Text style={{ color: "#402158", marginLeft: "5%" }}>Ubicacion del local</Text>
                         <Pressable
                             onPress={() => {
-                                Alert.alert("selecciona la ubicacion");
+                                setToggleMap(true);
                             }}
+                            style={[
+                                Styles.input,
+                                { marginLeft: "5%", width: "90%" },
+                            ]}
                         >
-                            <View style={{ alignItems: "center", marginTop: "2%" }}>
-                                <TextInput
-                                    style={[Styles.input, { width: "90%", fontWeight: 'bold', fontFamily: 'Poppins' }]}
-                                    value={direccion+''} 
-                                    onChangeText={(text) => setUbicacion(text)}
-                                />
-                            </View>
+                            <Text
+                                style={{
+                                    color: "#402158",
+                                    paddingTop: 2,
+                                    paddingBottom: 2,
+                                    fontWeight: "bold",
+                                    fontFamily: "Poppins",
+                                }}
+                            >
+                                {location
+                                    ? `Cambiar Ubicacion de ${direccion}` || ""
+                                    : "Seleccionar ubicación"}
+                            </Text>
                         </Pressable>
-                        <Text style={{ color: "#402158", marginLeft: "5%" }}>Etiquetas</Text>
+
+                        <Text style={{ color: "#402158", marginLeft: "5%" }}>
+                            Etiquetas
+                        </Text>
                         <View style={{ alignItems: "center", marginTop: "2%" }}>
-                            <View style={{ flexDirection: "row", alignItems: "center", width: "90%" }}>
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    width: "90%",
+                                }}
+                            >
                                 <TextInput
                                     value={etiqueta}
                                     onChangeText={handleTagInputChange}
                                     placeholder="Etiquetas"
-                                    style={[Styles.input, { width: "90%", fontWeight: 'bold', fontFamily: 'Poppins' }]}
+                                    style={[
+                                        Styles.input,
+                                        {
+                                            width: "90%",
+                                            fontWeight: "bold",
+                                            fontFamily: "Poppins",
+                                        },
+                                    ]}
                                 />
                                 <Pressable
                                     onPress={() => addEtiqueta}
@@ -475,7 +590,6 @@ const MyPlace = () => {
                                         paddingHorizontal: 12,
                                         paddingVertical: 8,
                                         marginLeft: 8,
-
                                     }}
                                 >
                                     <FontAwesome name="plus" color={"white"} />
@@ -483,21 +597,37 @@ const MyPlace = () => {
                             </View>
 
                             {/* Mostrar sugerencias solo si hay más de 2 caracteres y resultados */}
-                            {etiqueta.length >= 2 && sugerenciasEtiquetas.length > 0 && (
-                                <View style={styles.suggestionsContainer}>
-                                    {sugerenciasEtiquetas.map((etiqueta, index) => (
-                                        <Pressable
-                                            key={index}
-                                            onPress={() => addEtiqueta}  // Agregar la etiqueta al estado
-                                            style={styles.suggestionItem}
-                                        >
-                                            <Text>{etiqueta.texto_etiqueta}</Text>
-                                        </Pressable>
-                                    ))}
-                                </View>
-                            )}
+                            {etiqueta.length >= 2 &&
+                                sugerenciasEtiquetas.length > 0 && (
+                                    <View style={styles.suggestionsContainer}>
+                                        {sugerenciasEtiquetas.map(
+                                            (etiqueta, index) => (
+                                                <Pressable
+                                                    key={index}
+                                                    onPress={() => addEtiqueta} // Agregar la etiqueta al estado
+                                                    style={
+                                                        styles.suggestionItem
+                                                    }
+                                                >
+                                                    <Text>
+                                                        {
+                                                            etiqueta.texto_etiqueta
+                                                        }
+                                                    </Text>
+                                                </Pressable>
+                                            )
+                                        )}
+                                    </View>
+                                )}
                         </View>
-                        <View style={{ flexDirection: "row", flexWrap: "wrap", width: "100%", justifyContent: "center" }}>
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                flexWrap: "wrap",
+                                width: "100%",
+                                justifyContent: "center",
+                            }}
+                        >
                             {etiquetas.map((etiqueta, index) => (
                                 <View
                                     key={index}
@@ -507,7 +637,8 @@ const MyPlace = () => {
                                         justifyContent: "space-between",
                                         width: "40%",
                                         marginBottom: "1.5%",
-                                        backgroundColor: "rgba(235, 182, 255, 0.5)",
+                                        backgroundColor:
+                                            "rgba(235, 182, 255, 0.5)",
                                         borderRadius: 10,
                                         paddingHorizontal: 8,
                                         paddingVertical: 3,
@@ -526,18 +657,40 @@ const MyPlace = () => {
                                     </Text>
                                     <Pressable
                                         onPress={() => {
-                                            setEtiquetas(etiquetas.filter((_, i) => i !== index));
+                                            setEtiquetas(
+                                                etiquetas.filter(
+                                                    (_, i) => i !== index
+                                                )
+                                            );
                                         }}
                                     >
-                                        <FontAwesome name="minus" color="black" />
+                                        <FontAwesome
+                                            name="minus"
+                                            color="black"
+                                        />
                                     </Pressable>
                                 </View>
                             ))}
                         </View>
                     </View>
 
-                    <Text style={{ color: "#402158", marginLeft: "5%", marginTop: "4%" }}>Rango de precio</Text>
-                    <View style={{ flexDirection: "row", justifyContent: "center", flexWrap: "wrap", marginTop: 10 }}>
+                    <Text
+                        style={{
+                            color: "#402158",
+                            marginLeft: "5%",
+                            marginTop: "4%",
+                        }}
+                    >
+                        Rango de precio
+                    </Text>
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            justifyContent: "center",
+                            flexWrap: "wrap",
+                            marginTop: 10,
+                        }}
+                    >
                         {dataRango.map((value, index) => (
                             <Pressable
                                 key={index}
@@ -550,9 +703,15 @@ const MyPlace = () => {
                                         paddingHorizontal: 20,
                                         margin: 5,
                                         borderRadius: 25,
-                                        backgroundColor: value === rango_de_precios ? "#7D5683" : "#f1dff5",
+                                        backgroundColor:
+                                            value === rango_de_precios
+                                                ? "#7D5683"
+                                                : "#f1dff5",
                                         borderWidth: 2,
-                                        borderColor: value === rango_de_precios ? "#7D5683" : "#B197FC",
+                                        borderColor:
+                                            value === rango_de_precios
+                                                ? "#7D5683"
+                                                : "#B197FC",
                                         flexDirection: "row",
                                         alignItems: "center",
                                         justifyContent: "center",
@@ -562,19 +721,26 @@ const MyPlace = () => {
                                         shadowOpacity: 0.1,
                                         shadowRadius: 4,
                                     },
-                                    value == rango_de_precios && { backgroundColor: "#7D5683" },
+                                    value == rango_de_precios && {
+                                        backgroundColor: "#7D5683",
+                                    },
                                 ]}
                             >
                                 <Text
                                     style={[
                                         {
-                                            color: value === rango_de_precios ? "#fff" : "#402158",
+                                            color:
+                                                value === rango_de_precios
+                                                    ? "#fff"
+                                                    : "#402158",
                                             fontFamily: "Poppins",
                                             fontWeight: "bold",
                                             fontSize: 14,
                                             marginRight: 5,
                                         },
-                                        value == rango_de_precios && { color: "#fff" },
+                                        value == rango_de_precios && {
+                                            color: "#fff",
+                                        },
                                     ]}
                                 >
                                     {value}
@@ -582,11 +748,16 @@ const MyPlace = () => {
                                 <Text
                                     style={[
                                         {
-                                            color: value === rango_de_precios ? "#fff" : "#402158",
+                                            color:
+                                                value === rango_de_precios
+                                                    ? "#fff"
+                                                    : "#402158",
                                             fontFamily: "Poppins",
                                             fontSize: 14,
                                         },
-                                        value === rango_de_precios && { color: "#fff" },
+                                        value === rango_de_precios && {
+                                            color: "#fff",
+                                        },
                                     ]}
                                 >
                                     {"$".repeat(index + 1)}
@@ -595,9 +766,16 @@ const MyPlace = () => {
                         ))}
                     </View>
 
-
                     <View>
-                        <Text style={{ color: "#402158", marginLeft: "5%", marginTop: "4%" }}>Horario de atencion</Text>
+                        <Text
+                            style={{
+                                color: "#402158",
+                                marginLeft: "5%",
+                                marginTop: "4%",
+                            }}
+                        >
+                            Horario de atencion
+                        </Text>
                         {horarioAtencion.map((horario, index) => (
                             <View key={index} style={styles.scheduleContainer}>
                                 <Text style={styles.dayText}>
@@ -636,10 +814,10 @@ const MyPlace = () => {
                                                 <Text style={styles.timeText}>
                                                     {horariosInicio
                                                         ? dateToHHmm(
-                                                            horariosInicio[
-                                                            index
-                                                            ]
-                                                        )
+                                                              horariosInicio[
+                                                                  index
+                                                              ]
+                                                          )
                                                         : ""}
                                                 </Text>
                                             </Pressable>
@@ -656,8 +834,8 @@ const MyPlace = () => {
                                                 <Text style={styles.timeText}>
                                                     {horariosFin
                                                         ? dateToHHmm(
-                                                            horariosFin[index]
-                                                        )
+                                                              horariosFin[index]
+                                                          )
                                                         : ""}
                                                 </Text>
                                             </Pressable>
@@ -668,7 +846,15 @@ const MyPlace = () => {
                         ))}
                     </View>
 
-                    <Text style={{ color: "#402158", marginLeft: "5%", marginTop: "4%" }}>Fotos</Text>
+                    <Text
+                        style={{
+                            color: "#402158",
+                            marginLeft: "5%",
+                            marginTop: "4%",
+                        }}
+                    >
+                        Fotos
+                    </Text>
                     <FlatList
                         style={{ marginLeft: "3%" }}
                         data={[null, ...fotos]}
@@ -708,14 +894,14 @@ const MyPlace = () => {
                         keyExtractor={(item, index) => index.toString()}
                         horizontal
                     />
-                    <View style={{alignItems:"center"}}>
+                    <View style={{ alignItems: "center" }}>
                         <Pressable onPress={handleSubmit} style={Styles.button}>
-                            <Text style={{color:"white"}}>Actualizar</Text>
+                            <Text style={{ color: "white" }}>Actualizar</Text>
                         </Pressable>
                     </View>
                 </View>
             </ScrollView>
-        </View >
+        </View>
     );
 };
 
@@ -836,7 +1022,7 @@ const styles = StyleSheet.create({
         color: "#333",
     },
     suggestionsContainer: {
-        overflow: "scroll",  // desplazamiento si hay muchas sugerencias
+        overflow: "scroll", // desplazamiento si hay muchas sugerencias
         backgroundColor: "#fff",
         borderRadius: 4,
         marginTop: 5,
