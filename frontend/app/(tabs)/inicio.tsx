@@ -329,7 +329,7 @@ const inicio = () => {
 						width: "100%",
 					}}
 				>
-					<Text style={[styles.textoTitulo]}>
+					<Text style={[styles.textoTitulo, {marginBottom:"2%"}]}>
 						Eventos populares del mes
 					</Text>
 					<Pressable
