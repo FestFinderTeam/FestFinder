@@ -31,7 +31,7 @@ const EventItem = ({ item }: { item: any }) => {
         </View>
       </ImageBackground>
       <Text style={styles.genreText} numberOfLines={2}>
-        {item.id_genero_fk_detail.titulo_genero}
+        {item.nombre}
       </Text>
     </Pressable>
   );
