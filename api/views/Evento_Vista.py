@@ -111,19 +111,13 @@ class ListarEventosPorEstablecimiento(APIView):
         
         # Obtener la fecha de hoy (del servidor)
         fecha_hoy = date.today()
-        hora_actual = datetime.now().time()
-
+        
 
         # Filtrar eventos por el ID del establecimiento
         eventos = Evento.objects.filter(
-            id_establecimiento=id_establecimiento
-        ).filter(
-            # Condición para eventos que no han terminado:
-            # - Si la fecha final es posterior a hoy
-            # - O si la fecha final es hoy y la hora final no ha pasado
-            Q(fecha_final__gt=fecha_hoy) |
-            Q(fecha_final=fecha_hoy, horario_fin__gte=hora_actual)
-        )
+            id_establecimiento=id_establecimiento,
+            fecha_final__gte=fecha_hoy
+            )
         
         # Serializar los eventos encontrados
         serializer = EventoSerializer(eventos, many=True)

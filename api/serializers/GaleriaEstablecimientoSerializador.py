@@ -6,4 +6,4 @@ from ..models import  GaleriaEstablecimiento
 class GaleriaEstablecimientoSerializer(serializers.ModelSerializer):
     class Meta:
         model = GaleriaEstablecimiento
-        fields = ['establecimiento', 'imagen']
+        fields = ['id', 'establecimiento', 'imagen', 'fecha_subida']
