@@ -26,7 +26,7 @@ const Styles = StyleSheet.create({
         borderWidth: 3,
         borderRadius: 10,
         padding: 10,
-        marginBottom: 12,
+        marginBottom: 3,
         width: "80%",
     },
     inputDropDown: {
