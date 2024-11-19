@@ -293,7 +293,10 @@ const MyPlace = () => {
         if (establecimiento) {
             try {
                 const formData = new FormData();
-
+                const formImagenes = new FormData()
+                nuevasFotos.forEach((foto) => {
+                    formImagenes.append("fotos_nuevas", getImage(foto));
+                });
                 console.log("preaprandose");
 
                 // Agregar campos de texto
@@ -304,9 +307,6 @@ const MyPlace = () => {
                 //formData.append("nro_ref", nro_ref+'');  // Falta campo
                 //formData.append("em_ref", em_ref+'');
 
-                nuevasFotos.forEach((foto) => {
-                    formData.append("fotos_nuevas", getImage(foto));
-                });
 
                 // Agregar coordenadas
                 if (location) {
