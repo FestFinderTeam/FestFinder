@@ -14,6 +14,7 @@ export type EventoType = {
     direccion?: number
     fecha_inicio?: any
     puntuacion?: string;
+    horario_inicio: any;
 };
 interface Props {
     evento: EventoType;
@@ -72,7 +73,7 @@ const Evento = ({ evento }: Props) => {
                             }}
                         >
                             <FontAwesome name="clock-o" color={"yellow"} />
-                            {" " + evento.horario_fin}
+                            {" " + evento.horario_inicio}
                         </Text>
                     </View>
                 </ImageBackground>
