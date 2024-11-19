@@ -36,7 +36,7 @@ const Establecimiento = ({ establecimiento }: Props) => {
 					</Text>
 					<Text style={styles.puntuacion}>
 						<FontAwesome name="star" color="orange" />
-						{` ${establecimiento.score ?? 0} / 10`}
+						{` ${establecimiento.score ?? 0} / 5`}
 					</Text>
 					<Text style={styles.puntuacion}>
 						<FontAwesome name="circle" color="purple" />

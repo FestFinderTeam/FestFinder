@@ -86,6 +86,27 @@ const Evento = () => {
 			/>
 		));
 	};
+	const handleCalificar = () => {
+        const data = {
+            interesado,
+            puntuacion,
+        };
+		//ACA TU FERTCH
+        fetch("https://api.example.com/calificar-evento", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        })
+            .then((response) => response.json())
+            .then((result) => {
+                alert("¡Calificación enviada con éxito!");
+            })
+            .catch((error) => {
+                alert("Hubo un problema al enviar la calificación.");
+            });
+    };
 
 	if (!evento || !local)
 		return (
@@ -176,7 +197,7 @@ const Evento = () => {
 				>
 					<FontAwesome name="circle" style={{ color: "#402158" }} />
 					<Text style={{ color: "#402158", marginLeft: 5 }}>
-						{evento.direccion}
+						{evento.id_establecimiento_detail.direccion}
 					</Text>
 				</View>
 
@@ -418,10 +439,8 @@ const Evento = () => {
 						alignItems: "center",
 					}}
 				>
-					<Pressable style={Styles.button}>
-						<Link href={`https://wa.me/${local?.telefono}`}>
-							<Text style={Styles.buttonText}>Contacto</Text>
-						</Link>
+					<Pressable style={Styles.button} onPress={handleCalificar}>
+						<Text style={Styles.buttonText}>Calificar</Text>
 					</Pressable>
 				</View>
 				<View

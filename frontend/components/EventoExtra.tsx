@@ -11,7 +11,7 @@ interface Props {
 
 const EventoExtra = ({ evento }: Props) => {
 	return (
-		<Link href={("/places/" + evento.id_evento) as Href} style={styles.link}>
+		<Link href={("/eventos/" + evento.id_evento) as Href} style={styles.link}>
 			<View style={styles.container}>
 				<ImageBackground
 					resizeMode="cover"
@@ -22,14 +22,18 @@ const EventoExtra = ({ evento }: Props) => {
 					<Text style={styles.nombre}>{evento.nombre}</Text>
 					<Text style={styles.puntuacion}>
 						<FontAwesome name="star" color="orange" />
-						{` ${evento.puntuacion ?? 0} / 10`}
+						{` ${evento.puntuacion ?? 0} / 5`}
 					</Text>
 
 					<Text style={styles.tipo}>{evento.fecha_final}</Text>
 					<Text style={styles.puntuacion}>
 						<FontAwesome name="circle" color="purple" />
-						{" " + evento.direccion}
+						{" " +
+							(evento.id_establecimiento_detail.nombre.length > 30
+								? evento.id_establecimiento_detail.nombre.slice(0, 30) + "..."
+								: evento.id_establecimiento_detail.nombre)}
 					</Text>
+
 				</View>
 			</View>
 		</Link>

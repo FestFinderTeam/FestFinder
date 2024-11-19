@@ -14,7 +14,6 @@ export type EventoType = {
     direccion?: number
     fecha_inicio?: any
     puntuacion?: string;
-    id_establecimiento_detail: any
 };
 interface Props {
     evento: EventoType;
@@ -28,7 +27,7 @@ const Evento = ({ evento }: Props) => {
         >
             <View
                 style={{
-                    alignItems: "center", 
+                    alignItems: "center", // Centra todo el contenido
                     width: 150,
                 }}
             >
@@ -40,38 +39,44 @@ const Evento = ({ evento }: Props) => {
                         height: 200,
                         borderRadius: 10,
                         overflow: "hidden",
-                        alignItems: "flex-end",
+                        justifyContent: "space-between", // Asegura que el contenido se distribuya correctamente
                     }}
                 >
                     <View
                         style={{
-                            position: "absolute", 
-                            top: 5, 
-                            right: 5, 
-                            backgroundColor: "white",
+                            width: "35%",
+                            alignItems: "center",
                             padding: 3,
                             borderRadius: 10,
-                            alignItems:"center",
-                            width: "35%", 
+                            marginTop: 5,
+                            marginRight: 5,
+                        }}
+                    >
+                    </View>
+                    <View
+                        style={{
+                            justifyContent: "flex-end",
+                            alignItems: "center",
+                            paddingBottom: 10,
                         }}
                     >
                         <Text
                             style={{
-                                fontSize: 24,
-                                fontWeight: "bold",
+                                color: "white",
+                                textAlign: "center",
+                                backgroundColor: "black",
+                                borderRadius: 10,
+                                paddingVertical: 10,
+                                paddingHorizontal: 20,
+                                fontSize: 15,
                             }}
                         >
-                            {new Date(evento.fecha_inicio).toLocaleDateString("es-ES", {
-                                day: "numeric",
-                            })}
-                        </Text>
-                        <Text style={{ fontSize: 12 }}>
-                            {new Date(evento.fecha_inicio).toLocaleDateString("es-ES", {
-                                month: "short",
-                            })}
+                            <FontAwesome name="clock-o" color={"yellow"} />
+                            {" " + evento.horario_fin}
                         </Text>
                     </View>
                 </ImageBackground>
+
                 <Text
                     style={{
                         color: "black",
@@ -84,6 +89,7 @@ const Evento = ({ evento }: Props) => {
                 >
                     {evento.nombre.length > 32 ? evento.nombre.slice(0, 32) + "..." : evento.nombre}
                 </Text>
+
             </View>
         </Link>
     );
