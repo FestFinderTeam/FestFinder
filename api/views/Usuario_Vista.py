@@ -42,14 +42,14 @@ class LoginUsuario(APIView):
     def post(self, request, *args, **kwargs):
         email = request.data.get('email')
         password = request.data.get('password')
-        g_p = request.data.get('g_id', "")  # Obtener g_id
+        g_p = request.data.get('g_id')  # Obtener g_id
 
         # Caso 1: Si es con Google
         if g_p:
             logger.info("Caso: Google ID login")  
             try:
                 user = Usuario.objects.get(email=email)
-                if check_password (g_p, user.g_id):
+                if (g_p == user.g_id):
                     logger.info(f"Usuario encontrado")
                     serializer = UsuarioSerializer(user)
                     return Response(serializer.data, status=status.HTTP_200_OK)
