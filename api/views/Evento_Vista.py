@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from ..models import Evento
 from ..serializers import EventoSerializer
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.db.models import Q
 
@@ -108,8 +108,22 @@ class ObtenerEventoPorID(APIView):
 
 class ListarEventosPorEstablecimiento(APIView):
     def get(self, request, id_establecimiento, *args, **kwargs):
+        
+        # Obtener la fecha de hoy (del servidor)
+        fecha_hoy = date.today()
+        hora_actual = datetime.now().time()
+
+
         # Filtrar eventos por el ID del establecimiento
-        eventos = Evento.objects.filter(id_establecimiento=id_establecimiento)
+        eventos = Evento.objects.filter(
+            id_establecimiento=id_establecimiento
+        ).filter(
+            # Condición para eventos que no han terminado:
+            # - Si la fecha final es posterior a hoy
+            # - O si la fecha final es hoy y la hora final no ha pasado
+            Q(fecha_final__gt=fecha_hoy) |
+            Q(fecha_final=fecha_hoy, horario_fin__gte=hora_actual)
+        )
         
         # Serializar los eventos encontrados
         serializer = EventoSerializer(eventos, many=True)
