@@ -199,11 +199,11 @@ const inicio = () => {
 							mode="outlined"
 							onPress={() => handleCategoryPress(item.id + "")}
 							style={{
-								backgroundColor: selectedCategory === item.id + "" ? "#7D5683" : "#FFF",
+								backgroundColor: selectedCategory === item.id + "" ? "#402158" : "#FFF",
 								borderColor: "#7D5683",
 							}}
 							labelStyle={{
-								color: selectedCategory === item.id + "" ? "#FFF" : "#7D5683",
+								color: selectedCategory === item.id + "" ? "#FFF" : "#402158",
 							}}
 						>
 							{item.nombre_tipo}
