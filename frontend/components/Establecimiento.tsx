@@ -43,6 +43,8 @@ const Establecimiento = ({ establecimiento }: Props) => {
                             color: "white",
                             fontFamily: "Poppins-Regular",
                             textAlign: "center",
+                            backgroundColor:"black",
+                            borderRadius:5,
                         }}
                     >
                         {establecimiento.nombre}
