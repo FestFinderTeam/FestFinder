@@ -450,8 +450,7 @@ const MyPlace = () => {
                     </Pressable>
                 </ImageBackground>
                 <ImageBackground
-                
-                    source={logoNuevo || (establecimiento?.logo && {uri: establecimiento.logo}) || image_default}
+                    source={logo ? {uri:logo} : image_default}
                     style={[
                         styles.redondoImg,
                         styles.contenedorIMG,
