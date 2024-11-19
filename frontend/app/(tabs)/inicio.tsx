@@ -187,7 +187,7 @@ const inicio = () => {
 					)}
 				/>
 
-				<Text style={[styles.textoTitulo, { marginTop: "5%" }]}>
+				<Text style={[styles.textoTitulo, { marginTop: "5%", marginBottom: "2%", }]}>
 					Eventos hoy
 				</Text>
 
@@ -258,6 +258,9 @@ const inicio = () => {
 									paddingHorizontal: 12,
 									marginTop: 8,
 								}}
+								onPress={() => {
+									router.navigate("/eventos/popular");
+								}}
 							>
 								<Text
 									style={{
@@ -300,7 +303,7 @@ const inicio = () => {
 									fontFamily: "Poppins-Regular",
 									fontSize: 14,
 									color: "#402158",
-									marginTop: 15,
+									
 								}}
 							>
 								Ver más &gt;
@@ -345,7 +348,7 @@ const inicio = () => {
 									fontFamily: "Poppins-Regular",
 									fontSize: 14,
 									color: "#402158",
-									marginTop: 15,
+									
 								}}
 							>
 								Ver más &gt;
