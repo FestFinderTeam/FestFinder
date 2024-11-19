@@ -8,16 +8,20 @@ import * as WebBrowser from "expo-web-browser";
 import { useSession } from "@/hooks/ctx";
 import { router } from "expo-router";
 import Styles from "../globalStyles/styles";
+import LoadingScreen from "./Loading";
 
 WebBrowser.maybeCompleteAuthSession();
 
 const LoginGoogle = () => {
     const { signIn } = useSession();
+    const [isLoading, setIsLoading] = useState(false);
 
     const signinGoogle = async () => {
         try {
             await GoogleSignin.hasPlayServices();
+
             const user = await GoogleSignin.signIn();
+            setIsLoading(true);
 
             // Loguearse con los datos de google para obtener los datos del backend
             // y si no se puede registrar esos datos
@@ -43,11 +47,14 @@ const LoginGoogle = () => {
                 signIn({ ...user, imagen_url: imagen ? imagen : photo });
                 router.replace("/");
             }
-
         } catch (e) {
             console.error(e);
+        } finally {
+            setIsLoading(false);
         }
     };
+
+    if (isLoading) return <LoadingScreen text="Iniciando sesion" />;
 
     return (
         <>
