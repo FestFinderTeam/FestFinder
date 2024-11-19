@@ -22,7 +22,7 @@ const buscar = () => {
         }
     };
     const fetchEventos = async () => {
-        const res = await getEventosDelMes();
+        const res = await getEventosDelMes('Cochabamba');
         setEventos(res);
     };
     useEffect(() => {
