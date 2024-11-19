@@ -22,7 +22,7 @@ const EventoExtra = ({ evento }: Props) => {
 					<Text style={styles.nombre}>{evento.nombre}</Text>
 					<Text style={styles.puntuacion}>
 						<FontAwesome name="star" color="orange" />
-						{` ${evento.puntuacion ?? 0} / 10`}
+						{` ${evento.puntuacion ?? 0} / 5`}
 					</Text>
 
 					<Text style={styles.tipo}>{evento.fecha_final}</Text>
