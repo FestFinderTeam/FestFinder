@@ -36,7 +36,7 @@ const Header = ({ setSearch, handleSearch, filtro, setFilter }: Props) => {
 
 			{/*Filtros*/}
 			<FlatList
-				data={["todo", "eventos", "locales"]}
+				data={["locales", "eventos",]}
 				keyExtractor={(item) => item}
 				horizontal
 				showsHorizontalScrollIndicator={false}
