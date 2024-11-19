@@ -62,6 +62,7 @@ const Mapa = () => {
 	return (
 		<View style={{ position: "relative" }}>
 			<GoogleMap
+				userLocation
 				establecimientos={establecimientos}
 				onMarkerPress={(establecimiento) => {
 					console.log(establecimiento);
