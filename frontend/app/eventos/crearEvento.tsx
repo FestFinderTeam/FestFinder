@@ -5,6 +5,7 @@ import {
     TextInput,
     View,
     ScrollView,
+    Alert
 } from "react-native";
 
 import { useEffect, useState } from "react";
@@ -101,7 +102,12 @@ const CrearEvento = () => {
         const result = await response.json();
         console.log("Establecimiento registrado:", result);
 
-        router.push('admin/eventos' as Href);
+        Alert.alert(
+            "Éxito",
+            "Establecimiento actualizado correctamente"
+        );
+
+        router.push("/inicio"); 
     };
 
     return (
