@@ -27,6 +27,7 @@ const inicio = () => {
 	const [selectedCity, setSelectedCity] = useState("Cochabamba");
 	const cities = ["Cochabamba", "Santa Cruz", "La Paz"];
 	const [refreshing, setRefreshing] = useState(false);
+	const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 	const handleCitySelect = (city: string) => {
 		setSelectedCity(city);
 		setModalVisible(false);
@@ -71,10 +72,8 @@ const inicio = () => {
 
 	const fetchEventosDelDia = async () => {
 		const eventos = await getEventosDelDia(selectedCity);
-		//console.log(eventos[0].id_evento);
 		setEventosDelDia(eventos);
 	};
-
 	const handleSubmitSearch = () => {
 		setOpenSearch(false);
 	};
@@ -87,19 +86,21 @@ const inicio = () => {
 	};
 
 	const handleCategoryPress = (tipoId: string | null) => {
+		setSelectedCategory(tipoId);
 		console.log(tipoId);
 		fetchEstablecimientos(tipoId, selectedCity);
 	};
 	const onRefresh = async () => {
-		setRefreshing(true); // Muestra el indicador de carga
+		setRefreshing(true); 
+		setSelectedCategory(null); 
 		await Promise.all([
 			fetchCategoriasEstablecimientos(),
 			fetchEventosDelMes(),
 			fetchEventosDelDia(),
 			fetchEstablecimientos(null, selectedCity),
 		]);
-		setRefreshing(false); // Oculta el indicador de carga
-	};
+		setRefreshing(false);
+	}
 
 	return (
 		<>
@@ -197,6 +198,13 @@ const inicio = () => {
 						<Button
 							mode="outlined"
 							onPress={() => handleCategoryPress(item.id + "")}
+							style={{
+								backgroundColor: selectedCategory === item.id + "" ? "#7D5683" : "#FFF",
+								borderColor: "#7D5683",
+							}}
+							labelStyle={{
+								color: selectedCategory === item.id + "" ? "#FFF" : "#7D5683",
+							}}
 						>
 							{item.nombre_tipo}
 						</Button>
