@@ -30,6 +30,7 @@ import { getCategorias } from "@/services/categoriasService";
 import { buscarEtiquetas } from "@/services/etiquetasService"; // Importa la función de buscarEtiquetas
 
 const image_default = require("../../assets/images/default_image.png");
+const bannerDefault = require("../../assets/images/defaultBanner.jpg");
 
 interface Horario {
     inicio_atencion: string;
@@ -335,7 +336,7 @@ const MyPlace = () => {
             <Notch />
             <ScrollView>
                 <ImageBackground
-                    source={{uri:establecimiento?.banner}}
+                    source={bannerNuevo || (establecimiento?.banner && {uri: establecimiento.banner}) || bannerDefault}
                     style={[Styles.imageBanner, { position: "relative" }]}
                 >
                     <Pressable onPress={router.back}>
@@ -373,7 +374,8 @@ const MyPlace = () => {
 
                 </ImageBackground>
                 <ImageBackground
-                    source={logo ? {uri:logo} : image_default}
+                
+                    source={logoNuevo || (establecimiento?.logo && {uri: establecimiento.logo}) || image_default}
                     style={[
                         styles.redondoImg,
                         styles.contenedorIMG,
