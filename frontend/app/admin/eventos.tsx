@@ -7,7 +7,7 @@ import { FlatList, ImageBackground, Pressable, Text, View } from "react-native";
 import type { Evento } from "./myplace";
 import Styles from "@/globalStyles/styles";
 import { getEventosDelMes } from "@/services/eventosService";
-import { getEventosPorEstablecimiento } from "@/services/establecimientosServices";
+import { getEventosMiEstablecimiento } from "@/services/establecimientosServices";
 
 const image_default = require("../../assets/images/default_image.png");
 
@@ -23,7 +23,7 @@ const eventos = () => {
 
     const fetchEventosDelLugar = async (establecimiento: string | null) => {
         try {
-            const eventos = await getEventosPorEstablecimiento(
+            const eventos = await getEventosMiEstablecimiento(
                 establecimiento || ""
             );
             console.log(eventos);

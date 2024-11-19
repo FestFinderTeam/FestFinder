@@ -97,6 +97,33 @@ export const getEventosPorEstablecimiento = async (
     }
 };
 
+export const getEventosMiEstablecimiento = async (
+    idEstablecimiento: string
+) => {
+    try {
+        const response = await fetch(
+            `${API_URL}/api/eventos/establecimiento/myplace/${idEstablecimiento}/`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+        if (!response.ok) {
+            const errorMessage = await response.text();
+            console.error(`Error al obtener mis eventos: ${response.status} - ${errorMessage}`);
+            return null;
+        }
+        const data = await response.json();
+        //console.log(data);
+        return data;
+    } catch (error) {
+        console.error("Error al obtener mis eventos:", error);
+        return null;
+    }
+};
+
 export const filtrarEstablecimientos = async (   
                                         nombre: string | null = null, 
                                         tipos: string[] | null = null, 
