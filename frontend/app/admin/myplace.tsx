@@ -104,6 +104,7 @@ const MyPlace = () => {
     const [horariosFin, setHorariosFin] = useState<Date[]>(
         Array(7).fill(new Date())
     );
+    const [nuevasFotos, setNuevasFotos] = useState<ImagePickerAsset[]>([]);
     const [horarioAtencion, setHorarioAtencion] = useState<HorarioAtencion[]>([
         {
             dia: 0,
@@ -185,14 +186,13 @@ const MyPlace = () => {
         }
     };
 
-
     const addEtiqueta = (etiqueta: any) => {
         if (!etiqueta) {
             return;
         }
-        setEtiquetas([...etiquetas, etiqueta.texto_etiqueta]);  // Agregar la etiqueta al estado
-        setEtiqueta("");  // Limpiar el campo de texto
-        setSugerenciasEtiquetas([]);  // Limpiar las sugerencias
+        setEtiquetas([...etiquetas, etiqueta.texto_etiqueta]); // Agregar la etiqueta al estado
+        setEtiqueta(""); // Limpiar el campo de texto
+        setSugerenciasEtiquetas([]); // Limpiar las sugerencias
     };
 
     const removeEtiqueta = (tag: string) => {
@@ -204,10 +204,13 @@ const MyPlace = () => {
         const fetchEstablecimiento = async () => {
             const propietarioId = session?.id_usuario;
             const data = await getEstablecimientoPorPropietario(propietarioId);
-            console.log(data.coordenada_x, data.coordenada_y)
+            console.log(data.coordenada_x, data.coordenada_y);
 
             if (data) {
-                setLocation({ latitude: Number(data.coordenada_y), longitude: Number(data.coordenada_x) });
+                setLocation({
+                    latitude: Number(data.coordenada_y),
+                    longitude: Number(data.coordenada_x),
+                });
 
                 setEstablecimiento(data);
                 setBanner(data.banner);
@@ -271,31 +274,15 @@ const MyPlace = () => {
         fetchEstablecimiento();
     }, [session]);
 
-    const guardarImagen = async (imagen: ImagePickerAsset) => {
-        //guardar en el servidor
-        const formData = new FormData();
-
-        if (imagen.uri) {
-            const imagenBlob = await fetch(imagen.uri).then((res) =>
-                res.blob()
-            );
-            formData.append("imagen", imagenBlob, "imagen.jpg");
-        }
-
-        //llamar al api para guardar la imagen
-
-        console.log("guardando imagen en el servidor");
-    };
-
     const getDay = (date: Date) => {
         const day = date.getDay();
         return day === 0 ? 6 : day - 1;
     };
 
-    const handleFoto = () => {
+    const newPhoto = () => {
         pickImage(
             (foto: ImagePickerAsset) => {
-                guardarImagen(foto);
+                setNuevasFotos([foto, ...fotos]);
                 setFotos([foto, ...fotos]);
             },
             [16, 9]
@@ -317,10 +304,20 @@ const MyPlace = () => {
                 //formData.append("nro_ref", nro_ref+'');  // Falta campo
                 //formData.append("em_ref", em_ref+'');
 
+                nuevasFotos.forEach((foto) => {
+                    formData.append("fotos_nuevas", getImage(foto));
+                });
+
                 // Agregar coordenadas
                 if (location) {
-                    formData.append("coordenada_x", location.longitude.toString());
-                    formData.append("coordenada_y", location.latitude.toString());
+                    formData.append(
+                        "coordenada_x",
+                        location.longitude.toString()
+                    );
+                    formData.append(
+                        "coordenada_y",
+                        location.latitude.toString()
+                    );
                 }
 
                 // Agregar las imágenes si están presentes
@@ -360,8 +357,7 @@ const MyPlace = () => {
                     "Establecimiento actualizado correctamente"
                 );
 
-                router.push("/inicio"); 
-
+                router.push("/inicio");
             } catch (error) {
                 console.error("Error al actualizar el establecimiento:", error);
                 Alert.alert(
@@ -414,7 +410,13 @@ const MyPlace = () => {
 
             <ScrollView>
                 <ImageBackground
-                    source={bannerNuevo || (establecimiento?.banner && { uri: establecimiento.banner }) || bannerDefault}
+                    source={
+                        bannerNuevo ||
+                        (establecimiento?.banner && {
+                            uri: establecimiento.banner,
+                        }) ||
+                        bannerDefault
+                    }
                     style={[Styles.imageBanner, { position: "relative" }]}
                 >
                     <Pressable onPress={router.back}>
@@ -586,23 +588,33 @@ const MyPlace = () => {
                                         },
                                     ]}
                                 />
-
                             </View>
 
                             {/* Mostrar sugerencias solo si hay más de 2 caracteres y resultados */}
-                            {etiqueta.length >= 2 && sugerenciasEtiquetas.length > 0 && (
-                                <View style={styles.suggestionsContainer}>
-                                    {sugerenciasEtiquetas.map((etiqueta, index) => (
-                                        <Pressable
-                                            key={index}
-                                            onPress={() => addEtiqueta(etiqueta)}  // Agregar la etiqueta al estado
-                                            style={styles.suggestionItem}
-                                        >
-                                            <Text>{etiqueta.texto_etiqueta}</Text>
-                                        </Pressable>
-                                    ))}
-                                </View>
-                            )}
+                            {etiqueta.length >= 2 &&
+                                sugerenciasEtiquetas.length > 0 && (
+                                    <View style={styles.suggestionsContainer}>
+                                        {sugerenciasEtiquetas.map(
+                                            (etiqueta, index) => (
+                                                <Pressable
+                                                    key={index}
+                                                    onPress={() =>
+                                                        addEtiqueta(etiqueta)
+                                                    } // Agregar la etiqueta al estado
+                                                    style={
+                                                        styles.suggestionItem
+                                                    }
+                                                >
+                                                    <Text>
+                                                        {
+                                                            etiqueta.texto_etiqueta
+                                                        }
+                                                    </Text>
+                                                </Pressable>
+                                            )
+                                        )}
+                                    </View>
+                                )}
                         </View>
                         <View
                             style={{
@@ -798,10 +810,10 @@ const MyPlace = () => {
                                                 <Text style={styles.timeText}>
                                                     {horariosInicio
                                                         ? dateToHHmm(
-                                                            horariosInicio[
-                                                            index
-                                                            ]
-                                                        )
+                                                              horariosInicio[
+                                                                  index
+                                                              ]
+                                                          )
                                                         : ""}
                                                 </Text>
                                             </Pressable>
@@ -818,8 +830,8 @@ const MyPlace = () => {
                                                 <Text style={styles.timeText}>
                                                     {horariosFin
                                                         ? dateToHHmm(
-                                                            horariosFin[index]
-                                                        )
+                                                              horariosFin[index]
+                                                          )
                                                         : ""}
                                                 </Text>
                                             </Pressable>
@@ -846,7 +858,7 @@ const MyPlace = () => {
                             if (item === null) {
                                 return (
                                     <Pressable
-                                        onPress={handleFoto}
+                                        onPress={newPhoto}
                                         style={{
                                             borderRadius: 10,
                                             marginTop: "2%",
