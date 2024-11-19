@@ -28,8 +28,12 @@ const EventoExtra = ({ evento }: Props) => {
 					<Text style={styles.tipo}>{evento.fecha_final}</Text>
 					<Text style={styles.puntuacion}>
 						<FontAwesome name="circle" color="purple" />
-						{" " + evento.direccion}
+						{" " +
+							(evento.id_establecimiento_detail.nombre.length > 30
+								? evento.id_establecimiento_detail.nombre.slice(0, 30) + "..."
+								: evento.id_establecimiento_detail.nombre)}
 					</Text>
+
 				</View>
 			</View>
 		</Link>
