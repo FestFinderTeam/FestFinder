@@ -320,6 +320,7 @@ const inicio = () => {
 							style={{
 								flexDirection: "row",
 								alignItems: "center",
+								marginBottom: "2%"
 							}}
 						>
 							<Text
@@ -365,6 +366,7 @@ const inicio = () => {
 							style={{
 								flexDirection: "row",
 								alignItems: "center",
+								marginEnd:"2%"
 							}}
 						>
 							<Text
