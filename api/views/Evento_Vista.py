@@ -123,13 +123,27 @@ class ListarEventosPorEstablecimiento(APIView):
         
         # Obtener la fecha de hoy (del servidor)
         fecha_hoy = date.today()
-        
 
         # Filtrar eventos por el ID del establecimiento
         eventos = Evento.objects.filter(
             id_establecimiento=id_establecimiento,
             fecha_final__gte=fecha_hoy
             ).order_by('fecha_final')
+        
+        # Serializar los eventos encontrados
+        serializer = EventoSerializer(eventos, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class ListarEventosPopulares(APIView):
+    def get(self, request, *args, **kwargs):
+        
+        # Obtener la fecha de hoy (del servidor)
+        fecha_hoy = date.today()
+
+        # Filtrar eventos por el ID del establecimiento
+        eventos = Evento.objects.filter(
+            fecha_final__gte=fecha_hoy
+            ).order_by('interes')
         
         # Serializar los eventos encontrados
         serializer = EventoSerializer(eventos, many=True)
@@ -154,7 +168,6 @@ class FiltrarEventos(APIView):
         id_genero_fk = request.data.get("id_genero_fk", [])
         fecha_actual = request.data.get("fecha_actual")
         ciudad = request.data.get("ciudad", "").strip()  # Nuevo campo 'ciudad'
-
 
         # Validar que la fecha actual esté presente y tenga un formato correcto
         if not fecha_actual:
