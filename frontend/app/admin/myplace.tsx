@@ -33,6 +33,7 @@ import GoogleMap from "@/components/GoogleMap";
 import { getDireccion } from "@/utils/Direccion";
 
 const image_default = require("../../assets/images/default_image.png");
+const bannerDefault = require("../../assets/images/defaultBanner.jpg");
 
 interface Horario {
     inicio_atencion: string;
@@ -184,14 +185,14 @@ const MyPlace = () => {
         }
     };
 
-    const addEtiqueta = () => {
+
+    const addEtiqueta = (etiqueta:any) => {
         if (!etiqueta) {
             return;
         }
-        console.log(etiqueta);
-        setEtiqueta("");
-        console.log(etiquetas);
-        setEtiquetas([...etiquetas, etiqueta]);
+            setEtiquetas([...etiquetas, etiqueta.texto_etiqueta]);  // Agregar la etiqueta al estado
+            setEtiqueta("");  // Limpiar el campo de texto
+            setSugerenciasEtiquetas([]);  // Limpiar las sugerencias
     };
 
     const removeEtiqueta = (tag: string) => {
@@ -410,7 +411,7 @@ const MyPlace = () => {
 
             <ScrollView>
                 <ImageBackground
-                    source={{ uri: establecimiento?.banner }}
+                    source={bannerNuevo || (establecimiento?.banner && {uri: establecimiento.banner}) || bannerDefault}
                     style={[Styles.imageBanner, { position: "relative" }]}
                 >
                     <Pressable onPress={router.back}>
@@ -449,7 +450,8 @@ const MyPlace = () => {
                     </Pressable>
                 </ImageBackground>
                 <ImageBackground
-                    source={logo ? { uri: logo } : image_default}
+                
+                    source={logoNuevo || (establecimiento?.logo && {uri: establecimiento.logo}) || image_default}
                     style={[
                         styles.redondoImg,
                         styles.contenedorIMG,
@@ -582,43 +584,23 @@ const MyPlace = () => {
                                         },
                                     ]}
                                 />
-                                <Pressable
-                                    onPress={() => addEtiqueta}
-                                    style={{
-                                        backgroundColor: "#402158",
-                                        borderRadius: 10,
-                                        paddingHorizontal: 12,
-                                        paddingVertical: 8,
-                                        marginLeft: 8,
-                                    }}
-                                >
-                                    <FontAwesome name="plus" color={"white"} />
-                                </Pressable>
+
                             </View>
 
                             {/* Mostrar sugerencias solo si hay más de 2 caracteres y resultados */}
-                            {etiqueta.length >= 2 &&
-                                sugerenciasEtiquetas.length > 0 && (
-                                    <View style={styles.suggestionsContainer}>
-                                        {sugerenciasEtiquetas.map(
-                                            (etiqueta, index) => (
-                                                <Pressable
-                                                    key={index}
-                                                    onPress={() => addEtiqueta} // Agregar la etiqueta al estado
-                                                    style={
-                                                        styles.suggestionItem
-                                                    }
-                                                >
-                                                    <Text>
-                                                        {
-                                                            etiqueta.texto_etiqueta
-                                                        }
-                                                    </Text>
-                                                </Pressable>
-                                            )
-                                        )}
-                                    </View>
-                                )}
+                            {etiqueta.length >= 2 && sugerenciasEtiquetas.length > 0 && (
+                                <View style={styles.suggestionsContainer}>
+                                    {sugerenciasEtiquetas.map((etiqueta, index) => (
+                                        <Pressable
+                                            key={index}
+                                            onPress={() => addEtiqueta(etiqueta)}  // Agregar la etiqueta al estado
+                                            style={styles.suggestionItem}
+                                        >
+                                            <Text>{etiqueta.texto_etiqueta}</Text>
+                                        </Pressable>
+                                    ))}
+                                </View>
+                            )}
                         </View>
                         <View
                             style={{
