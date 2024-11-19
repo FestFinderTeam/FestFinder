@@ -5,7 +5,7 @@ import {
     TextInput,
     View,
     ScrollView,
-    Alert
+    Alert,
 } from "react-native";
 
 import { useEffect, useState } from "react";
@@ -26,6 +26,7 @@ import { router, type Href } from "expo-router";
 import { useSession } from "@/hooks/ctx";
 import { getCategoriasEventos } from "@/services/eventosService";
 import { API_URL } from "@/constants/Url";
+import LoadingScreen from "@/components/Loading";
 
 const imagen_defecto = require("../../assets/images/default_image.png");
 
@@ -42,6 +43,7 @@ const CrearEvento = () => {
     const [error, setError] = useState("");
     const [tipo_fk, setSelectedEvent] = useState("");
     const [dataTypesEvent, setDataTypesEvent] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchCategoriasEventos = async () => {
@@ -54,7 +56,9 @@ const CrearEvento = () => {
             setDataTypesEvent(formattedCategorias);
         };
 
+        setLoading(true);
         fetchCategoriasEventos();
+        setLoading(false);
     }, []);
 
     const handleSubmit = async () => {
@@ -87,28 +91,36 @@ const CrearEvento = () => {
 
         console.log(formData);
 
-        const response = await fetch(`${API_URL}/api/evento/`, {
-            method: "POST",
-            body: formData,
-        });
-        if (!response.ok) {
-            const errorDetails = await response.json();
-            throw new Error(
-                `Error al registrar el evento: ${response.statusText} (${response.status
-                }). Detalles: ${JSON.stringify(errorDetails)}`
-            );
+        setLoading(true);
+        try {
+            const response = await fetch(`${API_URL}/api/evento/`, {
+                method: "POST",
+                body: formData,
+            });
+            if (!response.ok) {
+                const errorDetails = await response.json();
+                throw new Error(
+                    `Error al registrar el evento: ${response.statusText} (${
+                        response.status
+                    }). Detalles: ${JSON.stringify(errorDetails)}`
+                );
+            }
+
+            const result = await response.json();
+            console.log("Establecimiento registrado:", result);
+
+            Alert.alert("Éxito", "Establecimiento actualizado correctamente");
+            router.push("admin/eventos" as Href);
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setLoading(false);
         }
-
-        const result = await response.json();
-        console.log("Establecimiento registrado:", result);
-
-        Alert.alert(
-            "Éxito",
-            "Establecimiento actualizado correctamente"
-        );
-        router.push('admin/eventos' as Href);
     };
 
+    if (loading) {
+        return <LoadingScreen text="Creando evento"/>;
+    }
     return (
         <ScrollView>
             <View>
