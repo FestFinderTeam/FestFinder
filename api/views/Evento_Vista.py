@@ -28,7 +28,7 @@ class CrearEvento(APIView):
 # Vista para listar todos los eventos
 class ListarEventos(APIView):
     def get(self, request, *args, **kwargs):
-        eventos = Evento.objects.all()
+        eventos = Evento.objects.all().order_by('fecha_inicio')
         serializer = EventoSerializer(eventos, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -59,7 +59,7 @@ class ListarEventosMes(APIView):
             fecha_final__gte=fecha_usuario,
             fecha_final__range=[primer_dia_mes, ultimo_dia_mes],
             id_establecimiento__direccion__icontains=ciudad  # Filtrar por ciudad en la dirección del establecimiento
-        )
+        ).order_by('fecha_final')
         serializer = EventoSerializer(eventos, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -87,7 +87,7 @@ class ListarEventosHoy(APIView):
             fecha_inicio__lte=fecha_usuario, 
             fecha_final__gte=fecha_usuario,
             id_establecimiento__direccion__icontains=ciudad  # Filtrar por ciudad en la dirección del establecimiento        
-            )
+            ).order_by('fecha_final')
         serializer = EventoSerializer(eventos, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -105,19 +105,48 @@ class ObtenerEventoPorID(APIView):
         serializer = EventoSerializer(evento)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+class ListarEventosTuEstablecimiento(APIView):
+    def get(self, request, id_establecimiento, *args, **kwargs):
+        
+        # Filtrar eventos por el ID del establecimiento
+        eventos = Evento.objects.filter(
+            id_establecimiento=id_establecimiento,
+            ).order_by('fecha_inicio')
+        
+        # Serializar los eventos encontrados
+        serializer = EventoSerializer(eventos, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class ListarEventosPorEstablecimiento(APIView):
     def get(self, request, id_establecimiento, *args, **kwargs):
         
         # Obtener la fecha de hoy (del servidor)
         fecha_hoy = date.today()
-        
 
         # Filtrar eventos por el ID del establecimiento
         eventos = Evento.objects.filter(
             id_establecimiento=id_establecimiento,
             fecha_final__gte=fecha_hoy
-            )
+            ).order_by('fecha_final')
+        
+        # Serializar los eventos encontrados
+        serializer = EventoSerializer(eventos, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class ListarEventosPopulares(APIView):
+    def get(self, request, ciudad, *args, **kwargs):
+        # Obtener la fecha de hoy (del servidor)
+        fecha_hoy = date.today()
+
+        if not ciudad:
+            return Response({"error": "El campo 'ciudad' es obligatorio."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Filtrar eventos según la ciudad y ordenar por interés
+        eventos = Evento.objects.filter(
+            fecha_final__gte=fecha_hoy,  # Filtrar eventos que aún no han terminado
+            id_establecimiento__direccion__icontains=ciudad  # Filtrar por ciudad en la dirección del establecimiento
+        ).order_by('-interesados')  # Ordenar por interés en orden descendente
         
         # Serializar los eventos encontrados
         serializer = EventoSerializer(eventos, many=True)
@@ -142,7 +171,6 @@ class FiltrarEventos(APIView):
         id_genero_fk = request.data.get("id_genero_fk", [])
         fecha_actual = request.data.get("fecha_actual")
         ciudad = request.data.get("ciudad", "").strip()  # Nuevo campo 'ciudad'
-
 
         # Validar que la fecha actual esté presente y tenga un formato correcto
         if not fecha_actual:
@@ -178,7 +206,7 @@ class FiltrarEventos(APIView):
             query &= Q(id_establecimiento__direccion__icontains=ciudad)
 
         # Filtrar eventos utilizando la consulta construida
-        eventos = Evento.objects.filter(query)
+        eventos = Evento.objects.filter(query).order_by('fecha_final')
 
         # Serializar y devolver los resultados
         eventos_data = EventoSerializer(eventos, many=True).data
