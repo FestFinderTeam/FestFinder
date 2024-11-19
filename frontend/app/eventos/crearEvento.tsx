@@ -25,18 +25,16 @@ import Styles from "@/globalStyles/styles";
 import { router, type Href } from "expo-router";
 import { useSession } from "@/hooks/ctx";
 import { getCategoriasEventos } from "@/services/eventosService";
+import { API_URL } from "@/constants/Url";
 
 const imagen_defecto = require("../../assets/images/default_image.png");
 
 const CrearEvento = () => {
-    const API_URL = process.env.EXPO_PUBLIC_API_URL;
     const { session } = useSession();
     const [nombre, setNombre] = useState("");
     const [logo, setImagenEvento] = useState<ImagePickerAsset>();
     const [fechaInicio, setFechaInicio] = useState<Date>(new Date());
     const [fechaFin, setFechaFin] = useState<Date>(new Date());
-    const [horaInicio, sethoraInicio] = useState<Date>(new Date());
-    const [horaFin, setHoraFin] = useState<Date>(new Date());
     const [descripcion, setDescripcion] = useState("");
     const [precioInicial, setPrecioInicial] = useState("0");
     const [precioFinal, setPrecioFinal] = useState("0");
@@ -73,13 +71,15 @@ const CrearEvento = () => {
             formData.append("logo", getImage(logo));
         }
 
-        formData.append("id_establecimiento", session?.establecimiento as string);
+        formData.append(
+            "id_establecimiento",
+            session?.establecimiento as string
+        );
         formData.append("nombre", nombre as string);
         formData.append("fecha_inicio", dateToYYYYMMDD(fechaInicio));
-        formData.append("fecha_fin", dateToYYYYMMDD(fechaFin));
-        formData.append("horario_inicio", dateToHHmm(horaInicio) as string);
-        formData.append("horario_fin", dateToHHmm(horaFin) as string);
-        formData.append("fecha_final", '2024-11-11' as string);
+        formData.append("fecha_final", dateToYYYYMMDD(fechaFin));
+        formData.append("horario_inicio", dateToHHmm(fechaInicio) as string);
+        formData.append("horario_fin", dateToHHmm(fechaFin) as string);
         formData.append("descripcion", descripcion as string);
         formData.append("precio_min", precioInicial as string);
         formData.append("precio_max", precioFinal as string);
@@ -106,8 +106,7 @@ const CrearEvento = () => {
             "Éxito",
             "Establecimiento actualizado correctamente"
         );
-
-        router.push("/inicio"); 
+        router.push('admin/eventos' as Href);
     };
 
     return (
@@ -159,7 +158,10 @@ const CrearEvento = () => {
                     <TextInput
                         placeholder="Nombre"
                         onChangeText={(e) => setNombre(e)}
-                        style={[Styles.input, { marginTop: "3%", width: "80%" }]}
+                        style={[
+                            Styles.input,
+                            { marginTop: "3%", width: "80%" },
+                        ]}
                     />
                     <Text
                         style={{
@@ -207,8 +209,13 @@ const CrearEvento = () => {
                                 Fecha Inicio
                             </Text>
                             <Pressable
-                                onPress={() => showSingleDate(fechaInicio, setFechaInicio)}
-                                style={[Styles.input, { width: "80%", alignItems: "center" }]}
+                                onPress={() =>
+                                    showSingleDate(fechaInicio, setFechaInicio)
+                                }
+                                style={[
+                                    Styles.input,
+                                    { width: "80%", alignItems: "center" },
+                                ]}
                             >
                                 <Text>{dateToDDMMYYYY(fechaInicio)}</Text>
                             </Pressable>
@@ -225,8 +232,13 @@ const CrearEvento = () => {
                                 Fecha Fin
                             </Text>
                             <Pressable
-                                onPress={() => showSingleDate(fechaFin, setFechaFin)}
-                                style={[Styles.input, { width: "80%", alignItems: "center" }]}
+                                onPress={() =>
+                                    showSingleDate(fechaFin, setFechaFin)
+                                }
+                                style={[
+                                    Styles.input,
+                                    { width: "80%", alignItems: "center" },
+                                ]}
                             >
                                 <Text>{dateToDDMMYYYY(fechaFin)}</Text>
                             </Pressable>
@@ -254,17 +266,33 @@ const CrearEvento = () => {
                         }}
                     >
                         <Pressable
-                            onPress={() => showSingleTime(horaInicio, sethoraInicio)}
-                            style={[Styles.input, { maxWidth: 120, alignItems: "center", marginRight: 10 }]}
+                            onPress={() =>
+                                showSingleTime(fechaInicio, setFechaInicio)
+                            }
+                            style={[
+                                Styles.input,
+                                {
+                                    maxWidth: 120,
+                                    alignItems: "center",
+                                    marginRight: 10,
+                                },
+                            ]}
                         >
-                            <Text>{dateToHHmm(horaInicio)}</Text>
+                            <Text>{dateToHHmm(fechaInicio)}</Text>
                         </Pressable>
                         <Text>-</Text>
                         <Pressable
-                            onPress={() => showSingleTime(horaFin, setHoraFin)}
-                            style={[Styles.input, { maxWidth: 120, alignItems: "center", marginLeft: 10 }]}
+                            onPress={() => showSingleTime(fechaFin, fechaFin)}
+                            style={[
+                                Styles.input,
+                                {
+                                    maxWidth: 120,
+                                    alignItems: "center",
+                                    marginLeft: 10,
+                                },
+                            ]}
                         >
-                            <Text>{dateToHHmm(horaFin)}</Text>
+                            <Text>{dateToHHmm(fechaFin)}</Text>
                         </Pressable>
                     </View>
                 </View>
@@ -296,26 +324,37 @@ const CrearEvento = () => {
                     >
                         <TextInput
                             placeholder="Desde"
-                            onChangeText={(e) => setPrecioInicial(e.replace(/[^0-9]/g, ""))} 
+                            onChangeText={(e) =>
+                                setPrecioInicial(e.replace(/[^0-9]/g, ""))
+                            }
                             style={[
                                 Styles.input,
-                                { width: 120, marginRight: 10, textAlign: "center" },
+                                {
+                                    width: 120,
+                                    marginRight: 10,
+                                    textAlign: "center",
+                                },
                             ]}
-                            keyboardType="numeric" 
+                            keyboardType="numeric"
                         />
                         <Text>-</Text>
                         <TextInput
                             placeholder="Hasta"
-                            onChangeText={(e) => setPrecioFinal(e.replace(/[^0-9]/g, ""))} 
+                            onChangeText={(e) =>
+                                setPrecioFinal(e.replace(/[^0-9]/g, ""))
+                            }
                             style={[
                                 Styles.input,
-                                { width: 120, marginLeft: 10, textAlign: "center" },
+                                {
+                                    width: 120,
+                                    marginLeft: 10,
+                                    textAlign: "center",
+                                },
                             ]}
-                            keyboardType="numeric" 
+                            keyboardType="numeric"
                         />
                     </View>
                 </View>
-
 
                 <Text
                     style={{
@@ -328,23 +367,39 @@ const CrearEvento = () => {
                 >
                     Descripción
                 </Text>
-                <View style={{ justifyContent: "center", alignItems: "center", width: "100%" }}>
+                <View
+                    style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "100%",
+                    }}
+                >
                     <TextInput
                         placeholder="Descripción"
                         onChangeText={(e) => setDescripcion(e)}
-                        style={[Styles.input, { marginTop: "3%", width: "80%" }]}
+                        style={[
+                            Styles.input,
+                            { marginTop: "3%", width: "80%" },
+                        ]}
                         multiline
                         numberOfLines={4}
                     />
                 </View>
 
                 <Pressable
-                    style={[Styles.button, { marginTop: 15, width: "80%", alignSelf: "center", marginBottom: 10, }]}
+                    style={[
+                        Styles.button,
+                        {
+                            marginTop: 15,
+                            width: "80%",
+                            alignSelf: "center",
+                            marginBottom: 10,
+                        },
+                    ]}
                     onPress={handleSubmit}
                 >
                     <Text style={{ color: "#fff" }}>Crear evento</Text>
                 </Pressable>
-
             </View>
         </ScrollView>
     );

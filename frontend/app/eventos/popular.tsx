@@ -8,7 +8,7 @@
     } from "react-native";
     import Header from "@/components/Header";
     import { useEffect, useState } from "react";
-    import { getEventosDelMes } from "@/services/eventosService";
+    import { getEventosPopulares } from "@/services/eventosService";
     import React from "react";
     import { router, type Href } from "expo-router";
     import Evento from "@/components/EventoExtra";
@@ -33,7 +33,7 @@ import LoadingScreen from "@/components/Loading";
         const fetch = async () => {
             setLoading(true);
             try {
-                const res = await getEventosDelMes();
+                const res = await getEventosPopulares('Cochabamba');   //agregar el campo de ciudad cuando se tenga
                 setEventos([...res]);
             } catch (e) {
                 console.error("error al obtener los eventos ", e);

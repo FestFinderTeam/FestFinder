@@ -24,8 +24,6 @@ class Usuario(models.Model):
 def save(self, *args, **kwargs):
     if self.p_field:  # Si hay una contraseña, encriptarla
         self.p_field = make_password(self.p_field)
-    if self.g_id:
-        self.g_id = make_password(self.g_id)
     super().save(*args, **kwargs)
 
     
