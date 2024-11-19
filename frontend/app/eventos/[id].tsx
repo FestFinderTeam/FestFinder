@@ -197,7 +197,7 @@ const Evento = () => {
 				>
 					<FontAwesome name="circle" style={{ color: "#402158" }} />
 					<Text style={{ color: "#402158", marginLeft: 5 }}>
-						{evento.direccion}
+						{evento.id_establecimiento_detail.direccion}
 					</Text>
 				</View>
 
