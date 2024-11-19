@@ -13,6 +13,7 @@ from api.views.EtiquetaEstablecimiento_Vista import (
     EstablecimientosPorEtiqueta,
 )
 from api.views.Filtrado_Vista import FiltrarEstablecimientosYEventos
+from api.views.GaleriaEstablecimiento_Vista import EliminarGaleriaEstablecimiento, GaleriaEstablecimiento, RecuperarGaleriaPorEstablecimiento, RegistrarImagenEnGaleriaEstablecimiento
 from api.views.Genero_Evento_Vista import CrearGeneroEvento, ListarGenerosEvento
 from api.views.Evento_Vista import BorrarEvento, CrearEvento, FiltrarEventos, ListarEventos, ListarEventosHoy, ListarEventosMes, ListarEventosPorCategoria, ListarEventosPorEstablecimiento, ModificarEvento, ObtenerEventoPorID
 from api.views.Entrada_Vista import CrearEntrada, ListarEntradasEvento
@@ -102,6 +103,12 @@ urlpatterns = [
     path('api/establecimientos-similares/<int:est_id>/', EstablecimientosSimilares.as_view(), name='establecimientos-similares'),
     path('api/establecimientos/horarios/', RecuperarHorarios.as_view(), name='recuperar_todos_los_horarios'),
     path('api/establecimientos/filtro/', FiltrarEstablecimientos.as_view(), name='filtrar_establecimientos'),
+    path('api/galeria/establecimiento/<int:id_establecimiento>/', RecuperarGaleriaPorEstablecimiento.as_view(), name='recuperar-galeria-establecimiento'),
+    path('api/galeria/establecimiento/imagen/<int:id>/', EliminarGaleriaEstablecimiento.as_view(), name='eliminar-imagen-galeria'),
+    path('api/galeria/establecimiento/', GaleriaEstablecimiento.as_view(), name='recuperar-galeria-establecimiento'),
+    path('api/galeria/establecimiento/registrar/', RegistrarImagenEnGaleriaEstablecimiento.as_view(), name='eliminar-imagen-galeria'),
+    
+    
     path("api/genero-evento/", CrearGeneroEvento.as_view(), name="crear-genero-evento"),
     path(
         "api/generos-evento/",
@@ -119,12 +126,12 @@ urlpatterns = [
     path('api/eventos/modificar/<int:id_evento>/', ModificarEvento.as_view(), name='modificar_evento'),
     path('api/eventos/<int:id_evento>/borrar/', BorrarEvento.as_view(), name='borrar_evento'),
 
-    path('filtrar/establecimientos-eventos/', FiltrarEstablecimientosYEventos.as_view(), name='filtrar-establecimientos-eventos'),
+    path('api/filtrar/establecimientos-eventos/', FiltrarEstablecimientosYEventos.as_view(), name='filtrar-establecimientos-eventos'),
 
 
-    path("entrada/", CrearEntrada.as_view(), name="crear-entrada"),
+    path("api/entrada/", CrearEntrada.as_view(), name="crear-entrada"),
     path(
-        "entradas/evento/<int:id_evento>/",
+        "api/entradas/evento/<int:id_evento>/",
         ListarEntradasEvento.as_view(),
         name="listar-entradas-evento",
     ),
