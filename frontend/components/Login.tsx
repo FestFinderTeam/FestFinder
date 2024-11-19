@@ -4,7 +4,6 @@ import {
     TextInput,
     TouchableOpacity,
     View,
-    Image,
 } from "react-native";
 import LoginGoogle from "./LoginGoogle";
 import * as SecureStore from "expo-secure-store";
@@ -20,15 +19,35 @@ const getLoginData = async () => {
 
 const Login = () => {
     const { signIn } = useSession();
-    useEffect(() => {}, []);
+    
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [errors, setErrors] = useState<any>({});
+
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; 
+
+    const validateForm = () => {
+        let updatedErrors: any = {};
+
+        if (!email || !emailRegex.test(email)) {
+            updatedErrors.email = "El correo electrónico no es válido";
+        }
+
+        if (!password || !passwordRegex.test(password)) {
+            updatedErrors.password = "La contraseña debe tener al menos 8 caracteres, incluyendo una letra y un número";
+        }
+
+        setErrors(updatedErrors);
+        return Object.keys(updatedErrors).length === 0;
+    };
 
     const handleSubmit = async () => {
-        if ([email, password].includes("")) {
-            alert("Todos los campos son obligatorios");
+        if (!validateForm()) {
+            alert("Por favor corrige los errores antes de enviar el formulario.");
             return;
         }
+
         // Send to the server
         const data = { email, password, g_id: "" };
 
@@ -52,9 +71,7 @@ const Login = () => {
                     establecimiento,
                 } = data;
 
-                //setUserData(userData);  // Guarda los datos del usuario
                 let imagen_url = "";
-                
                 const fullImageUrl = `${API_URL}${imagen_detail.imagen}`; // URL completa de la imagen
                 imagen_url = fullImageUrl; // Guarda la URI de la imagen
                 
@@ -68,7 +85,7 @@ const Login = () => {
                     establecimiento,
                 });
             } else {
-                alert("Error en el inicio de sesión");
+                alert("Correo o contraseña incorrecto");
             }
         } catch (error) {
             console.error(error);
@@ -85,6 +102,8 @@ const Login = () => {
                 style={Styles.input}
                 onChangeText={setEmail}
             />
+            {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+
             <TextInput
                 placeholder="Contraseña"
                 secureTextEntry={true}
@@ -92,6 +111,8 @@ const Login = () => {
                 style={Styles.input}
                 onChangeText={setPassword}
             />
+            {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+
             <TouchableOpacity style={Styles.button} onPress={handleSubmit}>
                 <Text style={Styles.buttonText}>Iniciar Sesión</Text>
             </TouchableOpacity>
@@ -123,6 +144,11 @@ const styles = {
         marginHorizontal: 10,
         color: "#402158",
         fontWeight: "500" as const,
+    },
+    errorText: {
+        color: "red",
+        fontSize: 12,
+        marginTop: 5,
     },
 };
 
