@@ -87,8 +87,8 @@ const Styles = StyleSheet.create({
         marginRight: 50,
     },
     festLogo: {
-        width: 200,
-        height: 100,
+        width: 250,
+        height: 150,
         marginBottom: 10,
     },
     textDecoration2: {
