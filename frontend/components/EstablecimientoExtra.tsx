@@ -40,8 +40,9 @@ const Establecimiento = ({ establecimiento }: Props) => {
 					</Text>
 					<Text style={styles.puntuacion}>
 						<FontAwesome name="circle" color="purple" />
-						{" " + establecimiento.direccion}
+						{" " + (establecimiento.direccion && establecimiento.direccion.length > 30 ? establecimiento.direccion.substring(0, 31) + "..." : establecimiento.direccion)}
 					</Text>
+
 				</View>
 			</View>
 		</Link>
