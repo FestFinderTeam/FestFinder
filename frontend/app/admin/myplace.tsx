@@ -179,14 +179,13 @@ const MyPlace = () => {
       };
 
 
-    const addEtiqueta = () => {
+    const addEtiqueta = (etiqueta:any) => {
         if (!etiqueta) {
           return;
         }
-        console.log(etiqueta);
-        setEtiqueta("");
-        console.log(etiquetas);
-        setEtiquetas([...etiquetas, etiqueta]);
+            setEtiquetas([...etiquetas, etiqueta.texto_etiqueta]);  // Agregar la etiqueta al estado
+            setEtiqueta("");  // Limpiar el campo de texto
+            setSugerenciasEtiquetas([]);  // Limpiar las sugerencias
     };
     
     const removeEtiqueta = (tag: string) => {
@@ -488,7 +487,7 @@ const MyPlace = () => {
                                     {sugerenciasEtiquetas.map((etiqueta, index) => (
                                         <Pressable
                                             key={index}
-                                            onPress={() => addEtiqueta}  // Agregar la etiqueta al estado
+                                            onPress={() => addEtiqueta(etiqueta)}  // Agregar la etiqueta al estado
                                             style={styles.suggestionItem}
                                         >
                                             <Text>{etiqueta.texto_etiqueta}</Text>
