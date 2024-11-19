@@ -11,7 +11,7 @@ interface Props {
 
 const EventoExtra = ({ evento }: Props) => {
 	return (
-		<Link href={("/places/" + evento.id_evento) as Href} style={styles.link}>
+		<Link href={("/eventos/" + evento.id_evento) as Href} style={styles.link}>
 			<View style={styles.container}>
 				<ImageBackground
 					resizeMode="cover"
