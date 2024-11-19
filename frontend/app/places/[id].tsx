@@ -248,7 +248,7 @@ const Place = () => {
 					animationType="slide"
 					transparent={true}
 					visible={horarioOpened}
-					onRequestClose={() => {}}
+					onRequestClose={() => { }}
 				>
 					<View
 						style={{
@@ -442,18 +442,25 @@ const Place = () => {
 								</Text>
 							</Pressable>
 
-							<Text
-								style={[
-									{ fontFamily: "Poppins-Regular" },
-									{ marginLeft: 10, fontSize: 14 },
-								]}
+							<Pressable
+								style={{
+									flexDirection: "row",
+									alignItems: "center",
+									marginLeft: 10,
+								}}
+								onPress={() => {
+									console.log("Presionado:", establecimiento.direccion); //ACA RUTEAS BB
+								}}
 							>
 								<FontAwesome
 									name="location-arrow"
-									style={{ marginRight: 10 }}
+									style={{ marginRight: 10, fontSize: 14 }}
 								/>
-								{establecimiento.direccion}
-							</Text>
+								<Text style={{ fontFamily: "Poppins-Regular", fontSize: 14 }}>
+									{establecimiento.direccion}
+								</Text>
+							</Pressable>
+
 							<View
 								style={{
 									flexDirection: "row",
@@ -566,7 +573,7 @@ const Place = () => {
 								style={{ marginLeft: "3%" }}
 								data={proximosEventos}
 								renderItem={({ item }) => (
-									<EventItem item={item}/>
+									<EventItem item={item} />
 								)}
 								keyExtractor={(item, index) => index.toString()}
 								horizontal
