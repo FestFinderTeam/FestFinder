@@ -318,8 +318,11 @@ const MyPlace = () => {
                 //formData.append("em_ref", em_ref+'');
 
                 // Agregar coordenadas
-                //formData.append("coordenada_x", location.latitude);
-                //formData.append("coordenada_y", location.longitude);      Esta como texto xd
+                if (location){
+
+                    formData.append("coordenada_x", location.longitude.toString());
+                    formData.append("coordenada_y", location.latitude.toString());
+                }
 
                 // Agregar las imágenes si están presentes
                 console.log("datos inciales");
