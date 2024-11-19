@@ -54,7 +54,7 @@ const Establecimiento = ({ establecimiento }: Props) => {
                         }}
                     >
                         <FontAwesome name="star" color={"yellow"} />
-                        {establecimiento.score} / 10
+                        {establecimiento.score} / 5
                     </Text>
                 </View>
             </ImageBackground>
