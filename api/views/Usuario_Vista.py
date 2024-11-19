@@ -42,43 +42,44 @@ class LoginUsuario(APIView):
     def post(self, request, *args, **kwargs):
         email = request.data.get('email')
         password = request.data.get('password')
-        g_id = request.data.get('g_id', "")  # Obtener g_id
-
-        # Log del input recibido
-        logger.info(f"Login attempt: email={email}, g_id={g_id}")
+        g_p = request.data.get('g_id', "")  # Obtener g_id
 
         # Caso 1: Si es con Google
-        if g_id:
+        if g_p:
             logger.info("Caso: Google ID login")  
             try:
-                user = Usuario.objects.get(g_id=g_id)
-                logger.info(f"Usuario encontrado con Google ID: {g_id}")
-                serializer = UsuarioSerializer(user)
-                return Response(serializer.data, status=status.HTTP_200_OK)
+                user = Usuario.objects.get(email=email)
+                if check_password (g_p, user.g_id):
+                    logger.info(f"Usuario encontrado")
+                    serializer = UsuarioSerializer(user)
+                    return Response(serializer.data, status=status.HTTP_200_OK)
+                else:
+                    logger.info(f"Usuario incorrecto: {g_p}")
+                    return Response({"detail": "Google ID incorrecto"}, status=status.HTTP_401_UNAUTHORIZED)
+
             except Usuario.DoesNotExist:
                 # Si no existe, crear el usuario automáticamente con los datos recibidos
-                logger.warning(f"Usuario con Google ID {g_id} no encontrado, creando usuario nuevo.")
+                logger.warning(f"Usuario con Google ID {g_p} no encontrado, creando usuario nuevo.")
                 nombre = request.data.get('nombre')
                 #imagen_url = request.data.get('imagen')  # URL de la foto
                 if not nombre:
                     return Response({"detail": "Nombre y foto son requeridos para el registro."}, status=status.HTTP_400_BAD_REQUEST)
                 
-                # Aquí debes manejar la creación de la imagen, por ahora supongamos que solo pasas la URL
                 try:
                     #imagen = Imagen.objects.create(url=imagen_url)  # Suponiendo que tienes un modelo Imagen que guarda la URL
                     usuario = Usuario(
                         nombre=nombre,
                         email=email,
-                        g_id=g_id,
+                        g_id=g_p,
                         #imagen=imagen,
                         p_field=None  # No se requiere contraseña para login con Google
                     )
                     usuario.save()
-                    logger.info(f"Usuario creado con Google ID: {g_id}")
+                    logger.info(f"Usuario creado con Google ID: {g_p}")
                     serializer = UsuarioSerializer(usuario)
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
                 except IntegrityError:
-                    logger.error(f"Error al crear usuario con Google ID {g_id}. Es posible que ya exista un usuario con este correo.")
+                    logger.error(f"Error al crear usuario con Google ID {g_p}. Es posible que ya exista un usuario con este correo.")
                     return Response({"detail": "Ya existe un usuario con este correo."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Caso 2: Inicio normal
