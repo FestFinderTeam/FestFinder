@@ -8,6 +8,7 @@ import { getCategorias } from "@/services/categoriasService";
 import { filtrarEstablecimientos, getEstablecimientos } from "@/services/establecimientosServices";
 import { getEventosDelDia, getEventosDelMes } from "@/services/eventosService";
 import ListadoEventosInicio from "@/components/ListadoEventos";
+import ListadoEventosHoy from "@/components/ListadoEventosHoy";
 import Establecimiento, { type Place } from "@/components/Establecimiento";
 import type { EventoType } from "@/components/Evento";
 import { Button } from "react-native-paper";
@@ -142,7 +143,6 @@ const inicio = () => {
 
 				<View style={{ flex: 1 }} />
 
-				{/* Modal para seleccionar la ciudad */}
 				<Modal
 					animationType="slide"
 					transparent={true}
@@ -215,7 +215,7 @@ const inicio = () => {
 					Eventos hoy
 				</Text>
 
-				<ListadoEventosInicio eventos={eventosDelDia} />
+				<ListadoEventosHoy eventos={eventosDelDia} />
 				<View style={{ alignItems: "center", marginTop: "3%" }}>
 					<View
 						style={{
