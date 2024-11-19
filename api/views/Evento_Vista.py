@@ -135,15 +135,18 @@ class ListarEventosPorEstablecimiento(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class ListarEventosPopulares(APIView):
-    def get(self, request, *args, **kwargs):
-        
+    def get(self, request, ciudad, *args, **kwargs):
         # Obtener la fecha de hoy (del servidor)
         fecha_hoy = date.today()
 
-        # Filtrar eventos por el ID del establecimiento
+        if not ciudad:
+            return Response({"error": "El campo 'ciudad' es obligatorio."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Filtrar eventos según la ciudad y ordenar por interés
         eventos = Evento.objects.filter(
-            fecha_final__gte=fecha_hoy
-            ).order_by('interes')
+            fecha_final__gte=fecha_hoy,  # Filtrar eventos que aún no han terminado
+            id_establecimiento__direccion__icontains=ciudad  # Filtrar por ciudad en la dirección del establecimiento
+        ).order_by('-interesados')  # Ordenar por interés en orden descendente
         
         # Serializar los eventos encontrados
         serializer = EventoSerializer(eventos, many=True)

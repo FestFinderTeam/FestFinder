@@ -1,5 +1,7 @@
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
+
+
 export const getEventosDelMes = async (ciudad: string) => {
     try {
         //console.log(new Date().toISOString().split("T")[0] + "");
@@ -49,6 +51,26 @@ export const getEventosDelDia = async (ciudad: string) => {
 export const getEventoPorID = async (id: string) => {
     try {
         const response = await fetch(`${API_URL}/api/eventos/${id}/`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        if (!response.ok) {
+            console.error("Error al obtener el evento:", response.status);
+            return null;
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error al obtener el evento:", error);
+        return null;
+    }
+};
+
+export const getEventosPopulares = async (ciudad: string) => {
+    try {
+        const response = await fetch(`${API_URL}/api/eventos/populares/${ciudad}/`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
