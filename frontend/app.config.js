@@ -61,7 +61,6 @@ export default {
         },
         extra: {
             apiUrl: process.env.EXPO_PUBLIC_API_URL,
-
             router: {
                 origin: false,
             },
@@ -69,5 +68,6 @@ export default {
                 projectId: "979255f8-347b-4804-96b2-f1fa93c19fe6",
             },
         },
+        owner: "festfinder", 
     },
 };
