@@ -1,7 +1,7 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Image, Modal, Alert } from "react-native";
+import { ScrollView, StyleSheet, Image, Modal, Alert, RefreshControl } from "react-native";
 import { FlatList, Pressable, Text, View } from "react-native";
 import React from "react";
 import { getCategorias } from "@/services/categoriasService";
@@ -26,6 +26,7 @@ const inicio = () => {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [selectedCity, setSelectedCity] = useState("Cochabamba");
 	const cities = ["Cochabamba", "Santa Cruz", "La Paz"];
+	const [refreshing, setRefreshing] = useState(false);
 	const handleCitySelect = (city: string) => {
 		setSelectedCity(city);
 		setModalVisible(false);
@@ -37,12 +38,12 @@ const inicio = () => {
 		fetchCategoriasEstablecimientos();
 		fetchEventosDelMes();
 		fetchEventosDelDia();
-		fetchEstablecimientos(null, selectedCity||'Cochabamba');
+		fetchEstablecimientos(null, selectedCity || 'Cochabamba');
 	}, []);
 
 	const fetchEstablecimientos = async (tipoId: string | null = null, ciudad: string) => {
-		const tipos = tipoId? [tipoId+''] : null;
-		console.log(tipos + ' '+ciudad)
+		const tipos = tipoId ? [tipoId + ''] : null;
+		console.log(tipos + ' ' + ciudad)
 		const establecimientos = await filtrarEstablecimientos(null, tipos, null, ciudad);
 
 		if (establecimientos.length === 0) {
@@ -88,6 +89,16 @@ const inicio = () => {
 	const handleCategoryPress = (tipoId: string | null) => {
 		console.log(tipoId);
 		fetchEstablecimientos(tipoId, selectedCity);
+	};
+	const onRefresh = async () => {
+		setRefreshing(true); // Muestra el indicador de carga
+		await Promise.all([
+			fetchCategoriasEstablecimientos(),
+			fetchEventosDelMes(),
+			fetchEventosDelDia(),
+			fetchEstablecimientos(null, selectedCity),
+		]);
+		setRefreshing(false); // Oculta el indicador de carga
 	};
 
 	return (
@@ -166,7 +177,12 @@ const inicio = () => {
 				</Modal>
 			</View>
 
-			<ScrollView style={{ padding: 10 }}>
+			<ScrollView
+				style={{ padding: 10 }}
+				refreshControl={
+					<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+				}
+			>
 				<Text style={styles.textoTitulo}>Categorias</Text>
 				<FlatList
 					data={tags}
@@ -303,7 +319,7 @@ const inicio = () => {
 									fontFamily: "Poppins-Regular",
 									fontSize: 14,
 									color: "#402158",
-									
+
 								}}
 							>
 								Ver más &gt;
@@ -329,7 +345,7 @@ const inicio = () => {
 						width: "100%",
 					}}
 				>
-					<Text style={[styles.textoTitulo, {marginBottom:"2%"}]}>
+					<Text style={[styles.textoTitulo, { marginBottom: "2%" }]}>
 						Eventos populares del mes
 					</Text>
 					<Pressable
@@ -348,7 +364,7 @@ const inicio = () => {
 									fontFamily: "Poppins-Regular",
 									fontSize: 14,
 									color: "#402158",
-									
+
 								}}
 							>
 								Ver más &gt;
