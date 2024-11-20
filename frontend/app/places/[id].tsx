@@ -90,6 +90,8 @@ const Place = () => {
     const [horarioAtencion, setHorarioAtencion] = useState<HorarioAtencion[]>(
         []
     );
+    const [calificacion, setCalificacion] = useState(0);
+    const [textoCalificacion, setTextoCalificacion] = useState("");
     const [horarioOpened, setHorarioOpened] = useState<boolean>(false);
     const [establecimientoAbierto, setEstablecimientoAbierto] =
         useState<Boolean>(false);
@@ -242,7 +244,7 @@ const Place = () => {
     }, []);
 
     const handleCalificar = () => {
-        alert("enviando calificacion");
+        alert(`Calificación: ${calificacion}, Reseña: ${textoCalificacion}`);
     };
 
     const handleHorariosAtencion = () => {
@@ -569,29 +571,6 @@ const Place = () => {
                                         </Text>
                                     ))}
                             </View>
-                            <Pressable
-                                onPress={() => console.log("Ir a reseñas")}
-                                style={({ pressed }) => ({
-                                    backgroundColor: pressed ? "#6D28D9" : "#7F3DFF",
-                                    borderRadius: 10,
-                                    paddingVertical: 10,
-                                    paddingHorizontal: 20,
-                                    alignItems: "center",
-                                    marginLeft: "3%",
-                                    marginTop: "3%",
-                                })}
-                            >
-                                <Text
-                                    style={{
-                                        fontFamily: "Poppins-Regular",
-                                        color: "#FFFFFF",
-                                        fontWeight: "bold",
-                                    }}
-                                >
-                                    Ver reseñas
-                                </Text>
-                            </Pressable>
-
                             <Text
                                 style={[
                                     { fontFamily: "Poppins-Regular" },
@@ -618,27 +597,34 @@ const Place = () => {
                                 }}
                             >
                                 <View>
-                                    <Text
-                                        style={{
-                                            marginLeft: "2%",
-                                            fontFamily: "Poppins-SemiBold",
-                                            marginTop: 5,
-                                        }}
-                                    >
-                                        {" "}
-                                        <FontAwesome
-                                            name="star"
-                                            color={"orange"}
-                                        />{" "}
-                                        {establecimiento.puntuacion} / 10
-                                    </Text>
+                                    <View style={{ flexDirection: "row", alignItems: "center", marginTop: "3%", marginLeft: "3%" }}>
+                                        {Array(5)
+                                            .fill("")
+                                            .map((item, index) => (
+                                                <Pressable
+                                                    key={index}
+                                                    onPress={() => {
+                                                        setCalificacion(index + 1);
+                                                    }}
+                                                    style={{ marginRight: 5 }}
+                                                >
+                                                    <FontAwesome
+                                                        name="star"
+                                                        size={18}
+                                                        color={index < calificacion ? "orange" : "#D3D3D3"}
+                                                    />
+                                                </Pressable>
+                                            ))}
+                                    </View>
                                     <TextInput
                                         style={{
                                             marginLeft: "3%",
                                             marginTop: "-2%",
                                         }}
-                                        placeholder="Añade tus calificaciones y reseñas"
+                                        placeholder="Añade una reseña"
                                         placeholderTextColor="#7D5683"
+                                        value={textoCalificacion}
+                                        onChangeText={(text) => setTextoCalificacion(text)}
                                     />
                                 </View>
                                 <Pressable
@@ -666,6 +652,31 @@ const Place = () => {
                                 </Pressable>
                             </View>
                         </View>
+                        <View style={{ justifyContent: "center", alignItems: "center" }}>
+                            <Pressable
+                                onPress={() => router.push("/")}
+                                style={({ pressed }) => ({
+                                    backgroundColor: pressed ? "#7D5683" : "#402158",
+                                    borderRadius: 10,
+                                    paddingVertical: 10,
+                                    paddingHorizontal: 20,
+                                    alignItems: "center",
+                                    marginTop: "5%",
+                                    width: "80%",
+                                })}
+                            >
+                                <Text
+                                    style={{
+                                        fontFamily: "Poppins-Regular",
+                                        color: "#FFFFFF",
+                                        fontWeight: "semibold",
+                                    }}
+                                >
+                                    Ver reseñas
+                                </Text>
+                            </Pressable>
+                        </View>
+
                         <Text
                             style={{
                                 marginTop: "4%",
@@ -839,7 +850,7 @@ const Place = () => {
                                                 fontFamily: "Poppins-SemiBold",
                                             }}
                                         >
-                                            {item.puntuacion}/10
+                                            {item.puntuacion}/5
                                         </Text>
                                     </View>
                                 </Pressable>
