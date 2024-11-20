@@ -13,6 +13,8 @@ class EventoSerializer(serializers.ModelSerializer):
     id_establecimiento_detail = EstablecimientoSerializer(read_only=True, source='id_establecimiento')  # Para GET (lectura)
     id_genero_fk_detail = GeneroEventoSerializer(read_only=True, source='id_genero_fk')  # Para GET (lectura)
 
+    interesados = serializers.SerializerMethodField()
+
     class Meta:
         model = Evento
         fields = ['id_evento', 'nombre', 'logo', 'descripcion', 'fecha_inicio', 
@@ -20,3 +22,7 @@ class EventoSerializer(serializers.ModelSerializer):
                   'fecha_final', 'horario_inicio', 'horario_fin', 
                   'id_genero_fk', 'id_genero_fk_detail',  # Mostramos tanto el ID como el detalle
                   'precio_min', 'precio_max', 'interesados']
+        
+    def get_interesados(self, obj):
+        # Contamos los registros relacionados con el evento en la tabla Interes
+        return obj.interes_set.count()
