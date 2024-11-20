@@ -27,6 +27,7 @@ import EventItem from "@/components/EventItem";
 import GoogleMap from "@/components/GoogleMap";
 import LoadingScreen from "@/components/Loading";
 import type { EstablecimientoType } from "../(tabs)/mapa";
+import Stars from "@/components/Stars";
 
 type Establecimiento = {
     id: number;
@@ -597,25 +598,7 @@ const Place = () => {
                                 }}
                             >
                                 <View>
-                                    <View style={{ flexDirection: "row", alignItems: "center", marginTop: "3%", marginLeft: "3%" }}>
-                                        {Array(5)
-                                            .fill("")
-                                            .map((item, index) => (
-                                                <Pressable
-                                                    key={index}
-                                                    onPress={() => {
-                                                        setCalificacion(index + 1);
-                                                    }}
-                                                    style={{ marginRight: 5 }}
-                                                >
-                                                    <FontAwesome
-                                                        name="star"
-                                                        size={18}
-                                                        color={index < calificacion ? "orange" : "#D3D3D3"}
-                                                    />
-                                                </Pressable>
-                                            ))}
-                                    </View>
+                                    <Stars value={calificacion} setValue={setCalificacion}/>
                                     <TextInput
                                         style={{
                                             marginLeft: "3%",
@@ -654,7 +637,7 @@ const Place = () => {
                         </View>
                         <View style={{ justifyContent: "center", alignItems: "center" }}>
                             <Pressable
-                                onPress={() => router.push("/")}
+                                onPress={() => router.push(("/reviews/"+ establecimiento.id) as Href)}
                                 style={({ pressed }) => ({
                                     backgroundColor: pressed ? "#7D5683" : "#402158",
                                     borderRadius: 10,
