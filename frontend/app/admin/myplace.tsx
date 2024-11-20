@@ -146,6 +146,8 @@ const MyPlace = () => {
     const [dataTypesBusiness, setDataTypesBusiness] = useState<any[]>([]);
 
     const [rango_de_precios, setRango] = useState("");
+    const [isLoading, setIsLoading] = useState(true);
+
     const dataRango = ["Bajo", "Medio", "Alto"];
 
     useEffect(() => {
@@ -165,10 +167,22 @@ const MyPlace = () => {
         fetchCategorias();
     }, [tipo_fk]); // Actualizamos cada vez que tipo_fk cambie
 
-    const fetchGaleria = async (establecimiento: string) => {
-        const galeria = await getGaleriaPorEstablecimiento(establecimiento+"");
-        setImagenesExistentes(galeria); // Actualiza el estado con las imágenes recuperadas
-    };
+    
+
+    useEffect(() => {
+        const fetchGaleria = async (establecimiento: string) => {
+            setIsLoading(true);
+            const galeria = await getGaleriaPorEstablecimiento(establecimiento+"");
+            if(galeria){
+                setFotos(galeria); // Actualiza el estado con las imágenes recuperadas
+            }
+            setIsLoading(false);
+        };
+        fetchGaleria(session?.establecimiento+'');
+        console.log(fotos);
+        console.log(session?.establecimiento);
+    },[session])
+        
 
     const handleTagInputChange = async (texto: string) => {
         setEtiqueta(texto.toLowerCase()); // Actualizar el valor del input
@@ -282,9 +296,6 @@ const MyPlace = () => {
         fetchEstablecimiento();
     }, [session]);
 
-    useEffect(() => {
-        fetchGaleria(session?.establecimiento+"");
-    }, [session]);
 
     const getDay = (date: Date) => {
         const day = date.getDay();
@@ -569,7 +580,6 @@ const MyPlace = () => {
                                 }}
                                 defaultOption={dataTypesBusiness.find(
                                     (item) => item.key == tipo_fk,
-                                    console.log(tipo_fk + "")
                                 )}
                             />
                         </View>
@@ -878,7 +888,7 @@ const MyPlace = () => {
                             </View>
                         ))}
                     </View>
-
+                    
                     <Text
                         style={{
                             color: "#402158",
@@ -888,10 +898,13 @@ const MyPlace = () => {
                     >
                         Fotos
                     </Text>
+
+                {!isLoading && (
                     <FlatList
                         style={{ marginLeft: "3%" }}
                         data={[null, ...fotos]}
                         renderItem={({ item }) => {
+                            
                             if (item === null) {
                                 return (
                                     <Pressable
@@ -910,15 +923,19 @@ const MyPlace = () => {
                                     </Pressable>
                                 );
                             } else {
+                                console.log(item.imagen);
                                 return (
                                     <Image
-                                        source={{uri: item ? item : image_default}}
+                                        source={{uri: item.imagen}}
                                         style={{
                                             width: "auto",
                                             height: 150,
                                             aspectRatio: "16/9",
                                             margin: 3,
+                                            alignItems: "center",
+                                            justifyContent: "center",
                                             borderRadius: 10,
+                                            backgroundColor: "white",
                                         }}
                                     />
                                 );
@@ -927,6 +944,8 @@ const MyPlace = () => {
                         keyExtractor={(item, index) => index.toString()}
                         horizontal
                     />
+
+                )}
                     <View style={{ alignItems: "center" }}>
                         <Pressable onPress={handleSubmit} style={Styles.button}>
                             <Text style={{ color: "white" }}>Actualizar</Text>
