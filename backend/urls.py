@@ -20,6 +20,7 @@ from api.views.Entrada_Vista import CrearEntrada, ListarEntradasEvento
 from api.views.Consumo_Vista import CrearConsumo, ListarConsumosPorEstablecimiento
 from api.views.HorariosEstablecimiento_Vista import RecuperarHorarios, RecuperarHorariosPorEstablecimiento, RegistrarHorarioEstablecimiento
 from api.views.Imagen_Vista import ImagenDetailView
+from api.views.Interes_Vista import EliminarInteres, InteresPorEventos, InteresPorUsuario, RegistrarInteres
 from api.views.Usuario_Vista import CrearUsuario, ListarUsuarios, LoginUsuario
 from api.views.Visita_Vista import (
     RegistrarVisita,
@@ -183,6 +184,29 @@ urlpatterns = [
         RegistrarAsistencia.as_view(),
         name="registrar-asistencia",
     ),
+
+    path(
+        "api/intereses/evento/<int:evento_id>/",
+        InteresPorEventos.as_view(),
+        name="asistencia-por-evento",
+    ),
+    path(
+        "api/intereses/usuario/<int:usuario_id>/",
+        InteresPorUsuario.as_view(),
+        name="asistencia-por-usuario",
+    ),
+    path(
+        "api/registrar-interes/",
+        RegistrarInteres.as_view(),
+        name="registrar-asistencia",
+    ),
+    path(
+        'api/interes/quitar/<int:usuario_id>/<int:evento_id>/', 
+        EliminarInteres.as_view(), 
+        name='eliminar_interes'
+    ),
+
+
     path(
         "api/registrar-valoracion-evento/",
         RegistrarValoracionEvento.as_view(),

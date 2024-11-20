@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -146,7 +147,9 @@ class ListarEventosPopulares(APIView):
         eventos = Evento.objects.filter(
             fecha_final__gte=fecha_hoy,  # Filtrar eventos que aún no han terminado
             id_establecimiento__direccion__icontains=ciudad  # Filtrar por ciudad en la dirección del establecimiento
-        ).order_by('-interesados')  # Ordenar por interés en orden descendente
+        ).annotate(
+            interesados_count=Count('interes')  # Anotar el número de interesados (cuenta de registros en la tabla 'Interes')
+        ).order_by('-interesados_count')  # Ordenar por el número de interesados en orden descendente
         
         # Serializar los eventos encontrados
         serializer = EventoSerializer(eventos, many=True)

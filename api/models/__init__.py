@@ -16,3 +16,4 @@ from .Visita import Visita
 from .GaleriaEvento import GaleriaEvento
 from .GaleriaEstablecimiento import GaleriaEstablecimiento
 from .horariosEstablecimiento import horariosEstablecimiento
+from .Interes import Interes

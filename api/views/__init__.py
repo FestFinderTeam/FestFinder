@@ -8,3 +8,4 @@ from .Usuario_Vista import CrearUsuario, ListarUsuarios, LoginUsuario
 from .Establecimiento_Vista import ListarEstablecimientosPorTipo, RecuperarDatosEstablecimiento, ListarEstablecimientosPorTipo, RegistrarEstablecimiento
 #from .HorarioEstablecimiento_Vista import RegistrarHorarioEstablecimiento, RecuperarHorariosPorEstablecimiento
 from .GaleriaEstablecimiento_Vista import EliminarGaleriaEstablecimiento, RegistrarImagenEnGaleriaEstablecimiento, RecuperarGaleriaPorEstablecimiento, RegistrarVariasImagenesGaleria
+from .Interes_Vista import EliminarInteres, InteresPorEventos, InteresPorUsuario, RegistrarInteres
