@@ -3,12 +3,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
 from ..models import GaleriaEstablecimiento
-from rest_framework.parsers import MultiPartParser, FormParser
 from ..serializers import GaleriaEstablecimientoSerializer
 
-class GaleriaEstablecimiento(APIView):
-    def get(self, request, id, *args, **kwargs):
-        galerias = GaleriaEstablecimiento.objects.filter(establecimiento=id)
+class GetGaleriaEstablecimiento(APIView):
+    def get(self, request, *args, **kwargs):
+        galerias = GaleriaEstablecimiento.objects.all()
         serializer = GaleriaEstablecimientoSerializer(galerias, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -40,8 +39,6 @@ class RecuperarGaleriaPorEstablecimiento(APIView):
         serializer = GaleriaEstablecimientoSerializer(galerias, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-
-
 
 class RegistrarVariasImagenesGaleria(APIView):
     parser_classes = (MultiPartParser, FormParser)  # Manejo de FormData

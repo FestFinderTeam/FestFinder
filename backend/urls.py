@@ -13,7 +13,7 @@ from api.views.EtiquetaEstablecimiento_Vista import (
     EstablecimientosPorEtiqueta,
 )
 from api.views.Filtrado_Vista import FiltrarEstablecimientosYEventos
-from api.views.GaleriaEstablecimiento_Vista import GaleriaEstablecimiento, RegistrarImagenEnGaleriaEstablecimiento, EliminarGaleriaEstablecimiento, RecuperarGaleriaPorEstablecimiento, RegistrarVariasImagenesGaleria
+from api.views.GaleriaEstablecimiento_Vista import GaleriaEstablecimiento, GetGaleriaEstablecimiento, RegistrarImagenEnGaleriaEstablecimiento, EliminarGaleriaEstablecimiento, RecuperarGaleriaPorEstablecimiento, RegistrarVariasImagenesGaleria
 from api.views.Genero_Evento_Vista import CrearGeneroEvento, ListarGenerosEvento
 from api.views.Evento_Vista import ListarEventosPopulares, BorrarEvento, CrearEvento, FiltrarEventos, ListarEventos, ListarEventosHoy, ListarEventosMes, ListarEventosPorCategoria, ListarEventosPorEstablecimiento, ListarEventosTuEstablecimiento, ModificarEvento, ObtenerEventoPorID
 from api.views.Entrada_Vista import CrearEntrada, ListarEntradasEvento
@@ -106,7 +106,7 @@ urlpatterns = [
     
     path('api/galeria/establecimiento/<int:id_establecimiento>/', RecuperarGaleriaPorEstablecimiento.as_view(), name='recuperar-galeria-establecimiento'),
     path('api/galeria/establecimiento/imagen/<int:id>/', EliminarGaleriaEstablecimiento.as_view(), name='eliminar-imagen-galeria'),
-    path('api/galeria/establecimiento/', GaleriaEstablecimiento.as_view(), name='recuperar-galeria-establecimiento'),
+    path('api/galeria/establecimiento/', GetGaleriaEstablecimiento.as_view(), name='recuperar-galeria'),
     path('api/galeria/establecimiento/registrar/', RegistrarImagenEnGaleriaEstablecimiento.as_view(), name='eliminar-imagen-galeria'),
     path('api/galeria/registrar-multiples/', RegistrarVariasImagenesGaleria.as_view(), name='registrar_multiples_imagenes'),
 
