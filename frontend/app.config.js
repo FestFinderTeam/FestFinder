@@ -1,5 +1,4 @@
-import "dotenv/config"; // Asegúrate de importar dotenv
-
+require('dotenv').config();
 export default {
     expo: {
         name: "FestFinder",
@@ -21,21 +20,21 @@ export default {
         },
         android: {
             adaptiveIcon: {
-                foregroundImage: "./assets/images/adaptive-icon.png",
+                foregroundImage: "./assets/images/icon.png",
                 backgroundColor: "#402158",
             },
             package: "com.mobile.festfinder",
             googleServicesFile: process.env.GOOGLE_SERVICES_JSON || "./google-services.json",
             config: {
                 googleMaps: {
-                    apiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY,
+                    apiKey: "AIzaSyCCi7U0FG1-Mq_eH1pOooq3g3I41mrXWsg",
                 },
             },
         },
         web: {
             bundler: "metro",
             output: "static",
-            favicon: "./assets/images/favicon.png",
+            favicon: "./assets/images/icon.png",
         },
         plugins: [
             [
