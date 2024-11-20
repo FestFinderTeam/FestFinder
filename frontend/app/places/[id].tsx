@@ -272,15 +272,15 @@ const Place = () => {
                     }}
                 >
                     <GoogleMap
-                        location={ establecimiento?{
+                        location={establecimiento ? {
                             latitude: Number(establecimiento.coordenada_y),
                             longitude: Number(establecimiento.coordenada_x),
-                        }: null}
+                        } : null}
                         establecimientos={[
                             establecimiento as EstablecimientoType,
                         ]}
-						userLocation
-						onClose={()=>{setToggleMap(false)}}
+                        userLocation
+                        onClose={() => { setToggleMap(false) }}
                     />
                 </View>
             )}
@@ -298,7 +298,7 @@ const Place = () => {
                     animationType="slide"
                     transparent={true}
                     visible={horarioOpened}
-                    onRequestClose={() => {}}
+                    onRequestClose={() => { }}
                 >
                     <View
                         style={{
@@ -569,6 +569,29 @@ const Place = () => {
                                         </Text>
                                     ))}
                             </View>
+                            <Pressable
+                                onPress={() => console.log("Ir a reseñas")}
+                                style={({ pressed }) => ({
+                                    backgroundColor: pressed ? "#6D28D9" : "#7F3DFF",
+                                    borderRadius: 10,
+                                    paddingVertical: 10,
+                                    paddingHorizontal: 20,
+                                    alignItems: "center",
+                                    marginLeft: "3%",
+                                    marginTop: "3%",
+                                })}
+                            >
+                                <Text
+                                    style={{
+                                        fontFamily: "Poppins-Regular",
+                                        color: "#FFFFFF",
+                                        fontWeight: "bold",
+                                    }}
+                                >
+                                    Ver reseñas
+                                </Text>
+                            </Pressable>
+
                             <Text
                                 style={[
                                     { fontFamily: "Poppins-Regular" },

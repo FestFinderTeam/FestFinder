@@ -10,6 +10,7 @@ export type EventoType = {
     fecha_final: any;
     horario_fin: any;
     precio__min?: number;
+    horario_inicio: any;
     precio__max?: number;
     direccion?: number
     fecha_inicio?: any
