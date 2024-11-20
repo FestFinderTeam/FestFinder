@@ -4,19 +4,19 @@ from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
 from ..models import GaleriaEstablecimiento
 from rest_framework.parsers import MultiPartParser, FormParser
-from ..serializers import GaleriaEstablecimientoSerializador
+from ..serializers import GaleriaEstablecimientoSerializer
 
 class GaleriaEstablecimiento(APIView):
     def get(self, request, id, *args, **kwargs):
         galerias = GaleriaEstablecimiento.objects.filter(establecimiento=id)
-        serializer = GaleriaEstablecimientoSerializador(galerias, many=True)
+        serializer = GaleriaEstablecimientoSerializer(galerias, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class RegistrarImagenEnGaleriaEstablecimiento(APIView):
     parser_classes = (MultiPartParser, FormParser)
 
     def post(self, request, *args, **kwargs):
-        serializer = GaleriaEstablecimientoSerializador(data=request.data)
+        serializer = GaleriaEstablecimientoSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -37,5 +37,46 @@ class RecuperarGaleriaPorEstablecimiento(APIView):
         galerias = GaleriaEstablecimiento.objects.filter(establecimiento=id_establecimiento)
         if not galerias.exists():
             return Response({"detail": "No se encontraron registros para este establecimiento."}, status=status.HTTP_404_NOT_FOUND)
-        serializer = GaleriaEstablecimientoSerializador(galerias, many=True)
+        serializer = GaleriaEstablecimientoSerializer(galerias, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+
+
+class RegistrarVariasImagenesGaleria(APIView):
+    parser_classes = (MultiPartParser, FormParser)  # Manejo de FormData
+
+    def post(self, request, *args, **kwargs):
+        establecimiento_id = request.data.get('establecimiento')  # ID del establecimiento asociado
+        print(establecimiento_id)
+
+        if not establecimiento_id:
+            return Response({"error": "El campo 'establecimiento' es requerido."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        imagenes = request.FILES.getlist('fotos_nuevas')  # Obtener lista de archivos del campo 'imagenes'
+        print(imagenes)
+        
+        if not imagenes:
+            return Response({"error": "No se enviaron imágenes para registrar."}, status=status.HTTP_400_BAD_REQUEST)
+
+        galerias_creadas = []
+
+        for imagen in imagenes:
+            info = {
+                "imagen": imagen,
+                "establecimiento": establecimiento_id
+            }
+            serializer = GaleriaEstablecimientoSerializer(data=info)
+            if serializer.is_valid():
+                serializer.save()
+                galerias_creadas.append(serializer.data)
+            else:
+                return Response(
+                    {"error": "Error al guardar las imágenes.", "details": serializer.errors},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        return Response(
+            {"message": f"Se han registrado {len(galerias_creadas)} imágenes.", "imagenes": galerias_creadas},
+            status=status.HTTP_201_CREATED,
+        )

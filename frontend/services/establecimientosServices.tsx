@@ -167,3 +167,19 @@ export const filtrarEstablecimientos = async (
 
 
 
+export const getGaleriaPorEstablecimiento = async (idEstablecimiento: string) => {
+    try {
+        const url = `${API_URL}/api/galeria/establecimiento/${idEstablecimiento}/`;
+
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error("Error al recuperar las imágenes del establecimiento");
+        }
+        const data = await response.json();
+        // console.log(data);
+        return data;
+    } catch (error) {
+        console.error("Error fetching galería:", error);
+        return [];
+    }
+};

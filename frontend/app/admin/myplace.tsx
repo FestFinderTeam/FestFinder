@@ -25,12 +25,13 @@ import { SelectList } from "react-native-dropdown-select-list";
 import { dateToHHmm, showTime } from "@/utils/DateTime";
 import React from "react";
 import { useSafeAreaFrame } from "react-native-safe-area-context";
-import { getEstablecimientoPorPropietario } from "@/services/establecimientosServices";
+import { getEstablecimientoPorPropietario, getGaleriaPorEstablecimiento } from "@/services/establecimientosServices";
 import { getCategorias } from "@/services/categoriasService";
 import { buscarEtiquetas } from "@/services/etiquetasService"; // Importa la función de buscarEtiquetas
 import type { LatLng } from "react-native-maps";
 import GoogleMap from "@/components/GoogleMap";
 import { getDireccion } from "@/utils/Direccion";
+import Establecimiento from "@/components/EstablecimientoExtra";
 
 const image_default = require("../../assets/images/default_image.png");
 const bannerDefault = require("../../assets/images/defaultBanner.jpg");
@@ -88,6 +89,7 @@ const MyPlace = () => {
     const [etiqueta, setEtiqueta] = useState("");
     const [banner, setBanner] = useState<string>();
     const [imagenes, setImagenes] = useState<ImagePickerAsset>();
+    const [imagenesExistentes, setImagenesExistentes] = useState<any[]>([]);
     const [logo, setLogo] = useState<string>();
     const [logoNuevo, setLogoNuevo] = useState<ImagePickerAsset>();
     const [bannerNuevo, setBannerNuevo] = useState<ImagePickerAsset>();
@@ -163,6 +165,11 @@ const MyPlace = () => {
         fetchCategorias();
     }, [tipo_fk]); // Actualizamos cada vez que tipo_fk cambie
 
+    const fetchGaleria = async (establecimiento: string) => {
+        const galeria = await getGaleriaPorEstablecimiento(establecimiento+"");
+        setImagenesExistentes(galeria); // Actualiza el estado con las imágenes recuperadas
+    };
+
     const handleTagInputChange = async (texto: string) => {
         setEtiqueta(texto.toLowerCase()); // Actualizar el valor del input
 
@@ -200,6 +207,7 @@ const MyPlace = () => {
         setEtiquetas(newTags);
     };
 
+    
     useEffect(() => {
         const fetchEstablecimiento = async () => {
             const propietarioId = session?.id_usuario;
@@ -274,6 +282,10 @@ const MyPlace = () => {
         fetchEstablecimiento();
     }, [session]);
 
+    useEffect(() => {
+        fetchGaleria(session?.establecimiento+"");
+    }, [session]);
+
     const getDay = (date: Date) => {
         const day = date.getDay();
         return day === 0 ? 6 : day - 1;
@@ -294,6 +306,7 @@ const MyPlace = () => {
             try {
                 const formData = new FormData();
                 const formImagenes = new FormData()
+                formImagenes.append("establecimiento", establecimiento.id+""); // ID del establecimiento
                 nuevasFotos.forEach((foto) => {
                     formImagenes.append("fotos_nuevas", getImage(foto));
                 });
@@ -356,6 +369,30 @@ const MyPlace = () => {
                     "Éxito",
                     "Establecimiento actualizado correctamente"
                 );
+
+                const responseImagen = await fetch(
+                    `${API_URL}/api/galeria/registrar-multiples/`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                        body: formImagenes,
+                    }
+                );
+                if (!response.ok) {
+                    throw new Error("Error al agregar imagen el establecimiento");
+                }
+
+                const dataImg = await responseImagen.json();
+                console.log("galeria actualizada:", dataImg);
+                Alert.alert(
+                    "Éxito",
+                    "Galeria del establecimiento actualizado correctamente"
+                );
+
+
+                
 
                 router.push("/inicio");
             } catch (error) {
@@ -875,7 +912,7 @@ const MyPlace = () => {
                             } else {
                                 return (
                                     <Image
-                                        source={item ? item : image_default}
+                                        source={{uri: item ? item : image_default}}
                                         style={{
                                             width: "auto",
                                             height: 150,

@@ -7,3 +7,4 @@ from .UsuarioSerializer import UsuarioSerializer
 from .HorariosEstablecimientoSerializer import HorariosEstablecimientoSerializer
 from .EventoSerializer import EventoSerializer
 from .GeneroEventoSerializer import GeneroEventoSerializer
+from .GaleriaEstablecimientoSerializer import GaleriaEstablecimientoSerializer
