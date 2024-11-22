@@ -1,9 +1,11 @@
 from django.db import models
-from .Asistencia import Asistencia
+from .Usuario import Usuario
+from .Evento import Evento
 
 class ValoracionEvento(models.Model):
     id_valoracion_evento = models.AutoField(primary_key=True)
-    id_asistencia_fk = models.ForeignKey(Asistencia, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    evento = models.ForeignKey(Evento, on_delete=models.CASCADE)    
     puntuacion = models.IntegerField()
     comentario = models.CharField(max_length=50, blank=True)
-    fecha_publicacion = models.DateTimeField()
+    fecha_publicacion = models.DateTimeField(auto_now_add=True)

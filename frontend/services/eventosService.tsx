@@ -189,31 +189,3 @@ export const updateEvento = async (id: string, data: FormData) => {
 };
 
 
-
-export const calificarEvento = async (  asistencia_id : string, 
-                                        puntuacion: number, 
-                                        comentario: string,
-                                    ) => {
-    try {
-        const body: { [key: string]: any } = { asistencia_id, puntuacion, comentario}; 
-        
-        const response = await fetch(`${API_URL}/api/registrar-valoracion-evento/`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(body),
-        });
-        
-        if (!response.ok) {
-            console.error("Error al calificar el evento:", response.status);
-            return [];
-        }
-
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error("Error al calificar el evento:", error);
-        return [];
-    }
-};

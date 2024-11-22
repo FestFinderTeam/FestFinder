@@ -1,9 +1,12 @@
 from django.db import models
-from .Visita import Visita
+from .Usuario import Usuario
+from .Establecimiento import Establecimiento
+
 
 class ValoracionEstablecimiento(models.Model):
     id_valoracion_establecimiento = models.AutoField(primary_key=True)
-    id_visita_fk = models.ForeignKey(Visita, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    establecimiento = models.ForeignKey(Establecimiento, on_delete=models.CASCADE)
     puntuacion = models.IntegerField()
     comentario = models.CharField(max_length=50, blank=True)
-    fecha_publicacion = models.DateTimeField()
+    fecha_publicacion = models.DateTimeField(auto_now_add=True)

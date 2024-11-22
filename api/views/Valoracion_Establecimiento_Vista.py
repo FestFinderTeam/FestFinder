@@ -7,6 +7,17 @@ from ..serializers.ValoracionEstablecimientoSerializer import ValoracionEstablec
 
 class RegistrarValoracion(APIView):
     def post(self, request, *args, **kwargs):
+
+        usuario_id = request.data.get("usuario")
+        establecimiento_id = request.data.get("establecimiento")
+        
+        # Verificar si existe una visita registrada
+        if not Visita.objects.filter(id_usuario_fk=usuario_id, id_establecimiento_visitado_fk=establecimiento_id).exists():
+            return Response(
+                {"error": "No se puede registrar la valoración. El usuario no visito el local."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
         serializer = ValoracionEstablecimientoSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
