@@ -15,7 +15,8 @@ export type EventoType = {
     direccion?: number
     fecha_inicio?: any
     puntuacion?: string;
-    id_establecimiento_detail: any
+    id_establecimiento_detail: any;
+    calificacion?: number;
 };
 interface Props {
     evento: EventoType;

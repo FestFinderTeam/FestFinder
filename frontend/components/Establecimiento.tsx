@@ -5,7 +5,7 @@ import { ImageBackground, Text, View } from "react-native";
 export interface Place {
     id: number;
     nombre: string;
-    score: number;
+    calificacion: number;
     views: number;
     logo: any;
 }
@@ -56,7 +56,7 @@ const Establecimiento = ({ establecimiento }: Props) => {
                         }}
                     >
                         <FontAwesome name="star" color={"yellow"} />
-                        {establecimiento.score} / 5
+                        {establecimiento.calificacion} / 5
                     </Text>
                 </View>
             </ImageBackground>

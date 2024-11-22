@@ -29,6 +29,7 @@ export interface Evento {
 	interesados: number;
 	id_establecimiento: any;
 	id_establecimiento_detail: any;
+	calificacion: number;
 }
 export interface Local {
 	id: number;
@@ -94,7 +95,7 @@ const Evento = () => {
 				key={index}
 				name="star"
 				size={18}
-				color={index < (evento?.puntuacion || 0) ? colorEstrella : "#D3D3D3"}
+				color={index < (evento?.calificacion || 0) ? colorEstrella : "#D3D3D3"}
 				style={{ marginHorizontal: 2 }}
 			/>
 		));
@@ -186,7 +187,7 @@ const Evento = () => {
 								{obtenerEstrellas()}
 							</View>
 							<Text style={{ color: "#787878", marginLeft: 5 }}>
-								({evento.puntuaciones} calificaciones)
+								({evento.calificacion} calificaciones)
 							</Text>
 							<Text
 								style={{

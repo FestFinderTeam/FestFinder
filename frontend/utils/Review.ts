@@ -1,7 +1,9 @@
+
 export interface ReviewType {
-    id?: number;
-    usuario?: UsuarioType;
-    puntuacion?: number;
-    comentario?: string;
-    fecha?: string;
+    id_valoracion_establecimiento: number;
+    puntuacion: number;
+    comentario: string;
+    fecha_publicacion: string;
+    usuario_info: UsuarioType;
 }
+

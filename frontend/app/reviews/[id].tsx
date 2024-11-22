@@ -4,6 +4,7 @@ import Review from "@/components/Review";
 import Stars from "@/components/Stars";
 import Styles from "@/globalStyles/styles";
 import { useSession } from "@/hooks/ctx";
+import { getValoracionesPorLocal } from "@/services/VisitasService";
 import { dateToYYYYMMDD } from "@/utils/DateTime";
 import { ReviewType } from "@/utils/Review";
 import { useLocalSearchParams } from "expo-router";
@@ -25,67 +26,11 @@ const reseñas = () => {
     const [reviews, setReviews] = useState<ReviewType[]>([]);
     const { session } = useSession();
     const [loading, setLoading] = useState(false);
-    const fetchReviews = () => {
+    
+    const fetchReviews = async () => {
         const { id } = params;
         console.log("id establecimiento", id);
-        const reviews = [
-            {
-                id: 1,
-                puntuacion: 4,
-                comentario: "Buena atención",
-                fecha: "13/06/24",
-                usuario: {
-                    nombre: "Juan",
-                    imagen_url: null,
-                    id_usuario: "1",
-                },
-            },
-            {
-                id: 1,
-                puntuacion: 4,
-                comentario: "Buena atención",
-                fecha: "13/06/24",
-                usuario: {
-                    nombre: "Juan",
-                    imagen_url: null,
-                    id_usuario: "1",
-                },
-            },
-            {
-                id: 1,
-                puntuacion: 4,
-                comentario: "Buena atención",
-                fecha: "13/06/24",
-                usuario: {
-                    nombre: "Juan",
-                    imagen_url: null,
-                    id_usuario: "1",
-                },
-            },
-            {
-                id: 1,
-                puntuacion: 4,
-                comentario: "Buena atención",
-                fecha: "13/06/24",
-                usuario: {
-                    nombre: "Juan",
-                    imagen_url: null,
-                    id_usuario: "1",
-                },
-            },
-            {
-                id: 1,
-                puntuacion: 4,
-                comentario: "Buena atención",
-                fecha: "13/06/24",
-                usuario: {
-                    nombre: "Juan",
-                    imagen_url: null,
-                    id_usuario: "1",
-                },
-            },
-        ];
-
+        const reviews = await getValoracionesPorLocal(id+'');
         setReviews(reviews);
     };
     useEffect(() => {

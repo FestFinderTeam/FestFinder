@@ -97,6 +97,8 @@ export const calificarEstablecimiento = async ( usuario : string,
 export const getValoracionesPorLocal = async (id:string) => {
     try {
         const response = await fetch(`${API_URL}/api/valoraciones/establecimiento/${id}/`);
+        console.log('ya se mando');
+        
         if (!response.ok) {
             throw new Error("Error al recuperar las valoraciones del establecimiento");
         }
