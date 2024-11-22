@@ -27,7 +27,6 @@ class RegistrarValoracionEvento(APIView):
 
 class ValoracionesPorEvento(APIView):
     def get(self, request, evento_id, *args, **kwargs):
-        asistencias = Asistencia.objects.filter(id_evento_asistido_fk=evento_id)
-        valoraciones = ValoracionEvento.objects.filter(id_asistencia_fk__in=asistencias)
+        valoraciones = ValoracionEvento.objects.filter(evento_id=evento_id)
         serializer = ValoracionEventoSerializer(valoraciones, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

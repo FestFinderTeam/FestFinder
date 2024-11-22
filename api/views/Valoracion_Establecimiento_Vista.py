@@ -1,3 +1,4 @@
+from api.models import ValoracionEvento
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -26,7 +27,6 @@ class RegistrarValoracion(APIView):
 
 class ValoracionesPorEstablecimiento(APIView):
     def get(self, request, establecimiento_id, *args, **kwargs):
-        visitas = Visita.objects.filter(id_establecimiento_visitado_fk=establecimiento_id)
-        valoraciones = ValoracionEstablecimiento.objects.filter(id_visita_fk__in=visitas)
+        valoraciones = ValoracionEvento.objects.filter(evento_id=evento_id)
         serializer = ValoracionEstablecimientoSerializer(valoraciones, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
