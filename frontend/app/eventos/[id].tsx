@@ -6,8 +6,11 @@ import { Image, Pressable, ScrollView, Text, View } from "react-native";
 import Styles from "@/globalStyles/styles";
 import React from "react";
 import { getEventoPorID } from "@/services/eventosService";
+import { marcarInteres, quitarInteres } from "@/services/AsistenciaService";
 import { getEstablecimientoPorId } from "@/services/establecimientosServices";
 import { ActivityIndicator } from "react-native-paper";
+import { useSession } from "@/hooks/ctx";
+
 
 export interface Evento {
 	id_evento: number;
@@ -34,6 +37,7 @@ export interface Local {
 }
 
 const Evento = () => {
+	const { session} = useSession();
 	const [ejemplo, setEjemplo] = useState<any | null>(null);
 	const params = useLocalSearchParams();
 	const [evento, setEvento] = useState<Evento>();
@@ -57,6 +61,15 @@ const Evento = () => {
 		const data = await getEstablecimientoPorId(id);
 		//console.log(data);
 		setLocal(data);
+	};
+
+	const cambiarInteres = async (interes:boolean) => {
+		if(interes){
+			marcarInteres(session?.id_usuario+'', evento?.id_evento+'');
+		}else{
+			quitarInteres(session?.id_usuario+'', evento?.id_evento+"")
+		}
+
 	};
 
 	useEffect(() => {
@@ -88,7 +101,7 @@ const Evento = () => {
 	};
 	const handleCalificar = () => {
         const data = {
-            interesado,
+            usuario: 1,
             puntuacion,
         };
 		//ACA TU FERTCH
@@ -107,6 +120,8 @@ const Evento = () => {
                 alert("Hubo un problema al enviar la calificación.");
             });
     };
+
+
 
 	if (!evento || !local)
 		return (
@@ -366,6 +381,7 @@ const Evento = () => {
 					<Pressable
 						onPress={() => {
 							setInteresado(true);
+							cambiarInteres(true);
 						}}
 						style={{
 							height: 20,
@@ -382,6 +398,7 @@ const Evento = () => {
 					<Pressable
 						onPress={() => {
 							setInteresado(false);
+							cambiarInteres(false);
 						}}
 						style={{
 							height: 20,

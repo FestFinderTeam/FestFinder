@@ -6,3 +6,6 @@ class Interes(models.Model):
     id_interes = models.AutoField(primary_key=True)
     id_evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
     id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+
+class Meta:
+        unique_together = ('id_evento', 'id_usuario')
