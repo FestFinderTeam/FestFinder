@@ -1,7 +1,9 @@
 # mi_app/models/establecimiento.py
 from django.db import models
+from django.db.models import Avg
 
 from .Usuario import Usuario
+from .ValoracionEstablecimiento import ValoracionEstablecimiento
 from .TipoEstablecimiento import TipoEstablecimiento
 
 class Establecimiento(models.Model):
@@ -21,4 +23,10 @@ class Establecimiento(models.Model):
     rango_de_precios = models.CharField(max_length=5, blank=True)
     nro_ref = models.CharField(max_length=13, blank=True, default='')
     em_ref = models.EmailField(max_length=100, unique=True)
+
+    @property
+    def calificacion(self):
+        # Calculamos el promedio de las valoraciones para el evento
+        avg_calificacion = ValoracionEstablecimiento.objects.filter(establecimiento=self).aggregate(Avg('puntuacion'))['puntuacion__avg']
+        return avg_calificacion if avg_calificacion is not None else 0
 

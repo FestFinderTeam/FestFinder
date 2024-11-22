@@ -9,3 +9,7 @@ from .EventoSerializer import EventoSerializer
 from .GeneroEventoSerializer import GeneroEventoSerializer
 from .GaleriaEstablecimientoSerializer import GaleriaEstablecimientoSerializer
 from .InteresSerializer import InteresSerializer
+from .AsistenciaSerializer import AsistenciaSerializer
+from .ValoracionEstablecimientoSerializer import ValoracionEstablecimientoSerializer
+from .ValoracionEventoSerializer import ValoracionEventoSerializer
+from .AsistenciaSerializer import AsistenciaSerializer

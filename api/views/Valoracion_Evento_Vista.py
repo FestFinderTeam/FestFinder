@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from ..models.Asistencia import Asistencia
 from ..models.ValoracionEvento import ValoracionEvento
-from ..models.Asistencia import Asistencia
 from ..serializers.ValoracionEventoSerializer import ValoracionEventoSerializer
 
 class RegistrarValoracionEvento(APIView):

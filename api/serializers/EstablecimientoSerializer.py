@@ -9,9 +9,13 @@ class EstablecimientoSerializer(serializers.ModelSerializer):
 
     # Usamos TipoEstablecimientoSerializer solo para las solicitudes GET (lectura)
     tipo_fk_detail = TipoEstablecimientoSerializer(read_only=True, source='tipo_fk')  # Para GET (lectura)
+
+    calificacion = serializers.SerializerMethodField()
+
+
     class Meta:
         model = Establecimiento
-        fields = ['id', 'nombre', 'banner', 'logo', 'direccion', 'coordenada_x', 'coordenada_y', 'tipo_fk', 'tipo_fk_detail','usuario','rango_de_precios', 'nro_ref', 'em_ref']
+        fields = ['id', 'nombre', 'banner', 'logo', 'direccion', 'coordenada_x', 'coordenada_y', 'tipo_fk', 'tipo_fk_detail','usuario','rango_de_precios', 'nro_ref', 'em_ref', 'calificacion']
         extra_kwargs = {
             'nombre': {
                 'error_messages': {
@@ -78,3 +82,6 @@ class EstablecimientoSerializer(serializers.ModelSerializer):
             }
         }
         
+    def get_calificacion(self, obj):
+        # Retorna el valor de la propiedad calificacion
+        return obj.calificacion

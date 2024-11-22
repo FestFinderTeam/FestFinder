@@ -15,14 +15,20 @@ class EventoSerializer(serializers.ModelSerializer):
 
     interesados = serializers.SerializerMethodField()
 
+    calificacion = serializers.SerializerMethodField()
+
     class Meta:
         model = Evento
         fields = ['id_evento', 'nombre', 'logo', 'descripcion', 'fecha_inicio', 
                   'id_establecimiento', 'id_establecimiento_detail',  # Mostramos tanto el ID como el detalle
                   'fecha_final', 'horario_inicio', 'horario_fin', 
                   'id_genero_fk', 'id_genero_fk_detail',  # Mostramos tanto el ID como el detalle
-                  'precio_min', 'precio_max', 'interesados']
+                  'precio_min', 'precio_max', 'interesados', 'calificacion']
         
     def get_interesados(self, obj):
         # Contamos los registros relacionados con el evento en la tabla Interes
         return obj.interes_set.count()
+    
+    def get_calificacion(self, obj):
+        # Retorna el valor de la propiedad calificacion
+        return obj.calificacion
