@@ -4,7 +4,7 @@ import Review from "@/components/Review";
 import Stars from "@/components/Stars";
 import Styles from "@/globalStyles/styles";
 import { useSession } from "@/hooks/ctx";
-import { getValoracionesPorLocal } from "@/services/VisitasService";
+import { calificarEstablecimiento, getValoracionesPorLocal } from "@/services/VisitasService";
 import { dateToYYYYMMDD } from "@/utils/DateTime";
 import { ReviewType } from "@/utils/Review";
 import { useLocalSearchParams } from "expo-router";
@@ -31,6 +31,7 @@ const reseñas = () => {
         const { id } = params;
         console.log("id establecimiento", id);
         const reviews = await getValoracionesPorLocal(id+'');
+        console.log(reviews);
         setReviews(reviews);
     };
     useEffect(() => {
@@ -48,11 +49,11 @@ const reseñas = () => {
         const data = {
             puntuacion: calificacion,
             comentario,
-            fecha: dateToYYYYMMDD(new Date()),
-            id_usuario: session?.id_usuario,
-            id_establecimiento: params.id,
+            usuario: session?.id_usuario,
+            establecimiento: params.id,
         };
         console.log(data);
+        const valoracion = calificarEstablecimiento(data.usuario+"", data.establecimiento+"", data.puntuacion, data.comentario)
         setLoading(true);
         try {
         } catch (e) {

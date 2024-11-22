@@ -4,6 +4,6 @@ export interface ReviewType {
     puntuacion: number;
     comentario: string;
     fecha_publicacion: string;
-    usuario_info: UsuarioType;
+    usuario_info: any;
 }
 

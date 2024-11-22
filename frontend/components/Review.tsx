@@ -12,18 +12,18 @@ const Review = ({ review }: Props) => {
         <View>
             <Image
                 source={
-                    (review.usuario?.imagen_url && {
-                        uri: review.usuario?.imagen_url,
+                    (review.usuario_info?.imagen_detail && {
+                        uri: review.usuario_info?.imagen_detail?.imagen,
                     }) ||
                     require("../assets/images/default-profile.png")
                 }
                 style={Styles.imageProfile}
             />
-            <Text>{review.usuario?.nombre}</Text>
+            <Text>{review.usuario_info?.nombre}</Text>
             <View style={{ flexDirection: "row" }}>
                 <Stars value={review.puntuacion} />
             </View>
-            <Text>{review.fecha}</Text>
+            <Text>{review.fecha_publicacion}</Text>
             <Text>{review.comentario}</Text>
         </View>
     );
