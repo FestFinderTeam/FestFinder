@@ -9,11 +9,16 @@ import Styles from "@/globalStyles/styles";
 
 export interface EstablecimientoType {
 	id: number;
+	nombre: string;
+	score: number;
+	views: number;
+	logo: any;
+	tipo_fk_detail?: any;
+	direccion?: string;
 	coordenada_y: number;
 	coordenada_x: number;
-	nombre: string;
-	logo: any;
 }
+
 interface Perfil {
 	nombre: string | null;
 	email: string | null;

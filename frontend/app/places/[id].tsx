@@ -28,6 +28,8 @@ import GoogleMap from "@/components/GoogleMap";
 import LoadingScreen from "@/components/Loading";
 import type { EstablecimientoType } from "../(tabs)/mapa";
 import Stars from "@/components/Stars";
+import { days, getDay } from "@/utils/DateTime";
+import { useSession } from "@/hooks/ctx";
 
 type Establecimiento = {
     id: number;
@@ -68,17 +70,8 @@ export interface Etiqueta {
     texto_etiqueta: string;
 }
 
-export const days = [
-    "Lunes",
-    "Martes",
-    "Miercoles",
-    "Jueves",
-    "Viernes",
-    "Sabado",
-    "Domingo",
-];
-
 const Place = () => {
+    const { session } = useSession();
     const [loading, setLoading] = useState(false);
     const [establecimiento, setEstablecimiento] =
         useState<Establecimiento | null>(null);
@@ -100,6 +93,7 @@ const Place = () => {
     const [imageIndex, setImageIndex] = useState(0);
     const params = useLocalSearchParams();
     const [toggleMap, setToggleMap] = useState(false);
+    const [isFavorite, setIsFavorite] = useState(false);
 
     const [fontsLoaded] = useFonts({
         "Poppins-Regular": require("../../assets/fonts/Poppins-Regular.ttf"),
@@ -252,9 +246,29 @@ const Place = () => {
         setHorarioOpened(true);
     };
 
-    const getDay = (date: Date) => {
-        const day = date.getDay();
-        return day === 0 ? 6 : day - 1;
+    const removeFavorite = () => {
+        setIsFavorite(false);
+        //peticion backend
+    };
+    const addFavorite = () => {
+        setIsFavorite(true);
+        //peticion backend
+    };
+
+    const handleFavorite = () => {
+        // peticion para guardar el establecimiento en favoritos
+        console.log(
+            "establecimiento",
+            establecimiento?.id,
+            "usuario",
+            session?.id_usuario
+        );
+
+        if (isFavorite) {
+            removeFavorite();
+        } else {
+            addFavorite();
+        }
     };
 
     if (loading) {
@@ -275,15 +289,25 @@ const Place = () => {
                     }}
                 >
                     <GoogleMap
-                        location={establecimiento ? {
-                            latitude: Number(establecimiento.coordenada_y),
-                            longitude: Number(establecimiento.coordenada_x),
-                        } : null}
+                        location={
+                            establecimiento
+                                ? {
+                                      latitude: Number(
+                                          establecimiento.coordenada_y
+                                      ),
+                                      longitude: Number(
+                                          establecimiento.coordenada_x
+                                      ),
+                                  }
+                                : null
+                        }
                         establecimientos={[
                             establecimiento as EstablecimientoType,
                         ]}
                         userLocation
-                        onClose={() => { setToggleMap(false) }}
+                        onClose={() => {
+                            setToggleMap(false);
+                        }}
                     />
                 </View>
             )}
@@ -301,7 +325,7 @@ const Place = () => {
                     animationType="slide"
                     transparent={true}
                     visible={horarioOpened}
-                    onRequestClose={() => { }}
+                    onRequestClose={() => {}}
                 >
                     <View
                         style={{
@@ -413,16 +437,20 @@ const Place = () => {
                                     }}
                                 />
                             </Pressable>
-                            <FontAwesome
-                                name="heart"
-                                color={"white"}
-                                size={30}
+                            <Pressable
+                                onPress={handleFavorite}
                                 style={{
                                     position: "absolute",
                                     bottom: 10,
                                     right: 10,
                                 }}
-                            />
+                            >
+                                <FontAwesome
+                                    name="heart"
+                                    color={isFavorite ? "red" : "white"}
+                                    size={30}
+                                />
+                            </Pressable>
                         </ImageBackground>
 
                         <Image
@@ -598,7 +626,10 @@ const Place = () => {
                                 }}
                             >
                                 <View>
-                                    <Stars value={calificacion} setValue={setCalificacion}/>
+                                    <Stars
+                                        value={calificacion}
+                                        setValue={setCalificacion}
+                                    />
                                     <TextInput
                                         style={{
                                             marginLeft: "3%",
@@ -607,7 +638,9 @@ const Place = () => {
                                         placeholder="Añade una reseña"
                                         placeholderTextColor="#7D5683"
                                         value={textoCalificacion}
-                                        onChangeText={(text) => setTextoCalificacion(text)}
+                                        onChangeText={(text) =>
+                                            setTextoCalificacion(text)
+                                        }
                                     />
                                 </View>
                                 <Pressable
@@ -635,11 +668,23 @@ const Place = () => {
                                 </Pressable>
                             </View>
                         </View>
-                        <View style={{ justifyContent: "center", alignItems: "center" }}>
+                        <View
+                            style={{
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                        >
                             <Pressable
-                                onPress={() => router.push(("/reviews/"+ establecimiento.id) as Href)}
+                                onPress={() =>
+                                    router.push(
+                                        ("/reviews/" +
+                                            establecimiento.id) as Href
+                                    )
+                                }
                                 style={({ pressed }) => ({
-                                    backgroundColor: pressed ? "#7D5683" : "#402158",
+                                    backgroundColor: pressed
+                                        ? "#7D5683"
+                                        : "#402158",
                                     borderRadius: 10,
                                     paddingVertical: 10,
                                     paddingHorizontal: 20,

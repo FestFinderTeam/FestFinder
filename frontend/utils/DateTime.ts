@@ -1,5 +1,14 @@
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 
+export const days = [
+    "Lunes",
+    "Martes",
+    "Miercoles",
+    "Jueves",
+    "Viernes",
+    "Sabado",
+    "Domingo",
+];
 export const showTime = (values: Date[], setValues: any, index: number) => {
     DateTimePickerAndroid.open({
         value: values[index],
@@ -71,4 +80,9 @@ export const dateToYYYYMMDD = (date: Date) => {
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
+};
+
+export const getDay = (date: Date) => {
+    const day = date.getDay();
+    return day === 0 ? 6 : day - 1;
 };
