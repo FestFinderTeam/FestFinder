@@ -53,7 +53,12 @@ const reseñas = () => {
             establecimiento: params.id,
         };
         console.log(data);
-        const valoracion = calificarEstablecimiento(data.usuario+"", data.establecimiento+"", data.puntuacion, data.comentario)
+        const valoracion = calificarEstablecimiento(
+                                                    data.usuario+"",
+                                                    data.establecimiento+"",
+                                                    data.puntuacion,
+                                                    data.comentario
+                                                )
         setLoading(true);
         try {
         } catch (e) {

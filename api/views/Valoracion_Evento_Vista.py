@@ -10,6 +10,7 @@ class RegistrarValoracionEvento(APIView):
 
         usuario_id = request.data.get("usuario")
         evento_id = request.data.get("evento")
+        print(request.data)
         
         # Verificar si existe una asistencia registrada
         if not Asistencia.objects.filter(id_usuario_fk=usuario_id, id_evento_asistido_fk=evento_id).exists():
@@ -18,11 +19,21 @@ class RegistrarValoracionEvento(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        serializer = ValoracionEventoSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # Buscar si ya existe una valoración para este usuario y evento
+        try:
+            valoracion_existente = ValoracionEvento.objects.get(usuario=usuario_id, evento=evento_id)
+            serializer = ValoracionEventoSerializer(valoracion_existente, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except ValoracionEvento.DoesNotExist:
+            # Crear una nueva valoración si no existe
+            serializer = ValoracionEventoSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ValoracionesPorEvento(APIView):
     def get(self, request, evento_id, *args, **kwargs):

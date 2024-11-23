@@ -117,7 +117,7 @@ export const quitarInteres = async (usuario:string, evento:string) => {
 export const calificarEvento = async (  usuario: string, 
                                         evento: string,
                                         puntuacion: number, 
-                                        comentario: string,
+                                        comentario: string
                                     ) => {
     try {
         const body: { [key: string]: any } = { 

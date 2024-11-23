@@ -18,11 +18,21 @@ class RegistrarValoracion(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        serializer = ValoracionEstablecimientoSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # Buscar si ya existe una valoración para este usuario y evento
+        try:
+            valoracion_existente = ValoracionesPorEstablecimiento.objects.get(usuario=usuario_id, establecimiento=establecimiento_id)
+            serializer = ValoracionEstablecimientoSerializer(valoracion_existente, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except ValoracionesPorEstablecimiento.DoesNotExist:
+            # Crear una nueva valoración si no existe
+            serializer = ValoracionEstablecimientoSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ValoracionesPorEstablecimiento(APIView):
     def get(self, request, establecimiento_id, *args, **kwargs):

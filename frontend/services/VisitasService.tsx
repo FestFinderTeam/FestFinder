@@ -81,14 +81,14 @@ export const calificarEstablecimiento = async ( usuario : string,
         });
         
         if (!response.ok) {
-            console.error("Error al calificar el evento:", response.status);
+            console.error("Error al calificar el local:", response.status);
             return [];
         }
 
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error("Error al calificar el evento:", error);
+        console.error("Error al calificar el local:", error);
         return [];
     }
 };

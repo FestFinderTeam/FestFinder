@@ -7,6 +7,7 @@ import Styles from "@/globalStyles/styles";
 import React from "react";
 import { getEventoPorID } from "@/services/eventosService";
 import { marcarInteres, quitarInteres } from "@/services/AsistenciaService";
+import { calificarEvento } from "@/services/AsistenciaService";
 import { getEstablecimientoPorId } from "@/services/establecimientosServices";
 import { ActivityIndicator } from "react-native-paper";
 import { useSession } from "@/hooks/ctx";
@@ -100,29 +101,32 @@ const Evento = () => {
 			/>
 		));
 	};
-	const handleCalificar = () => {
-        const data = {
-            usuario: 1,
-            puntuacion,
-        };
-		//ACA TU FERTCH
-        fetch("https://api.example.com/calificar-evento", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        })
-            .then((response) => response.json())
-            .then((result) => {
-                alert("¡Calificación enviada con éxito!");
-            })
-            .catch((error) => {
-                alert("Hubo un problema al enviar la calificación.");
-            });
+	const handleCalificar = async () => {
+        try {
+			if (!evento || puntuacion === 0 ) {
+				alert("Por favor, selecciona una puntuación y escribe un comentario.");
+				return;
+			}
+	
+			const response = await calificarEvento(
+				session?.id_usuario + "", // ID del usuario
+				evento.id_evento + "",   // ID del evento
+				puntuacion,              // Puntuación seleccionada
+				""               // Comentario ingresado
+			);
+	
+			if (response && response.success) {
+				alert("¡Calificación registrada con éxito!");
+				//setComentario(""); // Reinicia el comentario
+				setCalificacion(0); // Reinicia la puntuación
+			} else {
+				alert("Hubo un problema al registrar la calificación.");
+			}
+		} catch (error) {
+			console.error(error);
+			alert("Ocurrió un error inesperado.");
+		}
     };
-
-
 
 	if (!evento || !local)
 		return (
