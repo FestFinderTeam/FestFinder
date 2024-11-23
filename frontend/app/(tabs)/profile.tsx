@@ -69,7 +69,7 @@ const profile = () => {
 					textColor="#787878"
 				/>
 				<ItemProfile
-					onPress={() => {}}
+					onPress={() => {router.navigate('/favorites')}}
 					color="#7D5683"
 					text="Lugares favoritos"
 					icon="heart-o"

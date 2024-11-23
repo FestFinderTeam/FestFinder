@@ -107,7 +107,7 @@ const register_business = () => {
         Object.keys(formData).forEach((field) => {
             const key = field as keyof FormData;
 
-			console.log()
+            console.log();
             const value = formData[key].toString().trim();
 
             if (!value) {
@@ -268,7 +268,7 @@ const register_business = () => {
                     </Text>
                 </Pressable>
 
-				<ErrorText error={errors.direccion}/>
+                <ErrorText error={errors.direccion} />
 
                 <SelectList
                     setSelected={(selected: string) =>
@@ -296,7 +296,7 @@ const register_business = () => {
                 >
                     Rango de precios del local:
                 </Text>
-                <View style={{ alignItems: "center",marginBottom :3 }}>
+                <View style={{ alignItems: "center", marginBottom: 3 }}>
                     <View style={{ flexDirection: "row" }}>
                         {dataRango.map((value, index) => (
                             <Pressable
@@ -335,8 +335,8 @@ const register_business = () => {
                         ))}
                     </View>
                 </View>
-			
-				<ErrorText error={errors.rango_de_precios} />
+
+                <ErrorText error={errors.rango_de_precios} />
 
                 <Button
                     onPress={handleNext}
