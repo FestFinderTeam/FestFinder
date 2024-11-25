@@ -50,7 +50,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
                     router.replace("/inicio");
                 },
                 signOut: async () => {
-                    router.replace("/");
                     setSession(null);
                     if(GoogleSignin.getCurrentUser()){
                         try {
@@ -60,6 +59,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
                             console.error("Error al Cerrar Session con google",err);
                         }
                     }
+                    router.replace("/");
                 },
                 session,
                 isLoading,
