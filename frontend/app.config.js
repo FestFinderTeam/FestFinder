@@ -1,4 +1,4 @@
-require('dotenv').config();
+require("dotenv").config();
 export default {
     expo: {
         name: "FestFinder",
@@ -6,7 +6,7 @@ export default {
         version: "1.0.0",
         orientation: "portrait",
         icon: "./assets/images/icon.png",
-        scheme: "myapp",
+        scheme: "festfinder",
         userInterfaceStyle: "automatic",
         splash: {
             image: "./assets/images/festLogoHD.png",
@@ -30,6 +30,18 @@ export default {
                     apiKey: "AIzaSyCCi7U0FG1-Mq_eH1pOooq3g3I41mrXWsg",
                 },
             },
+            intentFilters: [
+                {
+                    action: "VIEW",
+                    autoVerify: true,
+                    category: ["DEFAULT", "BROWSABLE"],
+                    data: {
+                        scheme: "https",
+                        host: "fest-finder.vercel.app",
+                        pathPrefix: "/",
+                    },
+                },
+            ],
         },
         web: {
             bundler: "metro",
@@ -67,6 +79,6 @@ export default {
                 projectId: "979255f8-347b-4804-96b2-f1fa93c19fe6",
             },
         },
-        owner: "festfinder", 
+        owner: "festfinder",
     },
 };

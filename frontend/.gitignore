@@ -1,4 +1,4 @@
-google-services.json
+*.apk
 node_modules/
 .expo/
 dist/
