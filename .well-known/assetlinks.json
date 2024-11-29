@@ -5,7 +5,8 @@
             "namespace": "android_app",
             "package_name": "com.mobile.festfinder",
             "sha256_cert_fingerprints": [
-                "D0:F9:AC:00:F5:15:19:8D:1E:A5:4E:35:ED:9E:B1:D4:75:56:9E:EF:66:10:A3:20:F7:E4:54:2A:A0:65:28:E6"
+                "D0:F9:AC:00:F5:15:19:8D:1E:A5:4E:35:ED:9E:B1:D4:75:56:9E:EF:66:10:A3:20:F7:E4:54:2A:A0:65:28:E6",
+                "EF:37:06:71:43:AC:DC:F9:08:7F:9D:C6:34:AB:36:C3:45:F5:9B:1E:00:F2:B9:D3:9C:C8:7B:9B:91:A6:43:E3"
             ]
         }
     }
