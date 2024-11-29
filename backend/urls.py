@@ -1,7 +1,11 @@
+import os
+from pathlib import Path
+from django.urls import path
+from django.urls import re_path
 from django.contrib import admin
 from django.conf import settings
+from django.views.static import serve
 from django.conf.urls.static import static
-from django.urls import path
 from api.views import SubirImagen
 from api.views import AgregarTipoEstablecimiento
 from api.views import ListarTiposEstablecimiento
@@ -56,7 +60,14 @@ schema_view = get_schema_view(
     public=True,
 )
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 urlpatterns = [
+    re_path(
+        r'^\.well-known/(?P<path>.*)$',
+        serve,
+        {'document_root': os.path.join(BASE_DIR, '.well-known')}
+    ),
     path(
         "api/documentacion/",
         schema_view.with_ui("swagger", cache_timeout=0),
