@@ -1,7 +1,5 @@
 const apiResponseMiddleware = (store) => (next) => (action) => {
     const { payload, meta } = action;
-    console.log("action", action);
-    console.log("payload", payload);
     if (action.type.endsWith("/fulfilled")) {
         const statusCode = meta?.baseQueryMeta?.response?.status;
         const transformedAction = {
