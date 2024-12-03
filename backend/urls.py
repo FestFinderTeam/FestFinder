@@ -16,7 +16,7 @@ from api.views.EtiquetaEstablecimiento_Vista import (
     EtiquetasPorEstablecimiento,
     EstablecimientosPorEtiqueta,
 )
-from api.views.FavoritosLocal_Vista import CreateFavorito, FavoritosPorEstablecimiento, FavoritosDeUnUsuario,DeleteFavorito
+from api.views.FavoritosLocal_Vista import CreateFavorito, FavoritosPorEstablecimiento, FavoritosDeUnUsuario, DeleteFavorito
 from api.views.Filtrado_Vista import FiltrarEstablecimientosYEventos
 from api.views.GaleriaEstablecimiento_Vista import GaleriaEstablecimiento, GetGaleriaEstablecimiento, RegistrarImagenEnGaleriaEstablecimiento, EliminarGaleriaEstablecimiento, RecuperarGaleriaPorEstablecimiento, RegistrarVariasImagenesGaleria
 from api.views.Genero_Evento_Vista import CrearGeneroEvento, ListarGenerosEvento
