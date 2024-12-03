@@ -13,3 +13,4 @@ from .AsistenciaSerializer import AsistenciaSerializer
 from .ValoracionEstablecimientoSerializer import ValoracionEstablecimientoSerializer
 from .ValoracionEventoSerializer import ValoracionEventoSerializer
 from .AsistenciaSerializer import AsistenciaSerializer
+from .FavoritosLocalSerializer import FavoritosLocalSerializer

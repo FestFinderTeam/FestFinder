@@ -16,6 +16,7 @@ from api.views.EtiquetaEstablecimiento_Vista import (
     EtiquetasPorEstablecimiento,
     EstablecimientosPorEtiqueta,
 )
+from api.views.FavoritosLocal_Vista import CreateFavorito, FavoritosPorEstablecimiento, FavoritosDeUnUsuario,DeleteFavorito
 from api.views.Filtrado_Vista import FiltrarEstablecimientosYEventos
 from api.views.GaleriaEstablecimiento_Vista import GaleriaEstablecimiento, GetGaleriaEstablecimiento, RegistrarImagenEnGaleriaEstablecimiento, EliminarGaleriaEstablecimiento, RecuperarGaleriaPorEstablecimiento, RegistrarVariasImagenesGaleria
 from api.views.Genero_Evento_Vista import CrearGeneroEvento, ListarGenerosEvento
@@ -170,6 +171,13 @@ urlpatterns = [
         VisitasPorUsuario.as_view(),
         name="visitas-por-usuario",
     ),
+    path('api/create-favoritos/', 
+         CreateFavorito.as_view(), 
+         name='create_favorito'
+    ),
+    path('api/establecimiento/<int:establecimiento_id>/favoritos/', FavoritosPorEstablecimiento.as_view(), name='favoritos_por_establecimiento'),
+    path('api/usuario/<int:usuario_id>/favoritos/', FavoritosDeUnUsuario.as_view(), name='favoritos_de_un_usuario'),
+    path('api/delete-favoritos/<int:establecimiento_id>/<int:usuario_id>/', DeleteFavorito.as_view(), name='delete_favorito'),
     path(
         "api/registrar-valoracion/",
         RegistrarValoracion.as_view(),

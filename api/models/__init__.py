@@ -17,3 +17,4 @@ from .GaleriaEvento import GaleriaEvento
 from .GaleriaEstablecimiento import GaleriaEstablecimiento
 from .horariosEstablecimiento import horariosEstablecimiento
 from .Interes import Interes
+from .FavoritosLocal import FavoritosLocal

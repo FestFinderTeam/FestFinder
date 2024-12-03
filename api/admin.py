@@ -18,4 +18,4 @@ admin.site.register(Visita)
 admin.site.register(horariosEstablecimiento)
 admin.site.register(GaleriaEstablecimiento)
 admin.site.register(Interes)
-
+admin.site.register(FavoritosLocal)

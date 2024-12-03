@@ -9,3 +9,5 @@ from .Establecimiento_Vista import ListarEstablecimientosPorTipo, RecuperarDatos
 #from .HorarioEstablecimiento_Vista import RegistrarHorarioEstablecimiento, RecuperarHorariosPorEstablecimiento
 from .GaleriaEstablecimiento_Vista import EliminarGaleriaEstablecimiento, RegistrarImagenEnGaleriaEstablecimiento, RecuperarGaleriaPorEstablecimiento, RegistrarVariasImagenesGaleria
 from .Interes_Vista import EliminarInteres, InteresPorEventos, InteresPorUsuario, RegistrarInteres
+
+from .FavoritosLocal_Vista import FavoritosDeUnUsuario, CreateFavorito, FavoritosPorEstablecimiento, DeleteFavorito
