@@ -4,18 +4,27 @@ import { EstablecimientoType } from "./(tabs)/mapa";
 import { getEstablecimientos } from "@/services/establecimientosServices";
 import Establecimiento from "@/components/EstablecimientoExtra";
 import Header from "@/components/Header";
+import { getFavoritos } from "@/services/VisitasService";
+import { useSession } from "@/hooks/ctx";
 
 const favorites = () => {
+    const { session, signOut } = useSession();
     const [establecimientos, setEstablecimientos] = useState<
         EstablecimientoType[]
     >([]);
     const fetchEstablecimientos = async () => {
-        const establecimientos = await getEstablecimientos();
-        setEstablecimientos(establecimientos);
+        if (session?.id_usuario) {
+            const favoritos = await getFavoritos(session.id_usuario.toString());
+            setEstablecimientos(favoritos);
+        }
     };
+
     useEffect(() => {
-        fetchEstablecimientos();
-    });
+        if (session?.id_usuario) {
+            fetchEstablecimientos();
+            console.log(establecimientos);
+        }
+    }, []);
 
     return (
         <View>

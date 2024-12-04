@@ -1,6 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+
+from ..serializers.EstablecimientoSerializer import EstablecimientoSerializer
 from ..models.FavoritosLocal import FavoritosLocal
 from ..serializers.FavoritosLocalSerializer import FavoritosLocalSerializer
 
@@ -37,8 +39,14 @@ class FavoritosPorEstablecimiento(APIView):
 class FavoritosDeUnUsuario(APIView):
     def get(self, request, usuario_id, *args, **kwargs):
         favoritos = FavoritosLocal.objects.filter(usuario=usuario_id)
-        serializer = FavoritosLocalSerializer(favoritos, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        # Serializa la información del establecimiento en lugar de los IDs
+        establecimientos = [
+            {'establecimiento': EstablecimientoSerializer(favorito.establecimiento).data}
+            for favorito in favoritos
+        ]
+        
+        return Response(establecimientos, status=status.HTTP_200_OK)
     
 
 class DeleteFavorito(APIView):
@@ -58,3 +66,5 @@ class DeleteFavorito(APIView):
                 {"error": "El favorito no existe con los IDs proporcionados."},
                 status=status.HTTP_404_NOT_FOUND
             )
+
+

@@ -30,6 +30,7 @@ import type { EstablecimientoType } from "../(tabs)/mapa";
 import Stars from "@/components/Stars";
 import { days, getDay } from "@/utils/DateTime";
 import { useSession } from "@/hooks/ctx";
+import { marcarFavorito, quitarFavorito } from "@/services/VisitasService";
 
 type Establecimiento = {
     id: number;
@@ -246,13 +247,13 @@ const Place = () => {
         setHorarioOpened(true);
     };
 
-    const removeFavorite = () => {
+    const removeFavorite = (est_id:String,usr_id:String) => {
         setIsFavorite(false);
-        //peticion backend
+        quitarFavorito(usr_id+"", est_id+"")
     };
-    const addFavorite = () => {
+    const addFavorite = (est_id:String,usr_id:String) => {
         setIsFavorite(true);
-        //peticion backend
+        marcarFavorito(usr_id+"", est_id+"")
     };
 
     const handleFavorite = () => {
@@ -265,9 +266,9 @@ const Place = () => {
         );
 
         if (isFavorite) {
-            removeFavorite();
+            removeFavorite(establecimiento?.id+"", session?.id_usuario+"");
         } else {
-            addFavorite();
+            addFavorite(establecimiento?.id+"", session?.id_usuario+"");
         }
     };
 
