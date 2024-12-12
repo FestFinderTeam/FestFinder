@@ -18,12 +18,12 @@ const Review = ({ review }: Props) => {
                     }) ||
                     require("../assets/images/default-profile.png")
                 }
-                style={[Styles.imageProfile, { marginTop: 40 }]} 
+                style={[Styles.imageProfile, { marginTop: 40 }]}
             />
             <Text
                 style={{
                     position: "absolute",
-                    top: 10, 
+                    top: 10,
                     left: 10,
                     fontSize: 12,
                     color: "#A9A9A9",
@@ -31,14 +31,23 @@ const Review = ({ review }: Props) => {
                     paddingHorizontal: 5,
                     paddingVertical: 2,
                     borderRadius: 5,
-                    zIndex: 10, 
+                    zIndex: 10,
                 }}
             >
                 {review.fecha_publicacion.split("T")[0]}
             </Text>
 
-            <Text style={{ marginTop: 10, fontWeight: "bold" }}>
-                {review.usuario_info?.nombre}
+            <Text
+                style={{
+                    marginTop: 10,
+                    fontWeight: "bold",
+                    color: review.verificado ? "#238ed7" : "",
+                }}
+            >
+                {review.usuario_info?.nombre + " "}
+                {review.verificado && (
+                    <FontAwesome name="check-circle" size={15} />
+                )}
             </Text>
             <View style={{ position: "absolute", top: 10, right: 10 }}>
                 <Stars value={review.puntuacion} />

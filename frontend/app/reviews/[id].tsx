@@ -4,7 +4,10 @@ import Review from "@/components/Review";
 import Stars from "@/components/Stars";
 import Styles from "@/globalStyles/styles";
 import { useSession } from "@/hooks/ctx";
-import { calificarEstablecimiento, getValoracionesPorLocal } from "@/services/VisitasService";
+import {
+    calificarEstablecimiento,
+    getValoracionesPorLocal,
+} from "@/services/VisitasService";
 import { useLocalSearchParams } from "expo-router";
 import { ReviewType } from "@/utils/Review";
 import { FontAwesome } from "@expo/vector-icons";
@@ -75,10 +78,10 @@ const reseñas = () => {
         }
     };
     const verificarCodigo = () => {
-        const texto = codigo.replace('-', '')
+        const texto = codigo.replace("-", "");
         if (texto.match("^[0-9A-Z]{8}$")) {
             setVerificado(true);
-            setShowVerificar(false)
+            setShowVerificar(false);
             handleSubmit();
         } else {
             setVerificado(false);
@@ -96,16 +99,31 @@ const reseñas = () => {
                 <Modal transparent>
                     <View style={styles.modalBackground}>
                         <View style={styles.modalContent}>
-                            <Pressable onPress={() => setShowVerificar(false)} style={styles.closeButton}>
-                                <FontAwesome name="close" size={20} color="#402158" />
+                            <Pressable
+                                onPress={() => setShowVerificar(false)}
+                                style={styles.closeButton}
+                            >
+                                <FontAwesome
+                                    name="close"
+                                    size={20}
+                                    color="#402158"
+                                />
                             </Pressable>
-                            <Text style={Styles.linkText}>Código de verificación</Text>
+                            <Text style={Styles.linkText}>
+                                Código de verificación
+                            </Text>
                             <TextInput
                                 style={Styles.input}
                                 value={codigo}
                                 onChangeText={(e) => {
                                     if (e.length === 5 && codigo.length === 4) {
-                                        setCodigo(codigo + '-' + e.charAt(e.length - 1).toUpperCase());
+                                        setCodigo(
+                                            codigo +
+                                                "-" +
+                                                e
+                                                    .charAt(e.length - 1)
+                                                    .toUpperCase()
+                                        );
                                     } else if (
                                         e.length === 5 &&
                                         e[e.length - 1] === "-"
@@ -117,9 +135,13 @@ const reseñas = () => {
                                 }}
                                 placeholder="XXXX-XXXX"
                             />
-                            {verificado === false && <ErrorText error="Código inválido" />}
+                            {verificado === false && (
+                                <ErrorText error="Código inválido" />
+                            )}
                             {verificado === true && (
-                                <Text style={styles.successText}>Código validado</Text>
+                                <Text style={styles.successText}>
+                                    Código validado
+                                </Text>
                             )}
                             <Pressable
                                 style={Styles.button}
@@ -140,20 +162,38 @@ const reseñas = () => {
                 ))}
             </ScrollView>
             <View style={styles.commentSection}>
-                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                <View
+                    style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                    }}
+                >
                     <Text style={styles.sectionTitle}>Comentar</Text>
-                    <Pressable onPress={() => setShowVerificar(true)}>
+                    <Pressable
+                        style={{ flexDirection: "row" }}
+                        onPress={() => setShowVerificar(true)}
+                    >
+                        <Text
+                            style={{
+                                color: verificado ? "#238ed7" : "#A9A9A9",
+                            }}
+                        >
+                            {verificado ? "Verificado " : "Verificar "}
+                        </Text>
                         <FontAwesome
-                            name="star"
+                            name="check-circle"
                             size={24}
-                            color={verificado ? "#402158" : "#A9A9A9"}
+                            color={verificado ? "#238ed7" : "#A9A9A9"}
                         />
                     </Pressable>
                 </View>
                 <View style={styles.commentHeader}>
                     <Image
                         source={
-                            (session?.imagen_url && { uri: session.imagen_url }) ||
+                            (session?.imagen_url && {
+                                uri: session.imagen_url,
+                            }) ||
                             require("../../assets/images/default-profile.png")
                         }
                         style={styles.profileImage}
@@ -179,8 +219,8 @@ const reseñas = () => {
 const styles = StyleSheet.create({
     commentHeader: {
         flexDirection: "row",
-        alignItems: "center", 
-        marginBottom: 10, 
+        alignItems: "center",
+        marginBottom: 10,
     },
     successText: {
         color: "#28A745",
@@ -245,7 +285,7 @@ const styles = StyleSheet.create({
         height: 50,
         borderRadius: 25,
         marginBottom: 10,
-        marginRight:10,
+        marginRight: 10,
     },
     textInput: {
         borderWidth: 1,
