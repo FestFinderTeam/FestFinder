@@ -12,21 +12,26 @@ class RegistrarValoracion(APIView):
         establecimiento_id = request.data.get("establecimiento")
         
         # Verificar si existe una visita registrada
-        if not Visita.objects.filter(id_usuario_fk=usuario_id, id_establecimiento_visitado_fk=establecimiento_id).exists():
-            return Response(
-                {"error": "No se puede registrar la valoración. El usuario no visito el local."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        #if not Visita.objects.filter(id_usuario_fk=usuario_id, id_establecimiento_visitado_fk=establecimiento_id).exists():
+        #    return Response(
+        #        {"error": "No se puede registrar la valoración. El usuario no visito el local."},
+        #        status=status.HTTP_400_BAD_REQUEST
+        #    )
         
         # Buscar si ya existe una valoración para este usuario y evento
-        try:
-            valoracion_existente = ValoracionesPorEstablecimiento.objects.get(usuario=usuario_id, establecimiento=establecimiento_id)
-            serializer = ValoracionEstablecimientoSerializer(valoracion_existente, data=request.data, partial=True)
+        valoracion_existente = ValoracionEstablecimiento.objects.filter(usuario=usuario_id, establecimiento=establecimiento_id).first()
+        if valoracion_existente:
+                # Update existing rating
+            serializer = ValoracionEstablecimientoSerializer(
+                valoracion_existente, 
+                data=request.data, 
+                partial=True
+            )
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except ValoracionesPorEstablecimiento.DoesNotExist:
+        else:
             # Crear una nueva valoración si no existe
             serializer = ValoracionEstablecimientoSerializer(data=request.data)
             if serializer.is_valid():

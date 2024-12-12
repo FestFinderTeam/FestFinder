@@ -23,6 +23,8 @@ import {
     getEstablecimientosSimilares,
     getEventosPorEstablecimiento,
 } from "@/services/establecimientosServices";
+import { calificarEstablecimiento } from "@/services/VisitasService";
+
 import EventItem from "@/components/EventItem";
 import GoogleMap from "@/components/GoogleMap";
 import LoadingScreen from "@/components/Loading";
@@ -240,6 +242,26 @@ const Place = () => {
     }, []);
 
     const handleCalificar = () => {
+        const data = {
+                    puntuacion: calificacion,
+                    comentario: textoCalificacion,
+                    usuario: session?.id_usuario,
+                    establecimiento: params.id,
+                };
+                console.log(data);
+                const valoracion = calificarEstablecimiento(
+                                                            data.usuario+"",
+                                                            data.establecimiento+"",
+                                                            data.puntuacion,
+                                                            data.comentario
+                                                        )
+                setLoading(true);
+                try {
+                } catch (e) {
+                    console.error(e);
+                } finally {
+                    setLoading(false);
+                }
         alert(`Calificación: ${calificacion}, Reseña: ${textoCalificacion}`);
     };
 
