@@ -7,9 +7,10 @@ import Styles from "@/globalStyles/styles";
 interface Props {
     review: ReviewType;
 }
+
 const Review = ({ review }: Props) => {
     return (
-        <View>
+        <View style={{ position: "relative" }}>
             <Image
                 source={
                     (review.usuario_info?.imagen_detail && {
@@ -17,13 +18,32 @@ const Review = ({ review }: Props) => {
                     }) ||
                     require("../assets/images/default-profile.png")
                 }
-                style={Styles.imageProfile}
+                style={[Styles.imageProfile, { marginTop: 30 }]} 
             />
-            <Text>{review.usuario_info?.nombre}</Text>
-            <View style={{ flexDirection: "row" }}>
+            <Text
+                style={{
+                    position: "absolute",
+                    top: 10, 
+                    left: 10,
+                    fontSize: 12,
+                    color: "#A9A9A9",
+                    fontWeight: "bold",
+                    backgroundColor: "rgba(255, 255, 255, 0.6)",
+                    paddingHorizontal: 5,
+                    paddingVertical: 2,
+                    borderRadius: 5,
+                    zIndex: 10, 
+                }}
+            >
+                {review.fecha_publicacion}
+            </Text>
+
+            <Text style={{ marginTop: 10, fontWeight: "bold" }}>
+                {review.usuario_info?.nombre}
+            </Text>
+            <View style={{ position: "absolute", top: 10, right: 10 }}>
                 <Stars value={review.puntuacion} />
             </View>
-            <Text>{review.fecha_publicacion}</Text>
             <Text>{review.comentario}</Text>
         </View>
     );

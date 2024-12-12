@@ -6,7 +6,10 @@ import Styles from "@/globalStyles/styles";
 import { useSession } from "@/hooks/ctx";
 import { calificarEstablecimiento, getValoracionesPorLocal } from "@/services/VisitasService";
 import { useLocalSearchParams } from "expo-router";
+import { ReviewType } from "@/utils/Review";
+import { FontAwesome } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
+import ErrorText from "@/components/ErrorText";
 import {
     Button,
     Image,
@@ -16,6 +19,7 @@ import {
     TextInput,
     View,
     StyleSheet,
+    Modal,
 } from "react-native";
 
 const reseñas = () => {
@@ -25,6 +29,9 @@ const reseñas = () => {
     const [reviews, setReviews] = useState([]);
     const { session } = useSession();
     const [loading, setLoading] = useState(false);
+    const [verificado, setVerificado] = useState<boolean | null>();
+    const [showVerificar, setShowVerificar] = useState(false);
+    const [codigo, setCodigo] = useState("");
 
     const fetchReviews = async () => {
         const { id } = params;
@@ -67,6 +74,16 @@ const reseñas = () => {
             setLoading(false);
         }
     };
+    const verificarCodigo = () => {
+        const texto = codigo.replace('-', '')
+        if (texto.match("^[0-9A-Z]{8}$")) {
+            setVerificado(true);
+            setShowVerificar(false)
+            handleSubmit();
+        } else {
+            setVerificado(false);
+        }
+    };
 
     if (loading) {
         return <LoadingScreen />;
@@ -75,6 +92,45 @@ const reseñas = () => {
     return (
         <>
             <Header title="Reseñas" />
+            {showVerificar && (
+                <Modal transparent>
+                    <View style={styles.modalBackground}>
+                        <View style={styles.modalContent}>
+                            <Pressable onPress={() => setShowVerificar(false)} style={styles.closeButton}>
+                                <FontAwesome name="close" size={20} color="#402158" />
+                            </Pressable>
+                            <Text style={Styles.linkText}>Código de verificación</Text>
+                            <TextInput
+                                style={Styles.input}
+                                value={codigo}
+                                onChangeText={(e) => {
+                                    if (e.length === 5 && codigo.length === 4) {
+                                        setCodigo(codigo + '-' + e.charAt(e.length - 1).toUpperCase());
+                                    } else if (
+                                        e.length === 5 &&
+                                        e[e.length - 1] === "-"
+                                    ) {
+                                        setCodigo(e.slice(0, -1));
+                                    } else {
+                                        setCodigo(e.toUpperCase());
+                                    }
+                                }}
+                                placeholder="XXXX-XXXX"
+                            />
+                            {verificado === false && <ErrorText error="Código inválido" />}
+                            {verificado === true && (
+                                <Text style={styles.successText}>Código validado</Text>
+                            )}
+                            <Pressable
+                                style={Styles.button}
+                                onPress={verificarCodigo}
+                            >
+                                <Text style={Styles.buttonText}>Verificar</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                </Modal>
+            )}
             <ScrollView contentContainerStyle={styles.scrollViewContainer}>
                 <Text style={styles.sectionTitle}>Comentarios</Text>
                 {reviews.map((review, index) => (
@@ -84,15 +140,27 @@ const reseñas = () => {
                 ))}
             </ScrollView>
             <View style={styles.commentSection}>
-                <Text style={styles.sectionTitle}>Comentar</Text>
-                <Image
-                    source={
-                        (session?.imagen_url && { uri: session.imagen_url }) ||
-                        require("../../assets/images/default-profile.png")
-                    }
-                    style={styles.profileImage}
-                />
-                <Stars value={calificacion} setValue={setCalificacion} />
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                    <Text style={styles.sectionTitle}>Comentar</Text>
+                    <Pressable onPress={() => setShowVerificar(true)}>
+                        <FontAwesome
+                            name="star"
+                            size={24}
+                            color={verificado ? "#402158" : "#A9A9A9"}
+                        />
+                    </Pressable>
+                </View>
+                <View style={styles.commentHeader}>
+                    <Image
+                        source={
+                            (session?.imagen_url && { uri: session.imagen_url }) ||
+                            require("../../assets/images/default-profile.png")
+                        }
+                        style={styles.profileImage}
+                    />
+                    <Stars value={calificacion} setValue={setCalificacion} />
+                </View>
+
                 <TextInput
                     style={styles.textInput}
                     onChangeText={setComentario}
@@ -109,6 +177,41 @@ const reseñas = () => {
 };
 
 const styles = StyleSheet.create({
+    commentHeader: {
+        flexDirection: "row",
+        alignItems: "center", 
+        marginBottom: 10, 
+    },
+    successText: {
+        color: "#28A745",
+        fontSize: 16,
+        fontWeight: "bold",
+        marginTop: 10,
+        textAlign: "center",
+    },
+    modalBackground: {
+        flex: 1,
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    modalContent: {
+        backgroundColor: "#fff",
+        padding: 20,
+        borderRadius: 10,
+        width: "80%",
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    closeButton: {
+        position: "absolute",
+        top: 10,
+        right: 10,
+    },
     scrollViewContainer: {
         paddingHorizontal: 20,
         paddingBottom: 20,
@@ -142,6 +245,7 @@ const styles = StyleSheet.create({
         height: 50,
         borderRadius: 25,
         marginBottom: 10,
+        marginRight:10,
     },
     textInput: {
         borderWidth: 1,
