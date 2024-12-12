@@ -23,7 +23,7 @@ const Review = ({ review }: Props) => {
             <View style={{ flexDirection: "row" }}>
                 <Stars value={review.puntuacion} />
             </View>
-            <Text>{review.fecha_publicacion}</Text>
+            <Text>{review.fecha_publicacion.split("T")[0]}</Text>
             <Text>{review.comentario}</Text>
         </View>
     );
