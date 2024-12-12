@@ -1,5 +1,5 @@
 import Header from "@/components/Header";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { Link, useLocalSearchParams, type Href } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -51,10 +51,26 @@ const Evento = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const shareOptions: {
         name: string;
-        icon: "whatsapp" | "facebook" | "copy";
+        icon:
+            | "whatsapp"
+            | "facebook"
+            | "copy"
+            | "x-twitter"
+            | "telegram"
+            | "envelope";
         action: () => void;
         color: string;
     }[] = [
+        {
+            name: "Copiar enlace",
+            icon: "copy",
+            action: () => {
+                Clipboard.setString(
+                    `https://fest-finder.vercel.app/eventos/${evento?.id_evento}`
+                );
+            },
+            color: "#fcba03",
+        },
         {
             name: "WhatsApp",
             icon: "whatsapp",
@@ -76,16 +92,37 @@ const Evento = () => {
             color: "#3b5998",
         },
         {
-            name: "Copiar enlace",
-            icon: "copy",
+            name: "X",
+            icon: "x-twitter",
             action: () => {
-                Clipboard.setString(
-                    `https://fest-finder.vercel.app/eventos/${evento?.id_evento}`
+                Linking.openURL(
+                    `https://twitter.com/intent/tweet?url=https://fest-finder.vercel.app/eventos/${evento?.id_evento}`
                 );
             },
-            color: "#fcba03",
+            color: "#1DA1F2",
+        },
+        {
+            name: "Telegram",
+            icon: "telegram",
+            action: () => {
+                Linking.openURL(
+                    `https://t.me/share/url?url=https://fest-finder.vercel.app/eventos/${evento?.id_evento}`
+                );
+            },
+            color: "#0088cc",
+        },
+        {
+            name: "Correo Electrónico",
+            icon: "envelope",
+            action: () => {
+                Linking.openURL(
+                    `mailto:?subject=Mira este evento&body=https://fest-finder.vercel.app/eventos/${evento?.id_evento}`
+                );
+            },
+            color: "#D44638",
         },
     ];
+
     const { session } = useSession();
     const [ejemplo, setEjemplo] = useState<any | null>(null);
     const params = useLocalSearchParams();
@@ -138,7 +175,7 @@ const Evento = () => {
         const colorEstrella = "#FFA500";
 
         return estrellas.map((item, index) => (
-            <FontAwesome
+            <FontAwesome6
                 key={index}
                 name="star"
                 size={18}
@@ -273,7 +310,7 @@ const Evento = () => {
                         marginTop: "2%",
                     }}
                 >
-                    <FontAwesome name="circle" style={{ color: "#402158" }} />
+                    <FontAwesome6 name="circle" style={{ color: "#402158" }} />
                     <Text style={{ color: "#402158", marginLeft: 5 }}>
                         {evento.id_establecimiento_detail.direccion}
                     </Text>
@@ -431,7 +468,7 @@ const Evento = () => {
                             backgroundColor: "#402158",
                         }}
                     >
-                        <FontAwesome name="share" size={20} color="white" />
+                        <FontAwesome6 name="share" size={20} color="white" />
                     </Pressable>
 
                     <Modal
@@ -504,7 +541,7 @@ const Evento = () => {
                                             width: "100%",
                                         }}
                                     >
-                                        <FontAwesome
+                                        <FontAwesome6
                                             name={option.icon}
                                             size={24}
                                             color={option.color}
@@ -621,7 +658,7 @@ const Evento = () => {
                                 }}
                                 style={{ marginRight: 5 }}
                             >
-                                <FontAwesome
+                                <FontAwesome6
                                     name="star"
                                     size={18}
                                     color={
