@@ -87,6 +87,7 @@ const Register = () => {
 				alert("Usuario registrado");
 			} else {
 				alert("Error al registrar");
+				console.log(await response.json());
 			}
 		} catch (error) {
 			console.error(error);

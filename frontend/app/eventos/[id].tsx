@@ -19,6 +19,7 @@ import { calificarEvento } from "@/services/AsistenciaService";
 import { getEstablecimientoPorId } from "@/services/establecimientosServices";
 import { ActivityIndicator } from "react-native-paper";
 import { useSession } from "@/hooks/ctx";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { Modal, TouchableOpacity } from "react-native";
 export interface Evento {
@@ -52,6 +53,7 @@ const Evento = () => {
         name: string;
         icon: "whatsapp" | "facebook" | "copy";
         action: () => void;
+        color: string;
     }[] = [
         {
             name: "WhatsApp",
@@ -61,6 +63,7 @@ const Evento = () => {
                     `https://wa.me/?text=https://fest-finder.vercel.app/eventos/${evento?.id_evento}`
                 );
             },
+            color: "#25D366",
         },
         {
             name: "Facebook",
@@ -70,14 +73,17 @@ const Evento = () => {
                     `https://www.facebook.com/sharer/sharer.php?u=https://fest-finder.vercel.app/eventos/${evento?.id_evento}`
                 );
             },
+            color: "#3b5998",
         },
         {
             name: "Copiar enlace",
             icon: "copy",
             action: () => {
-                // Clipboard.setString(`https://fest-finder.vercel.app/eventos/${evento?.id_evento}`);
-                // crear nueva build para que funcione
+                Clipboard.setString(
+                    `https://fest-finder.vercel.app/eventos/${evento?.id_evento}`
+                );
             },
+            color: "#fcba03",
         },
     ];
     const { session } = useSession();
@@ -439,27 +445,51 @@ const Evento = () => {
                                 flex: 1,
                                 justifyContent: "center",
                                 alignItems: "center",
-                                backgroundColor: "rgba(0,0,0,0.5)",
+                                backgroundColor: "rgba(0,0,0,0.2)",
                             }}
                         >
                             <View
                                 style={{
-                                    width: 300,
+                                    width: "90%",
                                     padding: 20,
                                     backgroundColor: "white",
                                     borderRadius: 10,
                                     alignItems: "center",
+                                    shadowColor: "#000",
+                                    shadowOffset: { width: 0, height: 2 },
+                                    shadowOpacity: 0.25,
+                                    shadowRadius: 4,
+                                    elevation: 5,
                                 }}
                             >
-                                <Text
+                                <View
                                     style={{
-                                        fontSize: 18,
-                                        fontWeight: "bold",
-                                        marginBottom: 20,
+                                        flexDirection: "row",
+                                        alignContent: "center",
+                                        alignItems: "center",
+                                        justifyContent: "space-between",
+                                        width: "100%",
                                     }}
                                 >
-                                    CompartirEvento
-                                </Text>
+                                    <Text
+                                        style={{
+                                            fontSize: 18,
+                                            fontWeight: "bold",
+                                        }}
+                                    >
+                                        Compartir evento
+                                    </Text>
+
+                                    <Pressable
+                                        onPress={() => setModalVisible(false)}
+                                    >
+                                        <Ionicons
+                                            name="close-outline"
+                                            size={24}
+                                            color="black"
+                                        />
+                                    </Pressable>
+                                </View>
                                 {shareOptions.map((option, index) => (
                                     <TouchableOpacity
                                         key={index}
@@ -477,31 +507,19 @@ const Evento = () => {
                                         <FontAwesome
                                             name={option.icon}
                                             size={24}
-                                            color="#402158"
+                                            color={option.color}
                                         />
                                         <Text
                                             style={{
                                                 marginLeft: 10,
                                                 fontSize: 16,
+                                                color: option.color,
                                             }}
                                         >
                                             {option.name}
                                         </Text>
                                     </TouchableOpacity>
                                 ))}
-                                <Pressable
-                                    onPress={() => setModalVisible(false)}
-                                    style={{
-                                        marginTop: 20,
-                                        padding: 10,
-                                        backgroundColor: "#402158",
-                                        borderRadius: 5,
-                                    }}
-                                >
-                                    <Text style={{ color: "white" }}>
-                                        Close
-                                    </Text>
-                                </Pressable>
                             </View>
                         </View>
                     </Modal>
