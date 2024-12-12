@@ -56,7 +56,7 @@ const Establecimiento = ({ establecimiento }: Props) => {
                         }}
                     >
                         <FontAwesome name="star" color={"yellow"} />
-                        {establecimiento.calificacion} / 5
+                        {Math.round(establecimiento.calificacion * 10) / 10} / 5
                     </Text>
                 </View>
             </ImageBackground>
