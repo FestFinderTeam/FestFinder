@@ -9,7 +9,7 @@ class Usuario(models.Model):
     p_field = models.CharField(max_length=100, blank=True, null=True)  
     g_id = models.CharField(max_length=100, blank=True, null=True)
     imagen = models.ImageField(upload_to='imagenes/', blank=True, null=True)
-    img_url = models.URLField(blank=True, null=True)
+    imagen_url = models.URLField(blank=True, null=True)
     duenio = models.BooleanField(default=False)
     establecimiento = models.OneToOneField(
         'Establecimiento',  
@@ -26,8 +26,8 @@ def save(self, *args, **kwargs):
         self.p_field = make_password(self.p_field)
         
     # Si img_url es nulo pero imagen no lo es, copiar la URL de imagen
-    if not self.img_url and self.imagen:
-        self.img_url = self.imagen.url  # Obtiene la URL generada por el backend de almacenamiento
+    if not self.imagen_url and self.imagen:
+        self.imagen_url = self.imagen.url  # Obtiene la URL generada por el backend de almacenamiento
     
     super().save(*args, **kwargs)
 
