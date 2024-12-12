@@ -40,9 +40,9 @@ class FavoritosDeUnUsuario(APIView):
     def get(self, request, usuario_id, *args, **kwargs):
         favoritos = FavoritosLocal.objects.filter(usuario=usuario_id)
         
-        # Serializa la información del establecimiento en lugar de los IDs
+        # Serializa la información de establecimientos de esos IDs
         establecimientos = [
-            {'establecimiento': EstablecimientoSerializer(favorito.establecimiento).data}
+            EstablecimientoSerializer(favorito.establecimiento).data
             for favorito in favoritos
         ]
         
