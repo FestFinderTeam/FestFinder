@@ -18,7 +18,7 @@ const Review = ({ review }: Props) => {
                     }) ||
                     require("../assets/images/default-profile.png")
                 }
-                style={[Styles.imageProfile, { marginTop: 30 }]} 
+                style={[Styles.imageProfile, { marginTop: 40 }]} 
             />
             <Text
                 style={{
@@ -28,14 +28,13 @@ const Review = ({ review }: Props) => {
                     fontSize: 12,
                     color: "#A9A9A9",
                     fontWeight: "bold",
-                    backgroundColor: "rgba(255, 255, 255, 0.6)",
                     paddingHorizontal: 5,
                     paddingVertical: 2,
                     borderRadius: 5,
                     zIndex: 10, 
                 }}
             >
-                {review.fecha_publicacion}
+                {review.fecha_publicacion.split("T")[0]}
             </Text>
 
             <Text style={{ marginTop: 10, fontWeight: "bold" }}>
