@@ -1,4 +1,5 @@
 import logging
+from urllib.parse import unquote
 
 from django.db import IntegrityError
 from rest_framework.views import APIView
@@ -7,8 +8,7 @@ from rest_framework import status
 from django.contrib.auth.hashers import check_password
 from ..utils import ResponseFormatter
 
-from api.models import Imagen
-from ..models import Usuario
+from ..models import Usuario, Imagen
 from ..serializers import UsuarioSerializer
 
 logger = logging.getLogger(__name__)
@@ -61,7 +61,8 @@ class LoginUsuario(APIView):
                 # Si no existe, crear el usuario automáticamente con los datos recibidos
                 logger.warning(f"Usuario con Google ID {g_p} no encontrado, creando usuario nuevo.")
                 nombre = request.data.get('nombre')
-                #imagen_url = request.data.get('imagen')  # URL de la foto
+                imagen_url = request.data.get('photo')  # URL de la foto
+
                 if not nombre:
                     return Response({"detail": "Nombre y foto son requeridos para el registro."}, status=status.HTTP_400_BAD_REQUEST)
                 
@@ -71,7 +72,7 @@ class LoginUsuario(APIView):
                         nombre=nombre,
                         email=email,
                         g_id=g_p,
-                        #imagen=imagen,
+                        img_url=imagen_url if imagen_url else None,
                         p_field=None  # No se requiere contraseña para login con Google
                     )
                     usuario.save()

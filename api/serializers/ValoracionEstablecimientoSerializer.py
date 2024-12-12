@@ -13,4 +13,4 @@ class ValoracionEstablecimientoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ValoracionEstablecimiento
-        fields = ['id_valoracion_establecimiento', 'usuario', 'usuario_info', 'establecimiento','puntuacion', 'comentario', 'fecha_publicacion']
+        fields = ['id_valoracion_establecimiento', 'usuario', 'usuario_info', 'establecimiento','puntuacion', 'comentario', 'fecha_publicacion', 'verificado']

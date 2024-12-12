@@ -12,13 +12,11 @@ class RegistrarValoracion(APIView):
         establecimiento_id = request.data.get("establecimiento")
         calificacion = request.data.get("puntuacion")
         comentario = request.data.get("comentario", "")
+        verificado = False
         
         # Verificar si existe una visita registrada
-        #if not Visita.objects.filter(id_usuario_fk=usuario_id, id_establecimiento_visitado_fk=establecimiento_id).exists():
-        #    return Response(
-        #        {"error": "No se puede registrar la valoración. El usuario no visito el local."},
-        #        status=status.HTTP_400_BAD_REQUEST
-        #    )
+        if not Visita.objects.filter(id_usuario_fk=usuario_id, id_establecimiento_visitado_fk=establecimiento_id).exists():
+            verificado = True
         
         # Buscar si ya existe una valoración para este usuario y evento
         valoracion_existente = ValoracionEstablecimiento.objects.filter(usuario=usuario_id, establecimiento=establecimiento_id).first()

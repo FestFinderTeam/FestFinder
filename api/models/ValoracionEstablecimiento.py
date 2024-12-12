@@ -9,3 +9,4 @@ class ValoracionEstablecimiento(models.Model):
     puntuacion = models.IntegerField()
     comentario = models.CharField(max_length=50, blank=True)
     fecha_publicacion = models.DateTimeField(auto_now_add=True)
+    verificado = models.BooleanField(default=False)

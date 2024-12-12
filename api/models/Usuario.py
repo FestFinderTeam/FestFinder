@@ -10,10 +10,10 @@ class Usuario(models.Model):
     telefono = models.CharField(max_length=20, blank=True, null=True)
     p_field = models.CharField(max_length=100, blank=True, null=True)  
     g_id = models.CharField(max_length=100, blank=True, null=True)
-    imagen = models.ForeignKey(Imagen, on_delete=models.CASCADE,blank=True, null=True)
+    imagen = models.ImageField(upload_to='imagenes/', blank=True, null=True)
     duenio = models.BooleanField(default=False)
     establecimiento = models.OneToOneField(
-        'Establecimiento',  # Usar comillas para evitar dependencia circular
+        'Establecimiento',  
         on_delete=models.SET_NULL,
         blank=True,
         null=True,

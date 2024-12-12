@@ -14,10 +14,7 @@ class RegistrarValoracionEvento(APIView):
         
         # Verificar si existe una asistencia registrada
         if not Asistencia.objects.filter(id_usuario_fk=usuario_id, id_evento_asistido_fk=evento_id).exists():
-            return Response(
-                {"error": "No se puede registrar la valoración. El usuario no asistió al evento."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            verificado = True
         
         # Buscar si ya existe una valoración para este usuario y evento
         try:
