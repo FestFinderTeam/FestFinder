@@ -13,8 +13,8 @@ const Review = ({ review }: Props) => {
         <View style={{ position: "relative" }}>
             <Image
                 source={
-                    (review.usuario_info?.imagen_detail && {
-                        uri: review.usuario_info?.imagen_detail?.imagen,
+                    (review.usuario_info?.imagen_url && {
+                        uri: review.usuario_info?.imagen_url,
                     }) ||
                     require("../assets/images/default-profile.png")
                 }

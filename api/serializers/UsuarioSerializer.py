@@ -9,7 +9,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         fields = [
-            'id_usuario', 'nombre', 'email', 'telefono', 'p_field', 'g_id', 'imagen','duenio', 'establecimiento'
+            'id_usuario', 'nombre', 'email', 'telefono', 'p_field', 'g_id', 'imagen', 'imagen_url', 'duenio', 'establecimiento'
         ]
 
     def validate_p_field(self, value):

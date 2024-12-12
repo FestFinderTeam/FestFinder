@@ -36,9 +36,9 @@ const LoginGoogle = () => {
             const photo = user.data?.user.photo;
             console.log(data+"  -  -  "+photo);
 
-            /*
+            
             const API_URL = process.env.EXPO_PUBLIC_API_URL;
-            const response = await fetch(`http://192.168.100.3:8000//api/logear_usuario/`, {
+            const response = await fetch(`${API_URL}/api/logear_usuario/`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
@@ -49,7 +49,7 @@ const LoginGoogle = () => {
                 //console.log("usuario", user, "imagen", imagen);
                 signIn({ ...user, imagen_url: imagen ? imagen : photo });
                 router.replace("/");
-            }*/
+            }
         } catch (e) {
             console.error(e);
         } finally {
