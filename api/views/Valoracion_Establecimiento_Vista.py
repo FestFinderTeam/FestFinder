@@ -10,6 +10,8 @@ class RegistrarValoracion(APIView):
 
         usuario_id = request.data.get("usuario")
         establecimiento_id = request.data.get("establecimiento")
+        calificacion = request.data.get("puntuacion")
+        comentario = request.data.get("comentario", "")
         
         # Verificar si existe una visita registrada
         #if not Visita.objects.filter(id_usuario_fk=usuario_id, id_establecimiento_visitado_fk=establecimiento_id).exists():
@@ -21,10 +23,17 @@ class RegistrarValoracion(APIView):
         # Buscar si ya existe una valoración para este usuario y evento
         valoracion_existente = ValoracionEstablecimiento.objects.filter(usuario=usuario_id, establecimiento=establecimiento_id).first()
         if valoracion_existente:
-                # Update existing rating
+            print('existe')
+                # Actualizar existente
+            data = {
+                "usuario": usuario_id,
+                "establecimiento": establecimiento_id,
+                "puntuacion": calificacion,
+                "comentario": comentario
+            }    
             serializer = ValoracionEstablecimientoSerializer(
                 valoracion_existente, 
-                data=request.data, 
+                data=data, 
                 partial=True
             )
             if serializer.is_valid():
