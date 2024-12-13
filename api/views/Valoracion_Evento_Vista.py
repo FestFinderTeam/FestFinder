@@ -12,10 +12,6 @@ class RegistrarValoracionEvento(APIView):
         evento_id = request.data.get("evento")
         print(request.data)
         
-        # Verificar si existe una asistencia registrada
-        if not Asistencia.objects.filter(id_usuario_fk=usuario_id, id_evento_asistido_fk=evento_id).exists():
-            verificado = True
-        
         # Buscar si ya existe una valoración para este usuario y evento
         try:
             valoracion_existente = ValoracionEvento.objects.get(usuario=usuario_id, evento=evento_id)
