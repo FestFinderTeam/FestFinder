@@ -5,8 +5,10 @@ import { useState } from "react";
 import LoginGoogle from "@/components/LoginGoogle";
 import { API_URL } from "@/constants/Url";
 import { FontAwesome } from '@expo/vector-icons';
-
+import { router } from "expo-router";
+import { useSession } from "@/hooks/ctx";
 const Register = () => {
+	const { signIn } = useSession();
 	const [nombre, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [p_field, setPassword] = useState("");
@@ -84,7 +86,27 @@ const Register = () => {
 			if (response.ok) {
 				const userData = await response.json();
 				console.log("Usuario registrado:", userData);
-				alert("Usuario registrado");
+				const {
+                    email,
+                    id_usuario,
+                    imagen,
+                    nombre,
+                    telefono,
+                    duenio,
+                    establecimiento,
+                } = userData;
+				 let imagen_url = "";
+								const fullImageUrl = `${API_URL}${imagen}`; 
+								imagen_url = fullImageUrl; 
+				signIn({
+                    id_usuario,
+                    imagen_url,
+                    nombre,
+                    email,
+                    telefono,
+                    duenio,
+                    establecimiento,
+                });
 			} else {
 				alert("Error al registrar");
 				console.log(await response.json());

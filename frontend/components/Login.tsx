@@ -74,7 +74,6 @@ const Login = () => {
                 let imagen_url = "";
                 const fullImageUrl = `${API_URL}${imagen}`; // URL completa de la imagen
                 imagen_url = fullImageUrl; // Guarda la URI de la imagen
-                
                 signIn({
                     id_usuario,
                     imagen_url,
