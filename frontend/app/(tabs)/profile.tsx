@@ -14,6 +14,9 @@ const profile = () => {
 	useEffect(() => {
 		if (!session) {
 			router.push("/");
+		}else {
+			console.log(session);
+			
 		}
 	}, [session]);
 
