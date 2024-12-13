@@ -357,7 +357,7 @@ const Place = () => {
 
             <ScrollView style={styles.container}>
                 <ImageViewing
-                    images={fotos}
+                    images={fotos.map(foto=>{return {uri:foto.imagen}})}
                     imageIndex={imageIndex}
                     visible={visibleImages}
                     onRequestClose={() => setVisibleImages(false)}
