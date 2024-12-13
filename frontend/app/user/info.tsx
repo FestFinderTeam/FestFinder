@@ -44,9 +44,14 @@ const info = () => {
                     }}
                 >
                     <Image
-                        source={perfil ? { uri: perfil.imagen_url } : defaultImage}
+                        source={
+                            perfil && perfil.imagen_url
+                                ? { uri: perfil.imagen_url }
+                                : defaultImage
+                        }
                         style={{ width: "100%", height: "100%" }}
                     />
+
                     <TouchableOpacity
                         style={{
                             position: "absolute",
@@ -82,13 +87,13 @@ const info = () => {
                     }}
                 >
                     <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 4 }}>
-                        <Text style={[Styles.title, {fontSize: 20 , marginBottom:2}]} >Nombre completo</Text>
+                        <Text style={[Styles.title, { fontSize: 20, marginBottom: 2 }]} >Nombre completo</Text>
                     </View>
-                    <Text style={[{ marginBottom: 20, fontWeight: "bold", color: "black"  }]}>{perfil?.nombre}</Text>
+                    <Text style={[{ marginBottom: 20, fontWeight: "bold", color: "black" }]}>{perfil?.nombre}</Text>
                     <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 4 }}>
-                        <Text style={[Styles.title,{fontSize: 20, marginBottom:2 }]}>E-mail</Text>
+                        <Text style={[Styles.title, { fontSize: 20, marginBottom: 2 }]}>E-mail</Text>
                     </View>
-                    <Text style={[{ marginBottom: 10, fontWeight: "bold", color: "black"  }]}>{perfil?.email}</Text>
+                    <Text style={[{ marginBottom: 10, fontWeight: "bold", color: "black" }]}>{perfil?.email}</Text>
                 </View>
             </View>
         </>
