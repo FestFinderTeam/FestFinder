@@ -112,7 +112,6 @@ const Register = () => {
                     imagen,
                     nombre,
                     telefono,
-                    duenio,
                     establecimiento,
                 } = userData;
                 let imagen_url = "";
@@ -125,7 +124,6 @@ const Register = () => {
                     nombre,
                     email,
                     telefono,
-                    duenio,
                     establecimiento,
                 });
             } else {

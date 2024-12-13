@@ -182,22 +182,17 @@ const preview = () => {
       // Procesar la respuesta
       const result = await response.json();
       console.log("Establecimiento registrado:", result);
+      const {id} = result
 
       if (session) {
-        const { id_usuario, nombre, email, imagen_url, duenio, telefono, establecimiento } = session;
         signIn({
-          id_usuario: id_usuario,
-          establecimiento: establecimiento,
-          imagen_url: imagen_url,
-          nombre: nombre,
-          email: email,
-          telefono: telefono,
-          duenio: true,
+          ...session,
+          establecimiento: id,
         });
       }
       
 
-      router.navigate('/')
+      //router.navigate('/')
     } catch (error) {
       if (error instanceof Error) {
         console.error(
