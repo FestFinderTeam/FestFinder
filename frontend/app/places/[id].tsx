@@ -823,7 +823,7 @@ const Place = () => {
                                     <Image
                                         source={
                                             item
-                                                ? item
+                                                ? {uri: item.imagen}
                                                 : require("../../assets/images/default.jpg")
                                         }
                                         style={{
