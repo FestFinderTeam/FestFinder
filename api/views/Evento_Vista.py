@@ -8,8 +8,7 @@ from ..serializers import EventoSerializer
 from datetime import date, datetime, timedelta
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.db.models import Q
-
-
+from api.utils import enviar_notificaciones_establecimiento
 
 # Vista para crear un evento
 class CrearEvento(APIView):

@@ -47,6 +47,7 @@ from api.views.Valoracion_Evento_Vista import (
 )
 
 from api.views.Usuario_Vista import actualizar_token
+from api.utils import prueba_enviar_notificaciones
 
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -240,6 +241,8 @@ urlpatterns = [
     ),
     
     path('api/actualizar_token/', actualizar_token, name='actualizar_token'),
+    
+    path('api/enviar-notificacion/', prueba_enviar_notificaciones, name='enviar_notificacion'),
 
     path('api/logear_usuario/', LoginUsuario.as_view(), name='logear-usuario'),
     path('api/imagen/<int:imagen_id>/', ImagenDetailView.as_view(), name='imagen-detalle'),
