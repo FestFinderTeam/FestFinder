@@ -33,6 +33,9 @@ class Establecimiento(models.Model):
     #Campo de calificacion conseguido por consulta de las valoraciones del establecimiento promediadas
     @property
     def calificacion(self):
-        avg_calificacion = ValoracionEstablecimiento.objects.filter(establecimiento=self).aggregate(Avg('puntuacion'))['puntuacion__avg']
+        avg_calificacion = (
+            ValoracionEstablecimiento.objects.filter(establecimiento=self, verificado=True)
+                        .aggregate(Avg('puntuacion'))['puntuacion__avg']
+        )
         return avg_calificacion if avg_calificacion is not None else 0
 
