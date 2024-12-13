@@ -7,6 +7,11 @@ from ..serializers import GeneroEventoSerializer
 class GaleriaPorEvento(APIView):
     def get(self, request, id, *args, **kwargs):
         galerias = GaleriaEvento.objects.filter(establecimiento=id)
+        if not galerias.exists():
+            return Response(
+                {"message": "No hay imagenes en la galeria de este establecimiento."},
+                status=status.HTTP_200_OK
+            )
         serializer = GeneroEventoSerializer(galerias, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

@@ -35,7 +35,7 @@ class RecuperarGaleriaPorEstablecimiento(APIView):
     def get(self, request, id_establecimiento, *args, **kwargs):
         galerias = GaleriaEstablecimiento.objects.filter(establecimiento=id_establecimiento)
         if not galerias.exists():
-            return Response({"detail": "No se encontraron registros para este establecimiento."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "No hay imagenes en la galeria de este establecimiento."}, status=status.HTTP_200_OK)
         serializer = GaleriaEstablecimientoSerializer(galerias, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
