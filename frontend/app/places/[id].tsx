@@ -34,7 +34,7 @@ import type { EstablecimientoType } from "../(tabs)/mapa";
 import Stars from "@/components/Stars";
 import { days, getDay } from "@/utils/DateTime";
 import { useSession } from "@/hooks/ctx";
-import { marcarFavorito, quitarFavorito } from "@/services/VisitasService";
+import { marcarFavorito, quitarFavorito, registrarVisita } from "@/services/VisitasService";
 
 type Establecimiento = {
     id: number;
@@ -135,22 +135,29 @@ const Place = () => {
             setVerificado(false);
         }
     };
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+        if (!session?.id_usuario || typeof params.id !== "string") return;
+    
         const data = {
             puntuacion: calificacion,
-            usuario: session?.id_usuario,
+            usuario: session.id_usuario,
             establecimiento: params.id,
         };
-        console.log(data);
+    
         setLoading(true);
+    
         try {
+            const visitaResult = await registrarVisita(data.usuario, data.establecimiento);
+    
+            if (visitaResult) {
+                console.log("Visita registrada exitosamente:", visitaResult);
+            }
         } catch (e) {
-            console.error(e);
+            console.error("Error al registrar una visita:", e);
         } finally {
             setLoading(false);
         }
     };
-
     const obtenerEstablecimientosSimialres = async (establecimientoId: any) => {
         setLoading(true);
         const data = await getEstablecimientosSimilares(establecimientoId);
