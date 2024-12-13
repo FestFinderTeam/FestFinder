@@ -34,7 +34,11 @@ import type { EstablecimientoType } from "../(tabs)/mapa";
 import Stars from "@/components/Stars";
 import { days, getDay } from "@/utils/DateTime";
 import { useSession } from "@/hooks/ctx";
-import { marcarFavorito, quitarFavorito, registrarVisita } from "@/services/VisitasService";
+import {
+    marcarFavorito,
+    quitarFavorito,
+    registrarVisita,
+} from "@/services/VisitasService";
 
 type Establecimiento = {
     id: number;
@@ -120,7 +124,10 @@ const Place = () => {
 
     const obtenerDatosEstablecimiento = async (establecimientoId: any) => {
         setLoading(true);
-        const data = await getEstablecimientoPorId(establecimientoId, session?.id_usuario);
+        const data = await getEstablecimientoPorId(
+            establecimientoId,
+            session?.id_usuario
+        );
         console.log("establecimiento", data);
         setLoading(false);
         setEstablecimiento(data);
@@ -137,18 +144,21 @@ const Place = () => {
     };
     const handleSubmit = async () => {
         if (!session?.id_usuario || typeof params.id !== "string") return;
-    
+
         const data = {
             puntuacion: calificacion,
             usuario: session.id_usuario,
             establecimiento: params.id,
         };
-    
+
         setLoading(true);
-    
+
         try {
-            const visitaResult = await registrarVisita(data.usuario, data.establecimiento);
-    
+            const visitaResult = await registrarVisita(
+                data.usuario,
+                data.establecimiento
+            );
+
             if (visitaResult) {
                 console.log("Visita registrada exitosamente:", visitaResult);
             }
@@ -310,7 +320,7 @@ const Place = () => {
             data.establecimiento + "",
             data.puntuacion,
             data.comentario
-        )
+        );
         setLoading(true);
         try {
         } catch (e) {
@@ -327,11 +337,11 @@ const Place = () => {
 
     const removeFavorite = (est_id: String, usr_id: String) => {
         setIsFavorite(false);
-        quitarFavorito(usr_id + "", est_id + "")
+        quitarFavorito(usr_id + "", est_id + "");
     };
     const addFavorite = (est_id: String, usr_id: String) => {
         setIsFavorite(true);
-        marcarFavorito(usr_id + "", est_id + "")
+        marcarFavorito(usr_id + "", est_id + "");
     };
 
     const handleFavorite = () => {
@@ -371,13 +381,13 @@ const Place = () => {
                         location={
                             establecimiento
                                 ? {
-                                    latitude: Number(
-                                        establecimiento.coordenada_y
-                                    ),
-                                    longitude: Number(
-                                        establecimiento.coordenada_x
-                                    ),
-                                }
+                                      latitude: Number(
+                                          establecimiento.coordenada_y
+                                      ),
+                                      longitude: Number(
+                                          establecimiento.coordenada_x
+                                      ),
+                                  }
                                 : null
                         }
                         establecimientos={[
@@ -393,7 +403,9 @@ const Place = () => {
 
             <ScrollView style={styles.container}>
                 <ImageViewing
-                    images={fotos.map(foto => { return { uri: foto.imagen } })}
+                    images={fotos.map((foto) => {
+                        return { uri: foto.imagen };
+                    })}
                     imageIndex={imageIndex}
                     visible={visibleImages}
                     onRequestClose={() => setVisibleImages(false)}
@@ -404,7 +416,7 @@ const Place = () => {
                     animationType="slide"
                     transparent={true}
                     visible={horarioOpened}
-                    onRequestClose={() => { }}
+                    onRequestClose={() => {}}
                 >
                     <View
                         style={{
@@ -654,7 +666,10 @@ const Place = () => {
                             <View
                                 style={{
                                     flexDirection: "row",
-                                    justifyContent: "space-around",
+                                    flexWrap: "wrap",
+                                    justifyContent: "flex-start",
+                                    padding: 10,
+                                    gap: 10,
                                 }}
                             >
                                 {etiquetas &&
@@ -684,7 +699,9 @@ const Place = () => {
                                     <View style={styles.modalBackground}>
                                         <View style={styles.modalContent}>
                                             <Pressable
-                                                onPress={() => setShowVerificar(false)}
+                                                onPress={() =>
+                                                    setShowVerificar(false)
+                                                }
                                                 style={styles.closeButton}
                                             >
                                                 <FontAwesome
@@ -693,28 +710,44 @@ const Place = () => {
                                                     color="#402158"
                                                 />
                                             </Pressable>
-                                            <Text style={[Styles.linkText,{marginBottom:10}]}>
-                                                Ingresa el código de una manilla válida
+                                            <Text
+                                                style={[
+                                                    Styles.linkText,
+                                                    { marginBottom: 10 },
+                                                ]}
+                                            >
+                                                Ingresa el código de una manilla
+                                                válida
                                             </Text>
                                             <TextInput
                                                 style={Styles.input}
                                                 value={codigo}
                                                 onChangeText={(e) => {
-                                                    if (e.length === 5 && codigo.length === 4) {
+                                                    if (
+                                                        e.length === 5 &&
+                                                        codigo.length === 4
+                                                    ) {
                                                         setCodigo(
                                                             codigo +
-                                                            "-" +
-                                                            e
-                                                                .charAt(e.length - 1)
-                                                                .toUpperCase()
+                                                                "-" +
+                                                                e
+                                                                    .charAt(
+                                                                        e.length -
+                                                                            1
+                                                                    )
+                                                                    .toUpperCase()
                                                         );
                                                     } else if (
                                                         e.length === 5 &&
                                                         e[e.length - 1] === "-"
                                                     ) {
-                                                        setCodigo(e.slice(0, -1));
+                                                        setCodigo(
+                                                            e.slice(0, -1)
+                                                        );
                                                     } else {
-                                                        setCodigo(e.toUpperCase());
+                                                        setCodigo(
+                                                            e.toUpperCase()
+                                                        );
                                                     }
                                                 }}
                                                 placeholder="XXXX-XXXX"
@@ -723,7 +756,9 @@ const Place = () => {
                                                 <ErrorText error="Código inválido" />
                                             )}
                                             {verificado === true && (
-                                                <Text style={styles.successText}>
+                                                <Text
+                                                    style={styles.successText}
+                                                >
                                                     Código validado
                                                 </Text>
                                             )}
@@ -731,7 +766,9 @@ const Place = () => {
                                                 style={Styles.button}
                                                 onPress={verificarCodigo}
                                             >
-                                                <Text style={Styles.buttonText}>Verificar</Text>
+                                                <Text style={Styles.buttonText}>
+                                                    Verificar
+                                                </Text>
                                             </Pressable>
                                         </View>
                                     </View>
@@ -745,14 +782,20 @@ const Place = () => {
                                     name="check-circle"
                                     size={24}
                                     color={verificado ? "#238ed7" : "#A9A9A9"}
-                                    style = {{marginLeft: 10}}
+                                    style={{ marginLeft: 10 }}
                                 />
                                 <Text
                                     style={{
-                                        color: verificado ? "#238ed7" : "#A9A9A9", marginLeft: 5, marginTop:1,
+                                        color: verificado
+                                            ? "#238ed7"
+                                            : "#A9A9A9",
+                                        marginLeft: 5,
+                                        marginTop: 1,
                                     }}
                                 >
-                                    {verificado ? "Fuíste a este local " : "Validar asistencia "}
+                                    {verificado
+                                        ? "Fuíste a este local "
+                                        : "Validar asistencia "}
                                 </Text>
                             </Pressable>
                             <Text
