@@ -22,6 +22,7 @@ import {
     getEstablecimientoPorId,
     getEstablecimientosSimilares,
     getEventosPorEstablecimiento,
+    getGaleriaPorEstablecimiento,
 } from "@/services/establecimientosServices";
 import { calificarEstablecimiento } from "@/services/VisitasService";
 
@@ -138,6 +139,15 @@ const Place = () => {
         setProximosEventos(data);
     };
 
+    const obtenerGaleriaEstablecimiento = async (establecimientoId: any) => {
+        setLoading(true);
+        const data = await getGaleriaPorEstablecimiento(establecimientoId);
+        console.log(data);
+        //console.log(data);
+        setLoading(false);
+        setFotos(data);
+    };
+
     useEffect(() => {
         if (establecimiento && establecimiento.etiquetas && !etiquetas) {
             setEtiquetas(establecimiento.etiquetas);
@@ -168,6 +178,7 @@ const Place = () => {
         obtenerDatosEstablecimiento(id);
         obtenerDatosEventos(id);
         obtenerEstablecimientosSimialres(id);
+        obtenerGaleriaEstablecimiento(id);
 
         const horarioAtencion = [
             {
