@@ -40,7 +40,7 @@ const profile = () => {
 
 	if (!session) return null;
 
-	const { nombre, imagen_url, email, duenio, establecimiento } = session;
+	const { nombre, imagen_url, email, establecimiento } = session;
 
 	return (
 		<View>
@@ -100,15 +100,15 @@ const profile = () => {
 				/>
 				<ItemProfile
 					onPress={() => {
-						if (duenio) {
+						if (establecimiento) {
 							router.push("/admin");
 						} else {
 							router.navigate("/business/register_business");
 						}
 					}}
 					color="#7D5683"
-					text={duenio ? "Administrar mi local" : "Registrar establecimiento"}
-					icon={duenio ? "gear" : "cart-plus"}
+					text={establecimiento ? "Administrar mi local" : "Registrar establecimiento"}
+					icon={establecimiento ? "gear" : "cart-plus"}
 					textColor="#787878"
 				/>
 				<ItemProfile

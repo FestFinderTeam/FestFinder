@@ -67,7 +67,6 @@ const Login = () => {
                     imagen,
                     nombre,
                     telefono,
-                    duenio,
                     establecimiento,
                 } = data;
 
@@ -80,7 +79,6 @@ const Login = () => {
                     nombre,
                     email,
                     telefono,
-                    duenio,
                     establecimiento,
                 });
             } else {

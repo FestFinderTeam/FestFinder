@@ -41,7 +41,6 @@ export interface SessionData {
     nombre: string|null;
     email: string|null;
     telefono: string|null;
-    duenio: boolean|null;
     establecimiento: string|null;
 }
 
