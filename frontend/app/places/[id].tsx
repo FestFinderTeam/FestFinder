@@ -5,6 +5,7 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import Styles from "@/globalStyles/styles";
 import moment from "moment";
+import ErrorText from "@/components/ErrorText";
 import ImageViewing from "react-native-image-viewing";
 import {
     ImageBackground,
@@ -99,6 +100,9 @@ const Place = () => {
     const params = useLocalSearchParams();
     const [toggleMap, setToggleMap] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
+    const [verificado, setVerificado] = useState<boolean | null>();
+    const [showVerificar, setShowVerificar] = useState(false);
+    const [codigo, setCodigo] = useState("");
 
     const [fontsLoaded] = useFonts({
         "Poppins-Regular": require("../../assets/fonts/Poppins-Regular.ttf"),
@@ -120,6 +124,31 @@ const Place = () => {
         console.log("establecimiento", data);
         setLoading(false);
         setEstablecimiento(data);
+    };
+    const verificarCodigo = () => {
+        const texto = codigo.replace("-", "");
+        if (texto.match("^[0-9A-Z]{8}$")) {
+            setVerificado(true);
+            setShowVerificar(false);
+            handleSubmit();
+        } else {
+            setVerificado(false);
+        }
+    };
+    const handleSubmit = () => {
+        const data = {
+            puntuacion: calificacion,
+            usuario: session?.id_usuario,
+            establecimiento: params.id,
+        };
+        console.log(data);
+        setLoading(true);
+        try {
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const obtenerEstablecimientosSimialres = async (establecimientoId: any) => {
@@ -263,25 +292,25 @@ const Place = () => {
 
     const handleCalificar = () => {
         const data = {
-                    puntuacion: calificacion,
-                    comentario: textoCalificacion,
-                    usuario: session?.id_usuario,
-                    establecimiento: params.id,
-                };
-                console.log(data);
-                const valoracion = calificarEstablecimiento(
-                                                            data.usuario+"",
-                                                            data.establecimiento+"",
-                                                            data.puntuacion,
-                                                            data.comentario
-                                                        )
-                setLoading(true);
-                try {
-                } catch (e) {
-                    console.error(e);
-                } finally {
-                    setLoading(false);
-                }
+            puntuacion: calificacion,
+            comentario: textoCalificacion,
+            usuario: session?.id_usuario,
+            establecimiento: params.id,
+        };
+        console.log(data);
+        const valoracion = calificarEstablecimiento(
+            data.usuario + "",
+            data.establecimiento + "",
+            data.puntuacion,
+            data.comentario
+        )
+        setLoading(true);
+        try {
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setLoading(false);
+        }
         alert(`Calificación: ${calificacion}, Reseña: ${textoCalificacion}`);
     };
 
@@ -289,13 +318,13 @@ const Place = () => {
         setHorarioOpened(true);
     };
 
-    const removeFavorite = (est_id:String,usr_id:String) => {
+    const removeFavorite = (est_id: String, usr_id: String) => {
         setIsFavorite(false);
-        quitarFavorito(usr_id+"", est_id+"")
+        quitarFavorito(usr_id + "", est_id + "")
     };
-    const addFavorite = (est_id:String,usr_id:String) => {
+    const addFavorite = (est_id: String, usr_id: String) => {
         setIsFavorite(true);
-        marcarFavorito(usr_id+"", est_id+"")
+        marcarFavorito(usr_id + "", est_id + "")
     };
 
     const handleFavorite = () => {
@@ -308,9 +337,9 @@ const Place = () => {
         );
 
         if (isFavorite) {
-            removeFavorite(establecimiento?.id+"", session?.id_usuario+"");
+            removeFavorite(establecimiento?.id + "", session?.id_usuario + "");
         } else {
-            addFavorite(establecimiento?.id+"", session?.id_usuario+"");
+            addFavorite(establecimiento?.id + "", session?.id_usuario + "");
         }
     };
 
@@ -335,13 +364,13 @@ const Place = () => {
                         location={
                             establecimiento
                                 ? {
-                                      latitude: Number(
-                                          establecimiento.coordenada_y
-                                      ),
-                                      longitude: Number(
-                                          establecimiento.coordenada_x
-                                      ),
-                                  }
+                                    latitude: Number(
+                                        establecimiento.coordenada_y
+                                    ),
+                                    longitude: Number(
+                                        establecimiento.coordenada_x
+                                    ),
+                                }
                                 : null
                         }
                         establecimientos={[
@@ -357,7 +386,7 @@ const Place = () => {
 
             <ScrollView style={styles.container}>
                 <ImageViewing
-                    images={fotos.map(foto=>{return {uri:foto.imagen}})}
+                    images={fotos.map(foto => { return { uri: foto.imagen } })}
                     imageIndex={imageIndex}
                     visible={visibleImages}
                     onRequestClose={() => setVisibleImages(false)}
@@ -368,7 +397,7 @@ const Place = () => {
                     animationType="slide"
                     transparent={true}
                     visible={horarioOpened}
-                    onRequestClose={() => {}}
+                    onRequestClose={() => { }}
                 >
                     <View
                         style={{
@@ -643,6 +672,82 @@ const Place = () => {
                                         </Text>
                                     ))}
                             </View>
+                            {showVerificar && (
+                                <Modal transparent>
+                                    <View style={styles.modalBackground}>
+                                        <View style={styles.modalContent}>
+                                            <Pressable
+                                                onPress={() => setShowVerificar(false)}
+                                                style={styles.closeButton}
+                                            >
+                                                <FontAwesome
+                                                    name="close"
+                                                    size={20}
+                                                    color="#402158"
+                                                />
+                                            </Pressable>
+                                            <Text style={[Styles.linkText,{marginBottom:10}]}>
+                                                Ingresa el código de una manilla válida
+                                            </Text>
+                                            <TextInput
+                                                style={Styles.input}
+                                                value={codigo}
+                                                onChangeText={(e) => {
+                                                    if (e.length === 5 && codigo.length === 4) {
+                                                        setCodigo(
+                                                            codigo +
+                                                            "-" +
+                                                            e
+                                                                .charAt(e.length - 1)
+                                                                .toUpperCase()
+                                                        );
+                                                    } else if (
+                                                        e.length === 5 &&
+                                                        e[e.length - 1] === "-"
+                                                    ) {
+                                                        setCodigo(e.slice(0, -1));
+                                                    } else {
+                                                        setCodigo(e.toUpperCase());
+                                                    }
+                                                }}
+                                                placeholder="XXXX-XXXX"
+                                            />
+                                            {verificado === false && (
+                                                <ErrorText error="Código inválido" />
+                                            )}
+                                            {verificado === true && (
+                                                <Text style={styles.successText}>
+                                                    Código validado
+                                                </Text>
+                                            )}
+                                            <Pressable
+                                                style={Styles.button}
+                                                onPress={verificarCodigo}
+                                            >
+                                                <Text style={Styles.buttonText}>Verificar</Text>
+                                            </Pressable>
+                                        </View>
+                                    </View>
+                                </Modal>
+                            )}
+                            <Pressable
+                                style={{ flexDirection: "row" }}
+                                onPress={() => setShowVerificar(true)}
+                            >
+                                <FontAwesome
+                                    name="check-circle"
+                                    size={24}
+                                    color={verificado ? "#238ed7" : "#A9A9A9"}
+                                    style = {{marginLeft: 10}}
+                                />
+                                <Text
+                                    style={{
+                                        color: verificado ? "#238ed7" : "#A9A9A9", marginLeft: 5, marginTop:1,
+                                    }}
+                                >
+                                    {verificado ? "Fuíste a este local " : "Validar asistencia "}
+                                </Text>
+                            </Pressable>
                             <Text
                                 style={[
                                     { fontFamily: "Poppins-Regular" },
@@ -823,7 +928,7 @@ const Place = () => {
                                     <Image
                                         source={
                                             item
-                                                ? {uri: item.imagen}
+                                                ? { uri: item.imagen }
                                                 : require("../../assets/images/default.jpg")
                                         }
                                         style={{
@@ -839,6 +944,7 @@ const Place = () => {
                             keyExtractor={(item, index) => index.toString()}
                             horizontal
                         />
+
                         <View
                             style={{
                                 flexDirection: "row",
@@ -978,6 +1084,36 @@ const styles = StyleSheet.create({
     },
     localData: {
         marginTop: "-18%",
+    },
+    modalBackground: {
+        flex: 1,
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    modalContent: {
+        backgroundColor: "#fff",
+        padding: 20,
+        borderRadius: 10,
+        width: "80%",
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    closeButton: {
+        position: "absolute",
+        top: 10,
+        right: 10,
+    },
+    successText: {
+        color: "#28A745",
+        fontSize: 16,
+        fontWeight: "bold",
+        marginTop: 10,
+        textAlign: "center",
     },
 });
 
