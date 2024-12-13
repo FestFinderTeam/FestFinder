@@ -920,10 +920,9 @@ const MyPlace = () => {
                                         </Pressable>
                                     );
                                 } else {
-                                    console.log(item);
                                     return (
                                         <Image
-                                            source={{ uri: item.uri }}
+                                            source={{ uri: (item.imagen || item.uri) }}
                                             style={{
                                                 width: "auto",
                                                 height: 150,
