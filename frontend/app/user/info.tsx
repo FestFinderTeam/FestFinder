@@ -8,8 +8,8 @@ import { getImage, pickImage } from "@/utils/Image";
 import type { ImagePickerAsset } from "expo-image-picker";
 import LoadingScreen from "@/components/Loading";
 import { updateUsuario } from "@/services/usuariosService";
-import { router} from "expo-router";
-
+import { router } from "expo-router";
+import type { SessionData } from "@/hooks/useStorageState";
 
 const defaultImage = require("../../assets/images/default-profile.png");
 
@@ -21,7 +21,7 @@ interface Perfil {
 }
 
 const info = () => {
-    const { session } = useSession();
+    const { session, signIn } = useSession();
     const [perfil, setPerfil] = useState<Perfil | null>();
     const [imagenPerfil, setImagenPerfil] = useState<ImagePickerAsset>();
     const [loading, setLoading] = useState(false);
@@ -45,15 +45,25 @@ const info = () => {
 
         try {
             setLoading(true);
-            const resultado = await updateUsuario(session?.id_usuario as string, formData); // Llamamos a la función de actualización.
-            
+            const result = await updateUsuario(
+                session?.id_usuario as string,
+                formData
+            ); // Llamamos a la función de actualización.
+            const { imagen_url } = result.data;
+
+            if (imagen_url && session) {
+                const newSession: SessionData = {
+                    ...session,
+                    imagen_url,
+                };
+                signIn(newSession);
+
+                router.push("/profile"); // Redirige a la lista de eventos después de la actualización.
+            }
         } catch (e) {
             console.error(e);
         } finally {
             setLoading(false);
-            alert("Usuario actualizado con éxito: ");
-            router.push("/admin/eventos"); // Redirige a la lista de eventos después de la actualización.
-        
         }
     };
 
