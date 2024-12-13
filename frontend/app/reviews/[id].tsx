@@ -74,6 +74,7 @@ const reseñas = () => {
         } catch (e) {
             console.error(e);
         } finally {
+            fetchReviews()
             setLoading(false);
         }
     };
@@ -82,7 +83,6 @@ const reseñas = () => {
         if (texto.match("^[0-9A-Z]{8}$")) {
             setVerificado(true);
             setShowVerificar(false);
-            handleSubmit();
         } else {
             setVerificado(false);
         }
