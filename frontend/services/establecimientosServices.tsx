@@ -53,6 +53,23 @@ export const getEstablecimientosSimilares = async (id: any) => {
     }
 };
 
+export const getEstablecimientosRecomendados = async (id: any) => {
+    try {
+        const url = `${API_URL}/api/establecimientos/recomendacion/${id}/`;
+
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error("Error al recuperar lugares recomendados para el usuario");
+        }
+        const data = await response.json();
+        //console.log(data);
+        return data;
+    } catch (error) {
+        console.error("Error fetching establecimientos recomendados:", error);
+        return [];
+    }
+};
+
 export const getEstablecimientoPorPropietario = async (id: any) => {
     try {
         const url = `${API_URL}/api/establecimiento/propietario/${id}/`;
