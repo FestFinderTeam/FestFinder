@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import FronAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, useLocalSearchParams, type Href } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -183,7 +183,7 @@ const Evento = () => {
             if (calificacionRestante >= 1) {
                 // Estrella llena
                 estrellas.push(
-                    <FronAwesome
+                    <FontAwesome
                         key={i}
                         name="star"
                         size={18}
@@ -194,7 +194,7 @@ const Evento = () => {
             } else if (calificacionRestante >= 0.5) {
                 // Estrella mitad
                 estrellas.push(
-                    <FronAwesome
+                    <FontAwesome
                         key={i}
                         name="star-half"
                         size={18}
@@ -205,7 +205,7 @@ const Evento = () => {
             } else {
                 // Estrella vacía
                 estrellas.push(
-                    <FronAwesome
+                    <FontAwesome
                         key={i}
                         name="star-o"
                         size={18}
@@ -686,7 +686,7 @@ const Evento = () => {
                                 }}
                                 style={{ marginRight: 5 }}
                             >
-                                <FontAwesome6
+                                <FontAwesome
                                     name="star"
                                     size={18}
                                     color={
