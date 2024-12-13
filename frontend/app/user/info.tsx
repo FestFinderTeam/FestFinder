@@ -2,7 +2,9 @@ import Header from "@/components/Header";
 import Styles from "@/globalStyles/styles";
 import { useSession } from "@/hooks/ctx";
 import React, { useEffect, useState } from "react";
-import { Image, Text, View } from "react-native";
+import { Image, Text, View, TouchableOpacity } from "react-native";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+
 const defaultImage = require("../../assets/images/default-profile.png");
 
 interface Perfil {
@@ -15,7 +17,6 @@ interface Perfil {
 const info = () => {
     const { session } = useSession();
     const [perfil, setPerfil] = useState<Perfil | null>();
-   // console.log(session);
 
     useEffect(() => {
         if (session) {
@@ -30,23 +31,65 @@ const info = () => {
 
     return (
         <>
-            <Header title="Informacion personal" />
+            <Header title="Información Personal" />
 
-            <View style={{ alignItems: "center" }}>
-                <Image
-                    source={perfil ? { uri: perfil.imagen_url } : defaultImage}
-                    style={[
-                        Styles.imageProfile,
-                        { width: 200, height: 200, borderRadius: 100 },
-                    ]}
-                />
+            <View style={{ alignItems: "center", padding: 20 }}>
+                <View
+                    style={{
+                        position: "relative",
+                        width: 200,
+                        height: 200,
+                        borderRadius: 100,
+                        overflow: "hidden",
+                    }}
+                >
+                    <Image
+                        source={perfil ? { uri: perfil.imagen_url } : defaultImage}
+                        style={{ width: "100%", height: "100%" }}
+                    />
+                    <TouchableOpacity
+                        style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            width: "100%",
+                            height: "100%",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            backgroundColor: "rgba(0, 0, 0, 0.4)",
+                            borderRadius: 100,
+                        }}
+                    >
+                        <FontAwesome name="camera" size={24} color="#fff" />
+                        <Text style={{ color: "#fff", marginTop: 5, fontSize: 14 }}>
+                            Cambiar imagen
+                        </Text>
+                    </TouchableOpacity>
+                </View>
 
-                <Text style={Styles.title}>Nombre completo</Text>
-                <Text style={Styles.subtitle}>{perfil?.nombre}</Text>
-                <Text style={Styles.title}>E-mail</Text>
-                <Text style={Styles.subtitle}>{perfil?.email}</Text>
-                <Text style={Styles.title}>Numero telefonico</Text>
-                <Text style={Styles.subtitle}>{perfil?.telefono}</Text>
+                <View
+                    style={{
+                        marginTop: 20,
+                        width: "90%",
+                        backgroundColor: "#f9f9f9",
+                        borderRadius: 10,
+                        padding: 15,
+                        shadowColor: "#000",
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: 0.2,
+                        shadowRadius: 4,
+                        elevation: 3,
+                    }}
+                >
+                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 4 }}>
+                        <Text style={[Styles.title, {fontSize: 20 , marginBottom:2}]} >Nombre completo</Text>
+                    </View>
+                    <Text style={[{ marginBottom: 20, fontWeight: "bold", color: "black"  }]}>{perfil?.nombre}</Text>
+                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 4 }}>
+                        <Text style={[Styles.title,{fontSize: 20, marginBottom:2 }]}>E-mail</Text>
+                    </View>
+                    <Text style={[{ marginBottom: 10, fontWeight: "bold", color: "black"  }]}>{perfil?.email}</Text>
+                </View>
             </View>
         </>
     );

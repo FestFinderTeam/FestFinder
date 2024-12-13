@@ -72,7 +72,7 @@ const Register = () => {
 	const handleSubmit = async () => {
 		if (!validateForm()) return;
 
-		const data = { nombre, email, telefono, p_field, imagen: 1 };
+		const data = { nombre, email, telefono, p_field};
 
 		try {
 			const response = await fetch(API_URL + "/api/usuario/", {
@@ -236,14 +236,14 @@ const styles = {
 	errorText: {
 		color: 'red',
 		fontSize: 12,
-		marginTop: -10,
+		marginTop: 2,
 		textAlign: 'center' as 'center',
 		marginBottom: 5,
 	},
 	errorText2: {
 		color: 'red',
 		fontSize: 12,
-		marginTop: 5,
+		marginTop: 7,
 		textAlign: 'center' as 'center',
 
 	}
