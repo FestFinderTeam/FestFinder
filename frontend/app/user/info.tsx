@@ -7,6 +7,9 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { getImage, pickImage } from "@/utils/Image";
 import type { ImagePickerAsset } from "expo-image-picker";
 import LoadingScreen from "@/components/Loading";
+import { updateUsuario } from "@/services/usuariosService";
+import { router} from "expo-router";
+
 
 const defaultImage = require("../../assets/images/default-profile.png");
 
@@ -34,7 +37,7 @@ const info = () => {
         }
     }, []);
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const formData = new FormData();
         if (imagenPerfil) {
             formData.append("imagen", getImage(imagenPerfil));
@@ -42,12 +45,15 @@ const info = () => {
 
         try {
             setLoading(true);
-            //peticion
+            const resultado = await updateUsuario(session?.id_usuario as string, formData); // Llamamos a la función de actualización.
             
         } catch (e) {
             console.error(e);
         } finally {
             setLoading(false);
+            alert("Usuario actualizado con éxito: ");
+            router.push("/admin/eventos"); // Redirige a la lista de eventos después de la actualización.
+        
         }
     };
 
