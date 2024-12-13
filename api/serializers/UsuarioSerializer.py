@@ -8,7 +8,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         fields = [
-            'id_usuario', 'nombre', 'email', 'telefono', 'p_field', 'g_id', 'imagen', 'imagen_url', 'duenio', 'establecimiento'
+            'id_usuario', 'nombre', 'email', 'telefono', 'p_field', 'g_id', 'imagen', 'imagen_url', 'establecimiento'
         ]
 
     # Valida la contraseña encriptada

@@ -17,7 +17,6 @@ class Usuario(models.Model):
     imagen_url = models.URLField(blank=True, null=True)
     
     # Campo en caso sea representante de un establecimiento
-    duenio = models.BooleanField(default=False)
     establecimiento = models.OneToOneField(
         'Establecimiento',  
         on_delete=models.SET_NULL,

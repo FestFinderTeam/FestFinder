@@ -156,7 +156,6 @@ class RegistrarEstablecimiento(APIView):
             if(usuario_id):
                 print (usuario_id)
                 Usuario.objects.filter(id_usuario=usuario_id).update(
-                    duenio=True,
                     establecimiento=establecimiento
                 )
                 print("Campo `duenio` actualizado a True para el usuario", usuario_id)
@@ -293,10 +292,7 @@ class RegistrarEstablecimientoC(APIView):
     parser_classes = (MultiPartParser, FormParser)
 
     def post(self, request, *args, **kwargs):
-        print("se envio")
-        print(request.data)
         serializer = EstablecimientoSerializer(data=request.data)
-        print("datos bien enviados")
         
         if serializer.is_valid():
             # Guardar el establecimiento
@@ -336,7 +332,6 @@ class RegistrarEstablecimientoC(APIView):
             usuario_id = request.data.get("usuario")
             if usuario_id:
                 Usuario.objects.filter(id_usuario=usuario_id).update(
-                    duenio=True,
                     establecimiento=establecimiento
                 )
                 print("Campo `duenio` actualizado a True para el usuario", usuario_id)
