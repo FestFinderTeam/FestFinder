@@ -11,8 +11,8 @@ export type EventoType = {
     horario_fin: any;
     precio__min?: number;
     precio__max?: number;
-    direccion?: number
-    fecha_inicio?: any
+    direccion?: number;
+    fecha_inicio?: any;
     puntuacion?: string;
     horario_inicio: any;
 };
@@ -24,41 +24,34 @@ const Evento = ({ evento }: Props) => {
     return (
         <Link
             href={("/eventos/" + evento.id_evento) as Href}
-            style={{ paddingHorizontal: 5, marginBottom: 15 }}
+            style={{ paddingHorizontal: 5 }}
         >
             <View
                 style={{
-                    alignItems: "center", // Centra todo el contenido
+                    alignItems: "center",
                     width: 150,
                 }}
             >
                 <ImageBackground
                     resizeMode="cover"
-                    source={evento.logo ? { uri: evento.logo } : require('../assets/images/default.jpg')}
+                    source={
+                        evento.logo
+                            ? { uri: evento.logo }
+                            : require("../assets/images/default.jpg")
+                    }
                     style={{
-                        width: 150,
+                        width: "100%",
                         height: 200,
                         borderRadius: 10,
                         overflow: "hidden",
-                        justifyContent: "space-between", // Asegura que el contenido se distribuya correctamente
+                        justifyContent: "flex-end",
                     }}
                 >
                     <View
                         style={{
-                            width: "35%",
-                            alignItems: "center",
-                            padding: 3,
-                            borderRadius: 10,
-                            marginTop: 5,
-                            marginRight: 5,
-                        }}
-                    >
-                    </View>
-                    <View
-                        style={{
                             justifyContent: "flex-end",
                             alignItems: "center",
-                            paddingBottom: 10,
+                            padding: 10,
                         }}
                     >
                         <Text
@@ -83,14 +76,12 @@ const Evento = ({ evento }: Props) => {
                         color: "black",
                         fontFamily: "Poppins-Regular",
                         textAlign: "center",
-                        marginTop: 5,
                     }}
-                    numberOfLines={1} 
-                    ellipsizeMode="tail" 
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
                 >
-                    {evento.nombre.length > 32 ? evento.nombre.slice(0, 32) + "..." : evento.nombre}
+                    {evento.nombre}
                 </Text>
-
             </View>
         </Link>
     );
