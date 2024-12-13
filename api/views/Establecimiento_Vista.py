@@ -57,10 +57,11 @@ class RecuperarDatosEstablecimiento(APIView):
             horarios_data = HorariosEstablecimientoSerializer(horarios, many=True).data
             establecimiento_data['horarios'] = horarios_data
             
+            establecimiento_data['es_favorito'] = False  # Por defecto, no es favorito
+
             if user_id:
                 es_favorito = FavoritosLocal.objects.filter(establecimiento=establecimiento, usuario_id=user_id).exists()
                 establecimiento_data['es_favorito'] = es_favorito  # True o False según la consulta
-
 
             return Response(establecimiento_data, status=status.HTTP_200_OK)
         except Establecimiento.DoesNotExist:
