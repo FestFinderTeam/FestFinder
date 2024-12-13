@@ -15,7 +15,7 @@
       "env": {
         "EXPO_PUBLIC_API_URL": "https://fest-finder.vercel.app",
         "EXPO_PUBLIC_GOOGLE_MAPS_API_KEY": "AIzaSyCCi7U0FG1-Mq_eH1pOooq3g3I41mrXWsg",
-        "GOOGLE_SERVICES_JSON": "@secret:GOOGLE_SERVICES_JSON"
+        "GOOGLE_SERVICES_JSON": "./google-services.json"
       },
       "android": {
         "buildType": "apk"

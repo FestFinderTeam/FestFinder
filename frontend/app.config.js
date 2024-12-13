@@ -42,6 +42,12 @@ export default {
                     },
                 },
             ],
+            permissions: [
+                "RECEIVE_BOOT_COMPLETED",
+                "VIBRATE",
+                "com.google.android.c2dm.permission.RECEIVE", // Permiso para notificaciones push
+            ],
+            useNextNotificationsApi: true,
         },
         web: {
             bundler: "metro",
