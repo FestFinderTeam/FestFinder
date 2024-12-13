@@ -119,7 +119,7 @@ const CrearEvento = () => {
     };
 
     if (loading) {
-        return <LoadingScreen text="Creando evento"/>;
+        return <LoadingScreen text="Creando evento" />;
     }
     return (
         <ScrollView>
@@ -294,7 +294,7 @@ const CrearEvento = () => {
                         </Pressable>
                         <Text>-</Text>
                         <Pressable
-                            onPress={() => showSingleTime(fechaFin, fechaFin)}
+                            onPress={() => showSingleTime(fechaFin, setFechaFin)}
                             style={[
                                 Styles.input,
                                 {
