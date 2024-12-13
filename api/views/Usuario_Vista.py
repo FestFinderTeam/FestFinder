@@ -77,7 +77,7 @@ class LoginUsuario(APIView):
                         nombre=nombre,
                         email=email,
                         g_id=g_p,
-                        img_url=imagen_url if imagen_url else None,
+                        imagen_url=imagen_url if imagen_url else None,
                         p_field=None  # No se requiere contraseña para login con Google
                     )
                     usuario.save()
