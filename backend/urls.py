@@ -82,15 +82,17 @@ urlpatterns = [
     ),
     path("api/schema/", schema_view.without_ui(cache_timeout=0), name="schema-json"),
     path("admin/", admin.site.urls),
+
     path("api/subir-imagen/", SubirImagen.as_view(), name="subir-imagen"),
+    
     path(
         "api/etiquetas/all",
         ListarEtiquetas.as_view(),
         name="listar-etiquetas",
     ),
     
+    # Endpoints de etiquetas
     path('api/etiquetas/', ListarEtiquetasPorTexto.as_view(), name='listar-etiquetas-por-texto'),
-
     path(
         "api/reg-etiqueta-establecimiento/",
         RegistrarRelacion.as_view(),
@@ -106,6 +108,8 @@ urlpatterns = [
         EstablecimientosPorEtiqueta.as_view(),
         name="establecimientos-por-etiqueta",
     ),
+
+    # Endpoints de establecimientos
     path("api/categorias-establecimientos/", ListarTiposEstablecimiento.as_view(), name="listar-categorias-establecimiento"),
     path("api/establecimiento/", RegistrarEstablecimiento.as_view(), name="registrar-establecimiento"),
     path("api/establecimiento/registro/", RegistrarEstablecimientoC.as_view(), name="registrar-establecimiento-completo"),
@@ -121,20 +125,22 @@ urlpatterns = [
     path('api/establecimientos/filtro/', FiltrarEstablecimientos.as_view(), name='filtrar_establecimientos'),
     path('api/establecimientos/recomendacion/<int:id_usuario>/', EstablecimientosSimilaresPorUsuario.as_view(), name='recomendar_establecimientos'),
 
-    
+    # Endpoints de galeria de establecimiento
     path('api/galeria/establecimiento/<int:id_establecimiento>/', RecuperarGaleriaPorEstablecimiento.as_view(), name='recuperar-galeria-establecimiento'),
     path('api/galeria/establecimiento/imagen/<int:id>/', EliminarGaleriaEstablecimiento.as_view(), name='eliminar-imagen-galeria'),
     path('api/galeria/establecimiento/', GetGaleriaEstablecimiento.as_view(), name='recuperar-galeria'),
     path('api/galeria/establecimiento/registrar/', RegistrarImagenEnGaleriaEstablecimiento.as_view(), name='eliminar-imagen-galeria'),
     path('api/galeria/registrar-multiples/', RegistrarVariasImagenesGaleria.as_view(), name='registrar_multiples_imagenes'),
 
-    
+    #endpoints de genero evento
     path("api/genero-evento/", CrearGeneroEvento.as_view(), name="crear-genero-evento"),
     path(
         "api/generos-evento/",
         ListarGenerosEvento.as_view(),
         name="listar-generos-evento",
     ),
+
+    #endpoints de eventos
     path("api/evento/", CrearEvento.as_view(), name="crear-evento"),
     path("api/eventos/", ListarEventos.as_view(), name="listar-eventos"),
     path('api/eventos_mes/', ListarEventosMes.as_view(), name='eventos-mes'),
@@ -147,10 +153,9 @@ urlpatterns = [
     path('api/eventos/populares/<str:ciudad>/', ListarEventosPopulares.as_view(), name='filtrar_eventos_populares'),
     path('api/eventos/modificar/<int:id_evento>/', ModificarEvento.as_view(), name='modificar_evento'),
     path('api/eventos/<int:id_evento>/borrar/', BorrarEvento.as_view(), name='borrar_evento'),
-
     path('api/filtrar/establecimientos-eventos/', FiltrarEstablecimientosYEventos.as_view(), name='filtrar-establecimientos-eventos'),
 
-
+    #Endpoints de entradas y consumo (complementarias)
     path("api/entrada/", CrearEntrada.as_view(), name="crear-entrada"),
     path(
         "api/entradas/evento/<int:id_evento>/",
@@ -163,10 +168,13 @@ urlpatterns = [
         ListarConsumosPorEstablecimiento.as_view(),
         name="listar-consumos-por-establecimiento",
     ),
+
+    #endpoints de usuarios
     path("api/usuario/", CrearUsuario.as_view(), name="crear-usuario"),
     path("api/usuarios/", ListarUsuarios.as_view(), name="listar-usuarios"),
     path('api/usuario/modificar/<int:id_usuario>/', ModificarUsuario.as_view(), name='modificar_establecimiento'),
 
+    # Endpoints de visitas y relacionados a la interaccion del usuario con los locales
     path("api/registrar-visita/", RegistrarVisita.as_view(), name="registrar-visita"),
     path(
         "api/visitas/establecimiento/<int:establecimiento_id>/",
@@ -185,6 +193,8 @@ urlpatterns = [
     path('api/establecimiento/<int:establecimiento_id>/favoritos/', FavoritosPorEstablecimiento.as_view(), name='favoritos_por_establecimiento'),
     path('api/usuario/<int:usuario_id>/favoritos/', FavoritosDeUnUsuario.as_view(), name='favoritos_de_un_usuario'),
     path('api/delete-favoritos/<int:establecimiento_id>/<int:usuario_id>/', DeleteFavorito.as_view(), name='delete_favorito'),
+   
+    # endpoints de valoraciones de establecimientos
     path(
         "api/registrar-valoracion/",
         RegistrarValoracion.as_view(),
@@ -195,6 +205,8 @@ urlpatterns = [
         ValoracionesPorEstablecimiento.as_view(),
         name="valoraciones-por-establecimiento",
     ),
+
+    # Endpoints de asistencias y la interaccion del usuario y el evento
     path(
         "api/asistencias/evento/<int:evento_id>/",
         AsistenciasPorEventos.as_view(),
@@ -232,7 +244,7 @@ urlpatterns = [
         name='eliminar_interes'
     ),
 
-
+    # Enpoints de valoraciones del evento
     path(
         "api/registrar-valoracion-evento/",
         RegistrarValoracionEvento.as_view(),
@@ -243,11 +255,14 @@ urlpatterns = [
         ValoracionesPorEvento.as_view(),
         name="valoraciones-por-evento",
     ),
+
     
+    # Enpoints de tokes y notificaciones
     path('api/actualizar_token/', actualizar_token, name='actualizar_token'),
     
     path('api/enviar-notificacion/', prueba_enviar_notificaciones, name='enviar_notificacion'),
 
+    # Endpoints de login y auxiliar de imagenes
     path('api/logear_usuario/', LoginUsuario.as_view(), name='logear-usuario'),
     path('api/imagen/<int:imagen_id>/', ImagenDetailView.as_view(), name='imagen-detalle'),
 
