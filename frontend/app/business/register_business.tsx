@@ -53,7 +53,7 @@ const register_business = () => {
     const [coordenada_y, setCoordenadaY] = useState<number>();
     const [toggleMap, setToggleMap] = useState(false);
     const [dataTypesBusiness, setDataTypesBusiness] = useState([]);
-    const dataRango = ["Bajo", "Medio", "Alto"];
+    const dataRango = ["50 -100 Bs", "100Bs - 200Bs", "+200Bs"];
 
     const [formData, setFormData] = useState<FormData>({
         nombre: "",
@@ -297,41 +297,42 @@ const register_business = () => {
                     Rango de precios del local:
                 </Text>
                 <View style={{ alignItems: "center", marginBottom: 3 }}>
-                    <View style={{ flexDirection: "row" }}>
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            width: "80%",
+                        }}
+                    >
                         {dataRango.map((value, index) => (
-                            <Pressable
-                                key={index}
-                                onPress={() => {
-                                    setFormData({
-                                        ...formData,
-                                        rango_de_precios: value,
-                                    });
-                                }}
-                                style={
-                                    value === formData.rango_de_precios
-                                        ? styles.buttonSelected
-                                        : styles.button
-                                }
-                            >
-                                <Text
-                                    style={
+                            <View style={{}}>
+                                <Pressable
+                                    key={index}
+                                    onPress={() => {
+                                        setFormData({
+                                            ...formData,
+                                            rango_de_precios: value,
+                                        });
+                                    }}
+                                    style={[
                                         value === formData.rango_de_precios
-                                            ? styles.textSelected
-                                            : styles.text
-                                    }
+                                            ? styles.buttonSelected
+                                            : styles.button,
+                                        { width: "100%", paddingVertical: 10 },
+                                    ]}
                                 >
-                                    {value}
-                                </Text>
-                                <Text
-                                    style={
-                                        value === formData.rango_de_precios
-                                            ? styles.textSelected
-                                            : styles.text
-                                    }
-                                >
-                                    {"$".repeat(index + 1)}
-                                </Text>
-                            </Pressable>
+                                    <Text
+                                        style={
+                                            value === formData.rango_de_precios
+                                                ? styles.textSelected
+                                                : styles.text
+                                        }
+                                    >
+                                        {"$".repeat(index + 1)}
+                                    </Text>
+                                </Pressable>
+                                <Text style={styles.text}>{value}</Text>
+                            </View>
                         ))}
                     </View>
                 </View>
