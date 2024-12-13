@@ -111,6 +111,9 @@ export const getEventosMiEstablecimiento = async (
             }
         );
         if (!response.ok) {
+            if (response.status === 404) {
+                return null;
+            }
             const errorMessage = await response.text();
             console.error(`Error al obtener mis eventos: ${response.status} - ${errorMessage}`);
             return null;
