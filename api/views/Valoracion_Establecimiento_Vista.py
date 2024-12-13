@@ -14,10 +14,6 @@ class RegistrarValoracion(APIView):
         comentario = request.data.get("comentario", "")
         verificado = False
         
-        # Verificar si existe una visita registrada
-        if not Visita.objects.filter(id_usuario_fk=usuario_id, id_establecimiento_visitado_fk=establecimiento_id).exists():
-            verificado = True
-        
         # Buscar si ya existe una valoración para este usuario y evento
         valoracion_existente = ValoracionEstablecimiento.objects.filter(usuario=usuario_id, establecimiento=establecimiento_id).first()
         if valoracion_existente:
