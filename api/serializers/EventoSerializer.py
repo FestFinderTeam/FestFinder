@@ -27,9 +27,17 @@ class EventoSerializer(serializers.ModelSerializer):
         
     
     def get_interesados(self, obj):
-        # Contamos los registros relacionados con el evento en la tabla Interes
-        return obj.interes_set.count()
+        # Verifica si el objeto es una instancia del modelo Evento
+        if isinstance(obj, Evento):
+            # Retorna el número de registros relacionados
+            return obj.interes_set.count()
+        # En caso contrario, retorna 0 o un valor predeterminado
+        return 0
     
     def get_calificacion(self, obj):
-        # Retorna el valor de la propiedad calificacion
-        return obj.calificacion
+        # Verifica si el objeto es una instancia del modelo Evento
+        if isinstance(obj, Evento):
+            # Retorna el valor de la propiedad calificación
+            return obj.calificacion
+        # En caso contrario, retorna None o un valor predeterminado
+        return None
