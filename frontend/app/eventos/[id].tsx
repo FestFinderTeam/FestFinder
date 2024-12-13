@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import FronAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, useLocalSearchParams, type Href } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -170,24 +171,54 @@ const Evento = () => {
         }
     }, [evento, local]);
 
-    const obtenerEstrellas = () => {
-        const estrellas = Array(5).fill(0);
+    const obtenerEstrellas = (calificacion: number) => {
+        const totalEstrellas = 5;
+        const estrellas = [];
         const colorEstrella = "#FFA500";
 
-        return estrellas.map((item, index) => (
-            <FontAwesome6
-                key={index}
-                name="star"
-                size={18}
-                color={
-                    index < (evento?.calificacion || 0)
-                        ? colorEstrella
-                        : "#D3D3D3"
-                }
-                style={{ marginHorizontal: 2 }}
-            />
-        ));
+        // Calcular cuántas estrellas están llenas, vacías y a la mitad
+        for (let i = 0; i < totalEstrellas; i++) {
+            const calificacionRestante = calificacion - i;
+
+            if (calificacionRestante >= 1) {
+                // Estrella llena
+                estrellas.push(
+                    <FronAwesome
+                        key={i}
+                        name="star"
+                        size={18}
+                        color={colorEstrella}
+                        style={{ marginHorizontal: 2 }}
+                    />
+                );
+            } else if (calificacionRestante >= 0.5) {
+                // Estrella mitad
+                estrellas.push(
+                    <FronAwesome
+                        key={i}
+                        name="star-half"
+                        size={18}
+                        color={colorEstrella}
+                        style={{ marginHorizontal: 2 }}
+                    />
+                );
+            } else {
+                // Estrella vacía
+                estrellas.push(
+                    <FronAwesome
+                        key={i}
+                        name="star-o"
+                        size={18}
+                        color="#D3D3D3"
+                        style={{ marginHorizontal: 2 }}
+                    />
+                );
+            }
+        }
+
+        return estrellas;
     };
+
     const handleCalificar = async () => {
         try {
             if (!evento || puntuacion === 0) {
@@ -283,11 +314,8 @@ const Evento = () => {
                                     alignItems: "center",
                                 }}
                             >
-                                {obtenerEstrellas()}
+                                {obtenerEstrellas(evento.calificacion)}
                             </View>
-                            <Text style={{ color: "#787878", marginLeft: 5 }}>
-                                ({evento.calificacion} calificaciones)
-                            </Text>
                             <Text
                                 style={{
                                     color: "#787878",
@@ -297,7 +325,7 @@ const Evento = () => {
                                 |
                             </Text>
                             <Text style={{ color: "green" }}>
-                                {evento.interesados} interesados
+                                {evento.interesados} personas interesadas
                             </Text>
                         </View>
                     </View>
