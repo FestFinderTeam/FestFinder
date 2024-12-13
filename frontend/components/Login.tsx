@@ -1,10 +1,4 @@
-import {
-    Button,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-} from "react-native";
+import { Button, Text, TextInput, TouchableOpacity, View } from "react-native";
 import LoginGoogle from "./LoginGoogle";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
@@ -12,6 +6,8 @@ import Styles from "../globalStyles/styles";
 import React from "react";
 import { useSession } from "@/hooks/ctx";
 import { API_URL } from "@/constants/Url";
+import LoadingScreen from "./Loading";
+import { FA5Style } from "@expo/vector-icons/build/FontAwesome5";
 
 const getLoginData = async () => {
     return await SecureStore.getItem("login");
@@ -19,13 +15,13 @@ const getLoginData = async () => {
 
 const Login = () => {
     const { signIn } = useSession();
-    
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState<any>({});
-
+    const [loading, setLoading] = useState(false);
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; 
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
     const validateForm = () => {
         let updatedErrors: any = {};
@@ -35,7 +31,8 @@ const Login = () => {
         }
 
         if (!password || !passwordRegex.test(password)) {
-            updatedErrors.password = "La contraseña debe tener al menos 8 caracteres, incluyendo una letra y un número";
+            updatedErrors.password =
+                "La contraseña debe tener al menos 8 caracteres, incluyendo una letra y un número";
         }
 
         setErrors(updatedErrors);
@@ -44,7 +41,9 @@ const Login = () => {
 
     const handleSubmit = async () => {
         if (!validateForm()) {
-            alert("Por favor corrige los errores antes de enviar el formulario.");
+            alert(
+                "Por favor corrige los errores antes de enviar el formulario."
+            );
             return;
         }
 
@@ -52,6 +51,7 @@ const Login = () => {
         const data = { email, password, g_id: "" };
 
         try {
+            setLoading(true);
             const response = await fetch(`${API_URL}/api/logear_usuario/`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -87,8 +87,12 @@ const Login = () => {
         } catch (error) {
             console.error(error);
             alert("Error de conexión");
+        }finally {
+            setLoading(false)
         }
     };
+
+    if (loading) return <LoadingScreen text="Iniciando Sesion" />;
 
     return (
         <>
@@ -99,7 +103,9 @@ const Login = () => {
                 style={Styles.input}
                 onChangeText={setEmail}
             />
-            {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+            {errors.email && (
+                <Text style={styles.errorText}>{errors.email}</Text>
+            )}
 
             <TextInput
                 placeholder="Contraseña"
@@ -108,7 +114,9 @@ const Login = () => {
                 style={Styles.input}
                 onChangeText={setPassword}
             />
-            {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+            {errors.password && (
+                <Text style={styles.errorText}>{errors.password}</Text>
+            )}
 
             <TouchableOpacity style={Styles.button} onPress={handleSubmit}>
                 <Text style={Styles.buttonText}>Iniciar Sesión</Text>

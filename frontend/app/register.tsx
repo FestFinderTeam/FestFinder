@@ -118,14 +118,8 @@ const Register = () => {
                 const fullImageUrl = `${API_URL}${imagen}`;
                 imagen_url = fullImageUrl;
 			
-                signIn({
-                    id_usuario,
-                    imagen_url,
-                    nombre,
-                    email,
-                    telefono,
-                    establecimiento,
-                });
+                router.push('/login')
+				alert("El usuario fue registrado")
             } else {
                 alert("Error al registrar");
                 console.log(await response.json());
