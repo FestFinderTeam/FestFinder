@@ -9,6 +9,7 @@ import { useSession } from "@/hooks/ctx";
 import { router } from "expo-router";
 import Styles from "../globalStyles/styles";
 import LoadingScreen from "./Loading";
+import { API_URL } from "@/constants/Url";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -36,8 +37,6 @@ const LoginGoogle = () => {
             const photo = user.data?.user.photo;
             console.log(data+"  -  -  "+photo);
 
-            
-            const API_URL = process.env.EXPO_PUBLIC_API_URL;
             const response = await fetch(`${API_URL}/api/logear_usuario/`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
