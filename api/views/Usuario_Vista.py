@@ -3,6 +3,8 @@ from urllib.parse import unquote
 
 from django.http import JsonResponse
 from django.db import IntegrityError
+from django.shortcuts import get_object_or_404
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -103,7 +105,52 @@ class LoginUsuario(APIView):
             except Usuario.DoesNotExist:
                 logger.warning(f"Usuario con email {email} no encontrado")
                 return Response({"detail": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
-  
+
+
+class ModificarUsuario(APIView):
+    # Recupera el formData
+    parser_classes = (MultiPartParser, FormParser)
+
+    def put(self, request, *args, **kwargs):
+        # Obtener el ID del usuario desde la URL
+        id_usuario = kwargs.get('id_usuario')
+
+        # Obtener el usuario desde la base de datos
+        usuario = get_object_or_404(Usuario, id_usuario=id_usuario)
+
+        # Obtiene los datos nuevos de la petición para modificar
+        data = request.data
+
+        # Comprueba si algún dato se ha enviado y ha cambiado 
+        fields_to_update = {}
+
+        if data.get("nombre") and data["nombre"] != usuario.nombre:
+            fields_to_update["nombre"] = data["nombre"]
+
+        if data.get("imagen"):
+            fields_to_update["imagen"] = data["imagen"]
+            fields_to_update["imagen_url"] = None  # Reiniciar imagen_url al subir nueva imagen, automatico
+
+        # Si existen campos a actualizar, realizamos la actualización
+        if fields_to_update:
+            for field, value in fields_to_update.items():
+                setattr(usuario, field, value)
+            usuario.save()
+
+            return Response({
+                "message": "Usuario actualizado exitosamente",
+                "data": {
+                    "id_usuario": usuario.id_usuario,
+                    "nombre": usuario.nombre,
+                    "imagen_url": usuario.imagen.url if usuario.imagen else usuario.imagen_url
+                }
+            }, status=status.HTTP_200_OK)
+
+        # Si no hay cambios, respondemos con un mensaje de que no se modificó nada
+        return Response({"message": "No hubo cambios en los datos proporcionados."}, status=status.HTTP_304_NOT_MODIFIED)
+
+
+
 @csrf_exempt         
 def actualizar_token(request):
     if request.method != 'POST':
@@ -127,3 +174,5 @@ def actualizar_token(request):
         return JsonResponse({"error": "Usuario no encontrado"}, status=404)
     except json.JSONDecodeError:
         return JsonResponse({"error": "Error al decodificar JSON"}, status=400)
+    
+    

@@ -13,6 +13,7 @@ from ..serializers import EtiquetaSerializer
 from ..models import EtiquetaEstablecimiento, horariosEstablecimiento
 from django.shortcuts import get_object_or_404
 
+
 # Vista para listar establecimientos por tipo
 class ListarEstablecimientosPorTipo(APIView):
     def get(self, request, tipo_id):
@@ -347,3 +348,4 @@ class RegistrarEstablecimientoC(APIView):
                 {"message": "Error en la validación de los datos", "errors": serializer.errors},
                 status=status.HTTP_400_BAD_REQUEST
             )
+        

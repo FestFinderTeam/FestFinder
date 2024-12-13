@@ -26,7 +26,7 @@ from api.views.Consumo_Vista import CrearConsumo, ListarConsumosPorEstablecimien
 from api.views.HorariosEstablecimiento_Vista import RecuperarHorarios, RecuperarHorariosPorEstablecimiento, RegistrarHorarioEstablecimiento
 from api.views.Imagen_Vista import ImagenDetailView
 from api.views.Interes_Vista import EliminarInteres, InteresPorEventos, InteresPorUsuario, RegistrarInteres
-from api.views.Usuario_Vista import CrearUsuario, ListarUsuarios, LoginUsuario
+from api.views.Usuario_Vista import CrearUsuario, ListarUsuarios, LoginUsuario, ModificarUsuario
 from api.views.Visita_Vista import (
     RegistrarVisita,
     VisitasPorEstablecimiento,
@@ -163,6 +163,8 @@ urlpatterns = [
     ),
     path("api/usuario/", CrearUsuario.as_view(), name="crear-usuario"),
     path("api/usuarios/", ListarUsuarios.as_view(), name="listar-usuarios"),
+    path('api/usuario/modificar/<int:id_usuario>/', ModificarUsuario.as_view(), name='modificar_establecimiento'),
+
     path("api/registrar-visita/", RegistrarVisita.as_view(), name="registrar-visita"),
     path(
         "api/visitas/establecimiento/<int:establecimiento_id>/",
