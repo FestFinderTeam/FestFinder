@@ -2,8 +2,10 @@ import Header from "@/components/Header";
 import Styles from "@/globalStyles/styles";
 import { useSession } from "@/hooks/ctx";
 import React, { useEffect, useState } from "react";
-import { Image, Text, View, TouchableOpacity } from "react-native";
+import { Image, Text, View, TouchableOpacity, Pressable } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { getImage, pickImage } from "@/utils/Image";
+import type { ImagePickerAsset } from "expo-image-picker";
 
 const defaultImage = require("../../assets/images/default-profile.png");
 
@@ -17,6 +19,7 @@ interface Perfil {
 const info = () => {
     const { session } = useSession();
     const [perfil, setPerfil] = useState<Perfil | null>();
+    const [imagenPerfil, setImagenPerfil] = useState<ImagePickerAsset>();
 
     useEffect(() => {
         if (session) {
@@ -28,6 +31,14 @@ const info = () => {
             });
         }
     }, []);
+
+    const handleSubmit = () => {
+        const formData = new FormData();
+        if (imagenPerfil) {
+            formData.append("imagen", getImage(imagenPerfil));
+        }
+
+    };
 
     return (
         <>
@@ -44,7 +55,13 @@ const info = () => {
                     }}
                 >
                     <Image
-                        source={perfil ? { uri: perfil.imagen_url } : defaultImage}
+                        source={
+                            imagenPerfil
+                                ? imagenPerfil
+                                : perfil
+                                ? { uri: perfil.imagen_url }
+                                : defaultImage
+                        }
                         style={{ width: "100%", height: "100%" }}
                     />
                     <TouchableOpacity
@@ -59,9 +76,18 @@ const info = () => {
                             backgroundColor: "rgba(0, 0, 0, 0.4)",
                             borderRadius: 100,
                         }}
+                        onPress={() => {
+                            pickImage(setImagenPerfil, [1, 1]);
+                        }}
                     >
                         <FontAwesome name="camera" size={24} color="#fff" />
-                        <Text style={{ color: "#fff", marginTop: 5, fontSize: 14 }}>
+                        <Text
+                            style={{
+                                color: "#fff",
+                                marginTop: 5,
+                                fontSize: 14,
+                            }}
+                        >
                             Cambiar imagen
                         </Text>
                     </TouchableOpacity>
@@ -81,15 +107,67 @@ const info = () => {
                         elevation: 3,
                     }}
                 >
-                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 4 }}>
-                        <Text style={[Styles.title, {fontSize: 20 , marginBottom:2}]} >Nombre completo</Text>
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            marginBottom: 4,
+                        }}
+                    >
+                        <Text
+                            style={[
+                                Styles.title,
+                                { fontSize: 20, marginBottom: 2 },
+                            ]}
+                        >
+                            Nombre completo
+                        </Text>
                     </View>
-                    <Text style={[{ marginBottom: 20, fontWeight: "bold", color: "black"  }]}>{perfil?.nombre}</Text>
-                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 4 }}>
-                        <Text style={[Styles.title,{fontSize: 20, marginBottom:2 }]}>E-mail</Text>
+                    <Text
+                        style={[
+                            {
+                                marginBottom: 20,
+                                fontWeight: "bold",
+                                color: "black",
+                            },
+                        ]}
+                    >
+                        {perfil?.nombre}
+                    </Text>
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            marginBottom: 4,
+                        }}
+                    >
+                        <Text
+                            style={[
+                                Styles.title,
+                                { fontSize: 20, marginBottom: 2 },
+                            ]}
+                        >
+                            E-mail
+                        </Text>
                     </View>
-                    <Text style={[{ marginBottom: 10, fontWeight: "bold", color: "black"  }]}>{perfil?.email}</Text>
+                    <Text
+                        style={[
+                            {
+                                marginBottom: 10,
+                                fontWeight: "bold",
+                                color: "black",
+                            },
+                        ]}
+                    >
+                        {perfil?.email}
+                    </Text>
                 </View>
+
+                <Pressable style={Styles.button} onPress={handleSubmit}>
+                    <Text style={Styles.buttonText}>
+                        Actualizar información
+                    </Text>
+                </Pressable>
             </View>
         </>
     );
