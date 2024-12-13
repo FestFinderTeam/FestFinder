@@ -7,7 +7,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from django.db.models import Q
 
 from ..serializers import HorariosEstablecimientoSerializer
-from ..models import Establecimiento, Usuario, Etiqueta
+from ..models import Establecimiento, Usuario, Etiqueta, FavoritosLocal
 from ..serializers import EstablecimientoSerializer
 from ..serializers import EtiquetaSerializer
 from ..models import EtiquetaEstablecimiento, horariosEstablecimiento
@@ -41,6 +41,8 @@ class ListarEstablecimientosPorTipo(APIView):
 # Vista para recuperar datos de un establecimiento por su ID
 class RecuperarDatosEstablecimiento(APIView):
     def get(self, request, est_id):
+        user_id = request.query_params.get('user_id', None)
+
         try:
             establecimiento = Establecimiento.objects.get(id=est_id)
             establecimiento_data = EstablecimientoSerializer(establecimiento).data
@@ -54,6 +56,11 @@ class RecuperarDatosEstablecimiento(APIView):
             horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento.id)
             horarios_data = HorariosEstablecimientoSerializer(horarios, many=True).data
             establecimiento_data['horarios'] = horarios_data
+            
+            if user_id:
+                es_favorito = FavoritosLocal.objects.filter(establecimiento=establecimiento, usuario_id=user_id).exists()
+                establecimiento_data['es_favorito'] = es_favorito  # True o False según la consulta
+
 
             return Response(establecimiento_data, status=status.HTTP_200_OK)
         except Establecimiento.DoesNotExist:
@@ -128,7 +135,6 @@ class EstablecimientosSimilares(APIView):
             return Response({"message": "Establecimiento no encontrado"}, status=status.HTTP_404_NOT_FOUND)
 
 
-
 class RegistrarEstablecimiento(APIView):
     parser_classes = (MultiPartParser, FormParser)
 
@@ -157,8 +163,6 @@ class RegistrarEstablecimiento(APIView):
                 {"message": "Error en la validación de los datos", "errors": serializer.errors},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
-
 
 class FiltrarEstablecimientos(APIView):
     def post(self, request):
