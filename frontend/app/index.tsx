@@ -14,7 +14,6 @@ const Index = () => {
                 const token = await registerForPushNotificationsAsync();
                 if (token) {
                     console.log("Token registrado:", token);
-                    // Obtener el user_id de la sesión
                     const userId = session.id_usuario;
 
                     console.log("Enviando token al backend...", userId, token);
@@ -43,29 +42,34 @@ const Index = () => {
             };
 
             setupNotifications();
-
-            // Listeners para manejar las notificaciones
-            const notificationListener =
-                Notifications.addNotificationReceivedListener(
-                    (notification) => {
-                        console.log("Notificación recibida:", notification);
-                    }
-                );
-
-            const responseListener =
-                Notifications.addNotificationResponseReceivedListener(
-                    (response) => {
-                        console.log("Respuesta a notificación:", response);
-                    }
-                );
-
-            // Limpiar los listeners al desmontar el componente
-            return () => {
-                notificationListener.remove();
-                responseListener.remove();
-            };
         }
     }, [session]);
+
+    useEffect(() => {
+        // Listeners para manejar las notificaciones
+        Notifications.addNotificationReceivedListener((notification) => {
+            console.log("Notificación recibida:", notification);
+            console.log("data:", notification.request.content.data);
+        });
+
+        const handleNotificationResponse = (
+            response: Notifications.NotificationResponse
+        ) => {
+            console.log("Respuesta a notificación:", response);
+            const notification = response.notification;
+            const eventId = notification.request.content.data.id_evento;
+            if (eventId) {
+                router.replace(`/eventos/${eventId}`);
+            } else {
+                console.log("Redirigiendo a inicio...");
+                router.replace("/");
+            }
+        };
+
+        Notifications.addNotificationResponseReceivedListener(
+            handleNotificationResponse
+        );
+    }, []);
     useEffect(() => {
         if (session) {
             router.replace("/inicio");
