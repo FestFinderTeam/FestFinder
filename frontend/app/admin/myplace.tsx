@@ -170,8 +170,6 @@ const MyPlace = () => {
         fetchCategorias();
     }, [tipo_fk]); // Actualizamos cada vez que tipo_fk cambie
 
- 
-
     const handleTagInputChange = async (texto: string) => {
         setEtiqueta(texto.toLowerCase()); // Actualizar el valor del input
 
@@ -213,7 +211,7 @@ const MyPlace = () => {
         const fetchEstablecimiento = async () => {
             const propietarioId = session?.id_usuario;
             const data = await getEstablecimientoPorPropietario(propietarioId);
-            console.log(data.coordenada_x, data.coordenada_y);
+            //console.log(data.coordenada_x, data.coordenada_y);
 
             if (data) {
                 setLocation({
@@ -234,7 +232,56 @@ const MyPlace = () => {
                         (etiqueta: any) => etiqueta.texto_etiqueta
                     )
                 );
-                setHorarioAtencion(data.horarios);
+
+                if (data.horarios.length > 0) {
+                    const getHorario = (dia: string): Horario => {
+                        return data.horarios.filter(
+                            (horario: {
+                                dia_semana: string;
+                                fin_atencion: string;
+                                inicio_atencion: string;
+                            }) => dia === horario.dia_semana
+                        )[0];
+                    };
+
+                    const newHorario = days.map((_, index): HorarioAtencion => {
+                        const horario = getHorario(index + "");
+                        return {
+                            dia: index,
+                            horario: horario ? horario : null,
+                        };
+                    });
+
+                    setHorarioAtencion(newHorario);
+                    const newHorarioInicio = horariosInicio.map((_, index) => {
+                        const horario = getHorario(index + "");
+                        const date = new Date()
+                        if (horario) {
+                            const [hora,minuto]  = horario.inicio_atencion.split(':')
+                            
+                            date.setHours(parseInt (hora))
+                            date.setMinutes(parseInt (minuto))
+                        };
+                        return date;
+                    });
+                   setHorariosInicio(newHorarioInicio);
+                    const newHorarioFin = horariosInicio.map((_, index) => {
+                        const horario = getHorario(index + "");
+                        const date = new Date()
+                        if (horario) {
+                            const [hora,minuto]  = horario.fin_atencion.split(':')
+                            console.log(horario.fin_atencion.split(':'));
+                            
+                            date.setHours(parseInt (hora))
+                            date.setMinutes(parseInt (minuto))
+                        };
+                        return date;
+
+                    })
+                    setHorariosFin(newHorarioFin);
+                }
+
+                //setHorarioAtencion(data.horarios);
                 setRango(data.rango_de_precios);
 
                 const isOpenToday = () => {
@@ -898,8 +945,6 @@ const MyPlace = () => {
                             style={{ marginLeft: "3%" }}
                             data={[null, ...fotos]}
                             renderItem={({ item }) => {
-                              
-                                
                                 if (item === null) {
                                     return (
                                         <Pressable
@@ -918,9 +963,7 @@ const MyPlace = () => {
                                         </Pressable>
                                     );
                                 } else {
-                                    
                                     return (
-                                        
                                         <Image
                                             source={
                                                 item?.imagen
