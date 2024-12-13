@@ -6,6 +6,7 @@ import { Image, Text, View, TouchableOpacity, Pressable } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { getImage, pickImage } from "@/utils/Image";
 import type { ImagePickerAsset } from "expo-image-picker";
+import LoadingScreen from "@/components/Loading";
 
 const defaultImage = require("../../assets/images/default-profile.png");
 
@@ -20,6 +21,7 @@ const info = () => {
     const { session } = useSession();
     const [perfil, setPerfil] = useState<Perfil | null>();
     const [imagenPerfil, setImagenPerfil] = useState<ImagePickerAsset>();
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (session) {
@@ -38,7 +40,20 @@ const info = () => {
             formData.append("imagen", getImage(imagenPerfil));
         }
 
+        try {
+            setLoading(true);
+            //peticion
+            
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setLoading(false);
+        }
     };
+
+    if (loading) {
+        return <LoadingScreen text="actualizando datos" />;
+    }
 
     return (
         <>

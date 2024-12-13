@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "321193362281",
+    "project_id": "festfinder-ccb2b",
+    "storage_bucket": "festfinder-ccb2b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:321193362281:android:06a684828d1e9c3efc73f8",
+        "android_client_info": {
+          "package_name": "com.mobile.festfinder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAF9PSzPh8udwt3QiSiEOCRFr3GQqHzQS8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
