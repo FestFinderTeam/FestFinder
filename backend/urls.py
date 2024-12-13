@@ -9,7 +9,7 @@ from django.conf.urls.static import static
 from api.views import SubirImagen
 from api.views import AgregarTipoEstablecimiento
 from api.views import ListarTiposEstablecimiento
-from api.views.Establecimiento_Vista import EstablecimientoPorUsuario, EstablecimientosSimilares, FiltrarEstablecimientos, ListarEstablecimientosPorTipo, ModificarEstablecimiento, RecuperarDatosEstablecimiento, RegistrarEstablecimiento, ListarEstablecimientos, RegistrarEstablecimientoC
+from api.views.Establecimiento_Vista import EstablecimientoPorUsuario, EstablecimientosSimilares, EstablecimientosSimilaresPorUsuario, FiltrarEstablecimientos, ListarEstablecimientosPorTipo, ModificarEstablecimiento, RecuperarDatosEstablecimiento, RegistrarEstablecimiento, ListarEstablecimientos, RegistrarEstablecimientoC
 from api.views.Etiqueta_Vista import CrearEtiqueta, ListarEtiquetas, ListarEtiquetasPorTexto
 from api.views.EtiquetaEstablecimiento_Vista import (
     RegistrarRelacion,
@@ -119,6 +119,8 @@ urlpatterns = [
     path('api/establecimientos-similares/<int:est_id>/', EstablecimientosSimilares.as_view(), name='establecimientos-similares'),
     path('api/establecimientos/horarios/', RecuperarHorarios.as_view(), name='recuperar_todos_los_horarios'),
     path('api/establecimientos/filtro/', FiltrarEstablecimientos.as_view(), name='filtrar_establecimientos'),
+    path('api/establecimientos/recomendacion/<int:id_usuario>/', EstablecimientosSimilaresPorUsuario.as_view(), name='recomendar_establecimientos'),
+
     
     path('api/galeria/establecimiento/<int:id_establecimiento>/', RecuperarGaleriaPorEstablecimiento.as_view(), name='recuperar-galeria-establecimiento'),
     path('api/galeria/establecimiento/imagen/<int:id>/', EliminarGaleriaEstablecimiento.as_view(), name='eliminar-imagen-galeria'),

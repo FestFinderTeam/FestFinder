@@ -6,6 +6,8 @@ from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.db.models import Q
 
+from api.models import Visita
+
 from ..serializers import HorariosEstablecimientoSerializer
 from ..models import Establecimiento, Usuario, Etiqueta, FavoritosLocal
 from ..serializers import EstablecimientoSerializer
@@ -344,3 +346,39 @@ class RegistrarEstablecimientoC(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
+
+class EstablecimientosSimilaresPorUsuario(APIView):
+    def get(self, request, id_usuario):
+        try:
+            # Obtener los establecimientos visitados por el usuario
+            visitas = Visita.objects.filter(id_usuario_fk=id_usuario)
+            establecimientos_visitados = Establecimiento.objects.filter(
+                id__in=visitas.values_list('id_establecimiento_visitado_fk', flat=True)
+            )
+
+            if not establecimientos_visitados.exists():
+                return Response(
+                    [],
+                    status=status.HTTP_200_OK
+                )
+            
+            # Obtener los tipos, rangos de precios y etiquetas de los establecimientos visitados
+            tipos = establecimientos_visitados.values_list('tipo_fk', flat=True)
+            rangos_precios = establecimientos_visitados.values_list('rango_de_precios', flat=True)
+            etiquetas = EtiquetaEstablecimiento.objects.filter(
+                id_establecimiento__in=establecimientos_visitados
+            ).values_list('id_etiqueta', flat=True)
+            
+            # Filtrar establecimientos similares
+            establecimientos_similares = Establecimiento.objects.filter(
+                Q(tipo_fk__in=tipos) |
+                Q(rango_de_precios__in=rangos_precios) |
+                Q(id__in=EtiquetaEstablecimiento.objects.filter(id_etiqueta__in=etiquetas).values_list('id_establecimiento', flat=True))
+            ).exclude(id__in=establecimientos_visitados.values_list('id', flat=True))
+
+            # Serializar y devolver los datos
+            establecimientos_data = EstablecimientoSerializer(establecimientos_similares, many=True).data
+            return Response(establecimientos_data, status=status.HTTP_200_OK)
+        
+        except Usuario.DoesNotExist:
+            return Response({"message": "Usuario no encontrado."}, status=status.HTTP_404_NOT_FOUND)
