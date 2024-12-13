@@ -575,7 +575,7 @@ const Place = () => {
                             <View style={{ top: "-20%", right: "40%" }}>
                                 <Link
                                     href={
-                                        ("https://wa.me/" +
+                                        ("https://wa.me/+591" +
                                             establecimiento.nro_ref) as Href
                                     }
                                 >
