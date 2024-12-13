@@ -4,7 +4,7 @@ export interface ReviewType {
     puntuacion: number;
     comentario: string;
     fecha_publicacion: string;
-    usuario_info: any;
+    usuario_info: UsuarioType;
     verificado: boolean;
 }
 

@@ -9,7 +9,6 @@ interface Perfil {
     nombre: string | null;
     email: string | null;
     telefono: string | null;
-    fecha_nacimiento: string | null;
     imagen_url: string | null;
 }
 
@@ -24,7 +23,6 @@ const info = () => {
                 nombre: session.nombre,
                 email: session.email,
                 telefono: session.telefono,
-                fecha_nacimiento: "12/09/1991",
                 imagen_url: session.imagen_url,
             });
         }
@@ -49,8 +47,6 @@ const info = () => {
                 <Text style={Styles.subtitle}>{perfil?.email}</Text>
                 <Text style={Styles.title}>Numero telefonico</Text>
                 <Text style={Styles.subtitle}>{perfil?.telefono}</Text>
-                <Text style={Styles.title}>Fecha de nacimiento</Text>
-                <Text style={Styles.subtitle}>{perfil?.fecha_nacimiento}</Text>
             </View>
         </>
     );

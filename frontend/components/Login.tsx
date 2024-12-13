@@ -64,7 +64,7 @@ const Login = () => {
                     email,
                     g_id,
                     id_usuario,
-                    imagen_detail,
+                    imagen,
                     nombre,
                     telefono,
                     duenio,
@@ -72,7 +72,7 @@ const Login = () => {
                 } = data;
 
                 let imagen_url = "";
-                const fullImageUrl = `${API_URL}${imagen_detail.imagen}`; // URL completa de la imagen
+                const fullImageUrl = `${API_URL}${imagen}`; // URL completa de la imagen
                 imagen_url = fullImageUrl; // Guarda la URI de la imagen
                 
                 signIn({
