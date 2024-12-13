@@ -19,9 +19,9 @@ export const getEstablecimientos = async (id_tipo: string | null = null) => {
     }
 };
 
-export const getEstablecimientoPorId = async (id: any) => {
+export const getEstablecimientoPorId = async (id: any, user_id: any = 1) => {
     try {
-        const url = `${API_URL}/api/establecimiento/est_id/${id}/`;
+        const url = `${API_URL}/api/establecimiento/est_id/${id}/?user_id=${user_id}`;
 
         const response = await fetch(url);
         if (!response.ok) {

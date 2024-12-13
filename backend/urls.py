@@ -46,6 +46,8 @@ from api.views.Valoracion_Evento_Vista import (
     ValoracionesPorEvento,
 )
 
+from api.views.Usuario_Vista import actualizar_token
+
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
@@ -237,6 +239,8 @@ urlpatterns = [
         name="valoraciones-por-evento",
     ),
     
+    path('api/actualizar_token/', actualizar_token, name='actualizar_token'),
+
     path('api/logear_usuario/', LoginUsuario.as_view(), name='logear-usuario'),
     path('api/imagen/<int:imagen_id>/', ImagenDetailView.as_view(), name='imagen-detalle'),
 

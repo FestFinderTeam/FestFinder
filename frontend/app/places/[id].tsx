@@ -48,6 +48,7 @@ type Establecimiento = {
     etiquetas?: any;
     coordenada_x?: number;
     coordenada_y?: number;
+    es_favorito?: boolean;
 };
 
 type Evento = {
@@ -104,9 +105,17 @@ const Place = () => {
         "Poppins-SemiBold": require("../../assets/fonts/Poppins-SemiBold.ttf"),
     });
 
+    useEffect(() => {
+        if (establecimiento?.es_favorito) {
+            setIsFavorite(true);
+        } else {
+            setIsFavorite(false);
+        }
+    }, [establecimiento]);
+
     const obtenerDatosEstablecimiento = async (establecimientoId: any) => {
         setLoading(true);
-        const data = await getEstablecimientoPorId(establecimientoId);
+        const data = await getEstablecimientoPorId(establecimientoId, session?.id_usuario);
         console.log("establecimiento", data);
         setLoading(false);
         setEstablecimiento(data);
