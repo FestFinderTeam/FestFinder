@@ -8,9 +8,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.hashers import check_password
 from ..utils import ResponseFormatter
+from django.views.decorators.csrf import csrf_exempt
 
 from ..models import Usuario, Imagen
 from ..serializers import UsuarioSerializer
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -101,19 +103,27 @@ class LoginUsuario(APIView):
             except Usuario.DoesNotExist:
                 logger.warning(f"Usuario con email {email} no encontrado")
                 return Response({"detail": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
-            
+  
+@csrf_exempt         
 def actualizar_token(request):
-    token_expo = request.GET.get('expo_push_token')
-    user_id = request.GET.get('user_id')
+    if request.method != 'POST':
+        return JsonResponse({"error": "Método no permitido"}, status=405)
 
-    if not token_expo or not user_id:
-        return JsonResponse({"error": "Faltan parámetros"}, status=400)
-
-    # Buscar el usuario y actualizar el token
     try:
+        # Cargar los datos del cuerpo de la solicitud
+        data = json.loads(request.body)
+        token_expo = data.get('expo_push_token')
+        user_id = data.get('user_id')
+
+        if not token_expo or not user_id:
+            return JsonResponse({"error": "Faltan parámetros"}, status=400)
+
+        # Buscar el usuario y actualizar el token
         usuario = Usuario.objects.get(id_usuario=user_id)
         usuario.expo_push_token = token_expo
         usuario.save()
         return JsonResponse({"mensaje": "Token actualizado con éxito"})
     except Usuario.DoesNotExist:
         return JsonResponse({"error": "Usuario no encontrado"}, status=404)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Error al decodificar JSON"}, status=400)
