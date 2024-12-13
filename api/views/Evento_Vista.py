@@ -19,10 +19,7 @@ class CrearEvento(APIView):
             serializer = EventoSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                print(serializer.data)
-                print(serializer.data['id_establecimiento_detail']['id'])
                 try:
-                    # Intenta enviar las notificaciones
                     enviar_notificaciones_establecimiento(serializer.data['id_establecimiento_detail']['id'], 'Nuevo evento disponible de '+ serializer.data['id_establecimiento_detail']['nombre'])
                 except Exception as e:
                     print(f"Error al enviar notificaciones: {e}")
@@ -30,18 +27,14 @@ class CrearEvento(APIView):
                         {"message": "Error al enviar notificaciones", "error": str(e)},
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR
                     )
-
-                # Si todo sale bien, guarda el evento
-                
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
-                print("Errores de validación:", serializer.errors)  # Imprime errores de validación
+                print("Errores de validación:", serializer.errors)
                 return Response(
                     {"message": "Error en la validación de los datos", "errors": serializer.errors},
                     status=status.HTTP_400_BAD_REQUEST
                 )
         except Exception as e:
-            # Manejo general de errores inesperados
             print(f"Error inesperado: {e}")
             return Response(
                 {"message": "Ha ocurrido un error inesperado", "error": str(e)},
