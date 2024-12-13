@@ -5,6 +5,7 @@ import React, { useEffect } from "react";
 import { Text, Button } from "react-native-paper";
 import { registerForPushNotificationsAsync } from "@/notifications";
 import * as Notifications from "expo-notifications";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Index = () => {
     const { session } = useSession();
@@ -45,11 +46,43 @@ const Index = () => {
         }
     }, [session]);
 
+
+
+
+    // Define el tipo de datos que manejarán las notificaciones
+    interface NotificationData {
+      [key: string]: any; // Puedes especificar mejor los campos según lo que contenga `data`
+    }
+    
+    const addNotificationToStorage = async (notification: Notifications.Notification): Promise<void> => {
+      try {
+        // Obtener notificaciones existentes
+        const storedNotifications = await AsyncStorage.getItem('notifications');
+        const existingNotifications: NotificationData[] = storedNotifications ? JSON.parse(storedNotifications) : [];
+    
+        // Agregar la nueva notificación
+        const newNotification = {
+            ...notification.request.content,
+            timestamp: new Date().toISOString(),
+          };
+        existingNotifications.push(newNotification);
+    
+        // Guardar de nuevo en AsyncStorage
+        await AsyncStorage.setItem('notifications', JSON.stringify(existingNotifications));
+    
+        console.log("Notificación agregada al AsyncStorage:", newNotification);
+      } catch (error) {
+        console.error("Error guardando notificación en AsyncStorage:", error);
+      }
+    };
+
     useEffect(() => {
         // Listeners para manejar las notificaciones
         Notifications.addNotificationReceivedListener((notification) => {
             console.log("Notificación recibida:", notification);
-            console.log("data:", notification.request.content.data);
+            console.log("Agregando notificación al localStorage");
+            // Agregar la notificación
+            addNotificationToStorage(notification);
         });
 
         const handleNotificationResponse = (

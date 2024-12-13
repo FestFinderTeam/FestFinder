@@ -118,12 +118,12 @@ const inicio = () => {
 					bottom: 4,
 				}}
 			>
-				<FontAwesome
+				<Pressable
 					style={{ flex: 1, marginLeft: "7%" }}
-					name="bell"
-					size={23}
-					color="white"
-				/>
+					onPress={() => router.navigate("/notifications/list")}
+				>
+					<FontAwesome name="bell" size={23} color="white" />
+				</Pressable>
 
 				<Pressable
 					style={{
