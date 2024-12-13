@@ -19,8 +19,9 @@ class CrearEvento(APIView):
             serializer = EventoSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
+                print("Evento creado con éxito:", serializer.data)
                 try:
-                    enviar_notificaciones_establecimiento(serializer.data['id_establecimiento_detail']['id'], 'Nuevo evento disponible de '+ serializer.data['id_establecimiento_detail']['nombre'])
+                    enviar_notificaciones_establecimiento(serializer.data['id_establecimiento_detail']['id'], 'Nuevo evento disponible de '+ serializer.data['id_establecimiento_detail']['nombre'], serializer.data['id_evento'])
                 except Exception as e:
                     print(f"Error al enviar notificaciones: {e}")
                     return Response(
