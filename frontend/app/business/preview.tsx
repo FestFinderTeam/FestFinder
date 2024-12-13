@@ -11,11 +11,11 @@ import {
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Styles from "@/globalStyles/styles";
-import { days, type HorarioAtencion } from "../places/[id]";
+import { type HorarioAtencion } from "../places/[id]";
 import React from "react";
 import type { ImagePickerAsset } from "expo-image-picker";
 import { getImage, pickImage } from "@/utils/Image";
-import { dateToHHmm, showTime } from "@/utils/DateTime";
+import { dateToHHmm, days, showTime } from "@/utils/DateTime";
 import { useSession } from "@/hooks/ctx";
 import { getDireccion } from "@/utils/Direccion";
 import LoadingScreen from "@/components/Loading";
