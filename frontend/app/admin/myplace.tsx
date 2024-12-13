@@ -170,21 +170,7 @@ const MyPlace = () => {
         fetchCategorias();
     }, [tipo_fk]); // Actualizamos cada vez que tipo_fk cambie
 
-    useEffect(() => {
-        const fetchGaleria = async (establecimiento: string) => {
-            setIsLoading(true);
-            const galeria = await getGaleriaPorEstablecimiento(
-                establecimiento + ""
-            );
-            if (galeria) {
-                setFotos(galeria); // Actualiza el estado con las imágenes recuperadas
-            }
-            setIsLoading(false);
-        };
-        fetchGaleria(session?.establecimiento + "");
-        console.log(fotos);
-        console.log(session?.establecimiento);
-    }, [session]);
+ 
 
     const handleTagInputChange = async (texto: string) => {
         setEtiqueta(texto.toLowerCase()); // Actualizar el valor del input
@@ -249,7 +235,6 @@ const MyPlace = () => {
                     )
                 );
                 setHorarioAtencion(data.horarios);
-                setFotos(data.fotos || []);
                 setRango(data.rango_de_precios);
 
                 const isOpenToday = () => {
@@ -294,7 +279,18 @@ const MyPlace = () => {
                 setEstablecimientoAbierto(isOpenToday());
             }
         };
+        const fetchGaleria = async (establecimiento: string) => {
+            setIsLoading(true);
+            const galeria = await getGaleriaPorEstablecimiento(
+                establecimiento + ""
+            );
+            if (galeria) {
+                setFotos(galeria); // Actualiza el estado con las imágenes recuperadas
+            }
+            setIsLoading(false);
+        };
         fetchEstablecimiento();
+        fetchGaleria(session?.establecimiento + "");
     }, [session]);
 
     const getDay = (date: Date) => {
@@ -902,6 +898,8 @@ const MyPlace = () => {
                             style={{ marginLeft: "3%" }}
                             data={[null, ...fotos]}
                             renderItem={({ item }) => {
+                              
+                                
                                 if (item === null) {
                                     return (
                                         <Pressable
@@ -920,9 +918,15 @@ const MyPlace = () => {
                                         </Pressable>
                                     );
                                 } else {
+                                    
                                     return (
+                                        
                                         <Image
-                                            source={{ uri: (item.imagen || item.uri) }}
+                                            source={
+                                                item?.imagen
+                                                    ? { uri: item.imagen }
+                                                    : { uri: item.uri }
+                                            }
                                             style={{
                                                 width: "auto",
                                                 height: 150,
