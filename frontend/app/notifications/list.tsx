@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
+import { FontAwesome } from "@expo/vector-icons"; // Para el ícono de papelera
 
 interface NotificationContent {
     autoDismiss: boolean;
@@ -62,27 +63,70 @@ const NotificationList: React.FC = () => {
         router.push(`/eventos/${id_evento}`);
     };
 
+    const clearNotifications = async () => {
+        try {
+            // Borrar todas las notificaciones del AsyncStorage
+            await AsyncStorage.removeItem("notifications");
+            setNotifications([]); // Limpiar el estado
+            console.log("Todas las notificaciones han sido borradas");
+        } catch (error) {
+            console.error("Error al borrar las notificaciones:", error);
+        }
+    };
+
+    const deleteNotification = async (timestamp: string) => {
+        try {
+            // Filtrar la notificación a eliminar
+            const updatedNotifications = notifications.filter(
+                (notification) => notification.timestamp !== timestamp
+            );
+
+            // Guardar las notificaciones actualizadas
+            await AsyncStorage.setItem(
+                "notifications",
+                JSON.stringify(updatedNotifications)
+            );
+            setNotifications(updatedNotifications); // Actualizar el estado
+            console.log("Notificación eliminada");
+        } catch (error) {
+            console.error("Error al eliminar la notificación:", error);
+        }
+    };
+
     const renderNotification = ({ item }: { item: NotificationContent }) => (
-        <TouchableOpacity
-            onPress={() => handlePressNotification(item.data.id_evento)}
-        >
-            <View style={styles.notificationCard}>
+        <View style={styles.notificationCard}>
+            <TouchableOpacity
+                onPress={() => handlePressNotification(item.data.id_evento)}
+            >
                 <Text style={styles.title}>{item.title}</Text>
                 <Text style={styles.body}>{item.body}</Text>
                 <Text style={styles.timestamp}>
                     Recibida: {new Date(item.timestamp).toLocaleString()}
                 </Text>
-            </View>
-        </TouchableOpacity>
+            </TouchableOpacity>
+
+            {/* Icono de papelera para eliminar la notificación */}
+            <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => deleteNotification(item.timestamp)}
+            >
+                <FontAwesome name="trash" size={18} color="red" />
+            </TouchableOpacity>
+        </View>
     );
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Lista de Notificaciones</Text>
+            <View style={styles.headerContainer}>
+                <Text style={styles.header}>Lista de Notificaciones</Text>
+                <TouchableOpacity onPress={clearNotifications}>
+                    <FontAwesome name="trash" size={24} color="red" />
+                </TouchableOpacity>
+            </View>
             {notifications.length > 0 ? (
                 <FlatList
                     data={notifications}
-                    keyExtractor={(_, index) => index.toString()}
+                    keyExtractor={(item) => item.timestamp} // Usar timestamp como key
                     renderItem={renderNotification}
                 />
             ) : (
@@ -100,11 +144,15 @@ const styles = StyleSheet.create({
         padding: 20,
         backgroundColor: "#f7f7f7",
     },
+    headerContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
     header: {
         fontSize: 20,
         fontWeight: "bold",
         marginBottom: 10,
-        textAlign: "center",
     },
     notificationCard: {
         backgroundColor: "#fff",
@@ -116,6 +164,7 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         shadowOffset: { width: 0, height: 2 },
         elevation: 3,
+        position: "relative", // Necesario para posicionar el ícono de la papelera
     },
     title: {
         fontSize: 16,
@@ -125,14 +174,6 @@ const styles = StyleSheet.create({
     body: {
         fontSize: 14,
         marginBottom: 5,
-    },
-    extraData: {
-        fontSize: 12,
-        color: "#555",
-    },
-    idEvento: {
-        fontSize: 12,
-        color: "#999",
     },
     timestamp: {
         fontSize: 12,
@@ -144,6 +185,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: "#aaa",
         marginTop: 20,
+    },
+    deleteButton: {
+        position: "absolute",
+        top: 10,
+        right: 10,
+        padding: 5,
     },
 });
 
