@@ -1,6 +1,7 @@
 from django.db import models
 from .Evento import Evento 
 
+# Modelo para las categorias de entradas que tenga un evento (digase por proximidad al artista por ejemplo)
 class Entrada(models.Model):
     id_entrada = models.AutoField(primary_key=True)
     id_evento_fk = models.ForeignKey(Evento, on_delete=models.CASCADE)

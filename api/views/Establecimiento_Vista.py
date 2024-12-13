@@ -16,23 +16,25 @@ from django.shortcuts import get_object_or_404
 # Vista para listar establecimientos por tipo
 class ListarEstablecimientosPorTipo(APIView):
     def get(self, request, tipo_id):
+        # Comprueba si hay establecimientos de ese tipo
         establecimientos = Establecimiento.objects.filter(tipo_fk_id=tipo_id)
         if not establecimientos.exists():
             return Response({"message": "No hay establecimientos para el tipo especificado."}, status=status.HTTP_404_NOT_FOUND)
 
+        # Liga todos los establecimientos con sus etiquetas y horarios
         establecimientos_data = []
-
         for establecimiento in establecimientos:
+            # Recupera el establecimiento
             establecimiento_data = EstablecimientoSerializer(establecimiento).data
-
+            # Filtra y agrega las etiquetas a la salida
             etiquetas_establecimiento = EtiquetaEstablecimiento.objects.filter(id_establecimiento=establecimiento.id)
             etiquetas = EtiquetaSerializer([ee.id_etiqueta for ee in etiquetas_establecimiento], many=True).data
             establecimiento_data['etiquetas'] = etiquetas
-
+            # Filtra y agrega las etiquetas a la salida
             horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento.id)
             horarios_data = HorariosEstablecimientoSerializer(horarios, many=True).data
             establecimiento_data['horarios'] = horarios_data
-
+            # Agrega el establecimiendo con los nuevos datos a la salida
             establecimientos_data.append(establecimiento_data)
 
         return Response(establecimientos_data, status=status.HTTP_200_OK)
@@ -42,39 +44,42 @@ class ListarEstablecimientosPorTipo(APIView):
 class RecuperarDatosEstablecimiento(APIView):
     def get(self, request, est_id):
         try:
+            # Se obtiene el establecimiento por su ID
             establecimiento = Establecimiento.objects.get(id=est_id)
             establecimiento_data = EstablecimientoSerializer(establecimiento).data
 
-            # Obtenemos y serializamos las etiquetas del establecimiento
+            # Se obtiene y agrega las etiquetas del establecimiento
             etiquetas_establecimiento = EtiquetaEstablecimiento.objects.filter(id_establecimiento=establecimiento.id)
             etiquetas = EtiquetaSerializer([ee.id_etiqueta for ee in etiquetas_establecimiento], many=True).data
             establecimiento_data['etiquetas'] = etiquetas
 
-            # Obtenemos y serializamos los horarios de atención del establecimiento
+            # Se obtiene y agrega los horarios de atención del establecimiento
             horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento.id)
             horarios_data = HorariosEstablecimientoSerializer(horarios, many=True).data
             establecimiento_data['horarios'] = horarios_data
 
             return Response(establecimiento_data, status=status.HTTP_200_OK)
+        # Mensaje de error si no se encuentra
         except Establecimiento.DoesNotExist:
             return Response({"error": "Establecimiento no encontrado"}, status=status.HTTP_404_NOT_FOUND)
 
 # Vista para listar todos los establecimientos
 class ListarEstablecimientos(APIView):
     def get(self, request, *args, **kwargs):
+        # Recupera todos los establecimientos
         establecimientos = Establecimiento.objects.all()
         establecimientos_data = []
 
         for establecimiento in establecimientos:
-            # Serializamos cada establecimiento
+            # Consigue un establecimiento
             establecimiento_data = EstablecimientoSerializer(establecimiento).data
 
-            # Obtenemos y serializamos las etiquetas del establecimiento
+            # Se obtiene y agrega las etiquetas del establecimiento
             etiquetas_establecimiento = EtiquetaEstablecimiento.objects.filter(id_establecimiento=establecimiento.id)
             etiquetas = EtiquetaSerializer([ee.id_etiqueta for ee in etiquetas_establecimiento], many=True).data
             establecimiento_data['etiquetas'] = etiquetas
 
-            # Obtenemos y serializamos los horarios de atención del establecimiento
+            # Se obtiene y agrega los horarios de atención del establecimiento
             horarios = horariosEstablecimiento.objects.filter(establecimiento=establecimiento.id)
             horarios_data = HorariosEstablecimientoSerializer(horarios, many=True).data
             establecimiento_data['horarios'] = horarios_data
@@ -127,20 +132,17 @@ class EstablecimientosSimilares(APIView):
         except Establecimiento.DoesNotExist:
             return Response({"message": "Establecimiento no encontrado"}, status=status.HTTP_404_NOT_FOUND)
 
-
-
 class RegistrarEstablecimiento(APIView):
+    # Recupera los datos del establecimiento en dataForm (Para multimedia)
     parser_classes = (MultiPartParser, FormParser)
-
     def post(self, request, *args, **kwargs):
-        print("se envio")
-        print(request.data)
+        # Valida los datos recibidos con el serializador 
         serializer = EstablecimientoSerializer(data=request.data)
-        print("datos bien enviados")
-        
+        # Si es valido comienza el registro
         if serializer.is_valid():
-            establecimiento=serializer.save()
-            # Actualizar el campo `duenio` a True para el usuario relacionado
+            establecimiento=serializer.save() #Guarda el establecimiento
+
+            # Actualizar los campos del usuario para hacerlo el representante del establecimiento
             usuario_id = request.data.get("usuario")
             if(usuario_id):
                 print (usuario_id)
@@ -162,22 +164,24 @@ class RegistrarEstablecimiento(APIView):
 
 class FiltrarEstablecimientos(APIView):
     def post(self, request):
+        # Consigue los datos para el filtrado
         ciudad = request.data.get("ciudad", "").strip()
         tipos = request.data.get("tipos", [])
         rango_de_precios = request.data.get("rango_de_precios", "").strip()
         nombre = request.data.get("nombre", "").strip()
 
-        # Verificar que 'ciudad' esté presente, ya que es obligatorio
+        # Verificar que 'ciudad' esté presente, es obligatorio (no interesan locales de otro pais)
         if not ciudad:
             return Response(
                 {"message": "El campo 'ciudad' es requerido."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Construir el filtro inicial para ciudad en dirección
+        # Se implementa un metodo para hacer multiples filtros
+        # Filtro inicial por ciudad (contenida en la direccion)
         query = Q(direccion__icontains=ciudad)
 
-        # Agregar filtros adicionales según estén presentes
+        # Filtros por tipos de establecimiento, rango de precios y nombre contenido
         if tipos:
             query &= Q(tipo_fk__id__in=tipos)
         if rango_de_precios:
@@ -185,17 +189,17 @@ class FiltrarEstablecimientos(APIView):
         if nombre:
             query &= Q(nombre__icontains=nombre)
 
-        # Filtrar eventos utilizando la consulta construida
+        # Filtra eventos utilizando la consulta construida
         establecimientos = Establecimiento.objects.filter(query)
 
-        # Serializar y devolver los resultados
+        # Serializa y devolve los resultados
         establecimientos_data = EstablecimientoSerializer(establecimientos, many=True).data
         return Response(establecimientos_data, status=status.HTTP_200_OK)
     
 
 class ModificarEstablecimiento(APIView):
+    # Recupera el formData
     parser_classes = (MultiPartParser, FormParser)
-    
     def put(self, request, *args, **kwargs):
         # Obtener el ID del establecimiento desde los parámetros de la URL
         establecimiento_id = kwargs.get('id_establecimiento')
@@ -203,13 +207,13 @@ class ModificarEstablecimiento(APIView):
         # Obtener el establecimiento desde la base de datos
         establecimiento = get_object_or_404(Establecimiento, id=establecimiento_id)
         
-        # Obtener los datos que fueron enviados en la petición
+        # Obtiene los datos nuevos de la petición para modificar
         data = request.data
         
-        # Comprobar si algún dato ha cambiado
+        # Comprueba si algún dato ha cambiado
         fields_to_update = {}
 
-        # Comprobar y asignar nuevos valores si se han enviado
+        # Comprueba si se envio para cambiar y asigna nuevos valores
         if data.get("nombre") and data["nombre"] != establecimiento.nombre:
             fields_to_update["nombre"] = data["nombre"]
         

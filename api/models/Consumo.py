@@ -1,6 +1,7 @@
 from django.db import models
-from .Establecimiento import Establecimiento  # Asegúrate de tener este modelo en su archivo correspondiente
+from .Establecimiento import Establecimiento  
 
+# Modelo para las cosas que ofrezca un establecimiento (digase precios de mesas, manillas, etc.)
 class Consumo(models.Model):
     id_consumo = models.AutoField(primary_key=True)
     id_establecimiento_fk = models.ForeignKey(Establecimiento, on_delete=models.CASCADE)

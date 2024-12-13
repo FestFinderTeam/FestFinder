@@ -5,16 +5,16 @@ from .GeneroEventoSerializer import GeneroEventoSerializer
 from ..models import Evento, GeneroEvento, Establecimiento
 
 class EventoSerializer(serializers.ModelSerializer):
-    # Usamos PrimaryKeyRelatedField solo para las solicitudes POST/PUT (registro)
+    # Espera recibir las llaves para las solicitudes POST/PUT (registro)
     id_establecimiento = serializers.PrimaryKeyRelatedField(queryset=Establecimiento.objects.all(), write_only=True)  # Solo para POST/PUT
     id_genero_fk = serializers.PrimaryKeyRelatedField(queryset=GeneroEvento.objects.all(), write_only=True)  # Solo para POST/PUT
 
-    # Usamos los serializadores completos solo para las solicitudes GET (lectura)
+    # Retorna los datos completos solo para las solicitudes GET (lectura)
     id_establecimiento_detail = EstablecimientoSerializer(read_only=True, source='id_establecimiento')  # Para GET (lectura)
     id_genero_fk_detail = GeneroEventoSerializer(read_only=True, source='id_genero_fk')  # Para GET (lectura)
 
+    # Campos de consulta de interesados y calificación del evento 
     interesados = serializers.SerializerMethodField()
-
     calificacion = serializers.SerializerMethodField()
 
     class Meta:
@@ -25,6 +25,7 @@ class EventoSerializer(serializers.ModelSerializer):
                   'id_genero_fk', 'id_genero_fk_detail',  # Mostramos tanto el ID como el detalle
                   'precio_min', 'precio_max', 'interesados', 'calificacion']
         
+    
     def get_interesados(self, obj):
         # Contamos los registros relacionados con el evento en la tabla Interes
         return obj.interes_set.count()

@@ -4,18 +4,20 @@ from ..models import Establecimiento, TipoEstablecimiento
 from .TipoEstablecimientoSerializer import TipoEstablecimientoSerializer
 
 class EstablecimientoSerializer(serializers.ModelSerializer):
-    # Usamos PrimaryKeyRelatedField solo para las solicitudes POST/PUT (registro)
+    # Se recibe solo el campo de llave para enlazar en  POST y PUT  
     tipo_fk = serializers.PrimaryKeyRelatedField(queryset=TipoEstablecimiento.objects.all(), write_only=True)  # Solo para POST/PUT
 
-    # Usamos TipoEstablecimientoSerializer solo para las solicitudes GET (lectura)
+    # Se recupera toda la informacion del tipo relacionado para las solicitudes GET 
     tipo_fk_detail = TipoEstablecimientoSerializer(read_only=True, source='tipo_fk')  # Para GET (lectura)
 
+    # Campo por consulta de la calificacion
     calificacion = serializers.SerializerMethodField()
-
 
     class Meta:
         model = Establecimiento
         fields = ['id', 'nombre', 'banner', 'logo', 'direccion', 'coordenada_x', 'coordenada_y', 'tipo_fk', 'tipo_fk_detail','usuario','rango_de_precios', 'nro_ref', 'em_ref', 'calificacion']
+        
+        # Mensajes de error en caso de entradas erroneas
         extra_kwargs = {
             'nombre': {
                 'error_messages': {
