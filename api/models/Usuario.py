@@ -18,6 +18,7 @@ class Usuario(models.Model):
         null=True,
         related_name='usuario_establecimiento'
     )
+    expo_push_token = models.CharField(max_length=255, blank=True, null=True)
 
 
 def save(self, *args, **kwargs):

@@ -1,6 +1,7 @@
 import logging
 from urllib.parse import unquote
 
+from django.http import JsonResponse
 from django.db import IntegrityError
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -100,3 +101,19 @@ class LoginUsuario(APIView):
             except Usuario.DoesNotExist:
                 logger.warning(f"Usuario con email {email} no encontrado")
                 return Response({"detail": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+            
+def actualizar_token(request):
+    token_expo = request.GET.get('expo_push_token')
+    user_id = request.GET.get('user_id')
+
+    if not token_expo or not user_id:
+        return JsonResponse({"error": "Faltan parámetros"}, status=400)
+
+    # Buscar el usuario y actualizar el token
+    try:
+        usuario = Usuario.objects.get(id_usuario=user_id)
+        usuario.expo_push_token = token_expo
+        usuario.save()
+        return JsonResponse({"mensaje": "Token actualizado con éxito"})
+    except Usuario.DoesNotExist:
+        return JsonResponse({"error": "Usuario no encontrado"}, status=404)
