@@ -25,7 +25,10 @@ import { SelectList } from "react-native-dropdown-select-list";
 import { dateToHHmm, showTime } from "@/utils/DateTime";
 import React from "react";
 import { useSafeAreaFrame } from "react-native-safe-area-context";
-import { getEstablecimientoPorPropietario, getGaleriaPorEstablecimiento } from "@/services/establecimientosServices";
+import {
+    getEstablecimientoPorPropietario,
+    getGaleriaPorEstablecimiento,
+} from "@/services/establecimientosServices";
 import { getCategorias } from "@/services/categoriasService";
 import { buscarEtiquetas } from "@/services/etiquetasService"; // Importa la función de buscarEtiquetas
 import type { LatLng } from "react-native-maps";
@@ -167,22 +170,21 @@ const MyPlace = () => {
         fetchCategorias();
     }, [tipo_fk]); // Actualizamos cada vez que tipo_fk cambie
 
-    
-
     useEffect(() => {
         const fetchGaleria = async (establecimiento: string) => {
             setIsLoading(true);
-            const galeria = await getGaleriaPorEstablecimiento(establecimiento+"");
-            if(galeria){
+            const galeria = await getGaleriaPorEstablecimiento(
+                establecimiento + ""
+            );
+            if (galeria) {
                 setFotos(galeria); // Actualiza el estado con las imágenes recuperadas
             }
             setIsLoading(false);
         };
-        fetchGaleria(session?.establecimiento+'');
+        fetchGaleria(session?.establecimiento + "");
         console.log(fotos);
         console.log(session?.establecimiento);
-    },[session])
-        
+    }, [session]);
 
     const handleTagInputChange = async (texto: string) => {
         setEtiqueta(texto.toLowerCase()); // Actualizar el valor del input
@@ -221,7 +223,6 @@ const MyPlace = () => {
         setEtiquetas(newTags);
     };
 
-    
     useEffect(() => {
         const fetchEstablecimiento = async () => {
             const propietarioId = session?.id_usuario;
@@ -296,7 +297,6 @@ const MyPlace = () => {
         fetchEstablecimiento();
     }, [session]);
 
-
     const getDay = (date: Date) => {
         const day = date.getDay();
         return day === 0 ? 6 : day - 1;
@@ -316,8 +316,8 @@ const MyPlace = () => {
         if (establecimiento) {
             try {
                 const formData = new FormData();
-                const formImagenes = new FormData()
-                formImagenes.append("establecimiento", establecimiento.id+""); // ID del establecimiento
+                const formImagenes = new FormData();
+                formImagenes.append("establecimiento", establecimiento.id + ""); // ID del establecimiento
                 nuevasFotos.forEach((foto) => {
                     formImagenes.append("fotos_nuevas", getImage(foto));
                 });
@@ -330,7 +330,6 @@ const MyPlace = () => {
                 formData.append("rango_de_precios", rango_de_precios);
                 //formData.append("nro_ref", nro_ref+'');  // Falta campo
                 //formData.append("em_ref", em_ref+'');
-
 
                 // Agregar coordenadas
                 if (location) {
@@ -392,7 +391,9 @@ const MyPlace = () => {
                     }
                 );
                 if (!response.ok) {
-                    throw new Error("Error al agregar imagen el establecimiento");
+                    throw new Error(
+                        "Error al agregar imagen el establecimiento"
+                    );
                 }
 
                 const dataImg = await responseImagen.json();
@@ -401,9 +402,6 @@ const MyPlace = () => {
                     "Éxito",
                     "Galeria del establecimiento actualizado correctamente"
                 );
-
-
-                
 
                 router.push("/inicio");
             } catch (error) {
@@ -579,7 +577,7 @@ const MyPlace = () => {
                                     fontFamily: "Poppins",
                                 }}
                                 defaultOption={dataTypesBusiness.find(
-                                    (item) => item.key == tipo_fk,
+                                    (item) => item.key == tipo_fk
                                 )}
                             />
                         </View>
@@ -888,7 +886,7 @@ const MyPlace = () => {
                             </View>
                         ))}
                     </View>
-                    
+
                     <Text
                         style={{
                             color: "#402158",
@@ -899,53 +897,51 @@ const MyPlace = () => {
                         Fotos
                     </Text>
 
-                {!isLoading && (
-                    <FlatList
-                        style={{ marginLeft: "3%" }}
-                        data={[null, ...fotos]}
-                        renderItem={({ item }) => {
-                            
-                            if (item === null) {
-                                return (
-                                    <Pressable
-                                        onPress={newPhoto}
-                                        style={{
-                                            borderRadius: 10,
-                                            marginTop: "2%",
-                                            height: 150,
-                                            aspectRatio: "16/9",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            backgroundColor: "gray",
-                                        }}
-                                    >
-                                        <FontAwesome name="plus" />
-                                    </Pressable>
-                                );
-                            } else {
-                                console.log(item.imagen);
-                                return (
-                                    <Image
-                                        source={{uri: item.imagen}}
-                                        style={{
-                                            width: "auto",
-                                            height: 150,
-                                            aspectRatio: "16/9",
-                                            margin: 3,
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            borderRadius: 10,
-                                            backgroundColor: "white",
-                                        }}
-                                    />
-                                );
-                            }
-                        }}
-                        keyExtractor={(item, index) => index.toString()}
-                        horizontal
-                    />
-
-                )}
+                    {!isLoading && (
+                        <FlatList
+                            style={{ marginLeft: "3%" }}
+                            data={[null, ...fotos]}
+                            renderItem={({ item }) => {
+                                if (item === null) {
+                                    return (
+                                        <Pressable
+                                            onPress={newPhoto}
+                                            style={{
+                                                borderRadius: 10,
+                                                marginTop: "2%",
+                                                height: 150,
+                                                aspectRatio: "16/9",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                backgroundColor: "gray",
+                                            }}
+                                        >
+                                            <FontAwesome name="plus" />
+                                        </Pressable>
+                                    );
+                                } else {
+                                    console.log(item);
+                                    return (
+                                        <Image
+                                            source={{ uri: item.uri }}
+                                            style={{
+                                                width: "auto",
+                                                height: 150,
+                                                aspectRatio: "16/9",
+                                                margin: 3,
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                borderRadius: 10,
+                                                backgroundColor: "white",
+                                            }}
+                                        />
+                                    );
+                                }
+                            }}
+                            keyExtractor={(item, index) => index.toString()}
+                            horizontal
+                        />
+                    )}
                     <View style={{ alignItems: "center" }}>
                         <Pressable onPress={handleSubmit} style={Styles.button}>
                             <Text style={{ color: "white" }}>Actualizar</Text>
