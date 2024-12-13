@@ -22,12 +22,17 @@ const Establecimiento = ({ establecimiento }: Props) => {
         >
             <ImageBackground
                 resizeMode="cover"
-                source={establecimiento.logo ?{ uri: establecimiento.logo } : require('../assets/images/default.jpg')}
+                source={
+                    establecimiento.logo
+                        ? { uri: establecimiento.logo }
+                        : require("../assets/images/default.jpg")
+                }
                 style={{
                     width: 150,
                     height: 200,
                     borderRadius: 10,
                     overflow: "hidden",
+                    minWidth: "100%",
                 }}
             >
                 <View
@@ -35,29 +40,41 @@ const Establecimiento = ({ establecimiento }: Props) => {
                         flex: 1,
                         justifyContent: "flex-end",
                         alignItems: "center",
-                        padding: 5,
+                        width: "100%",
                     }}
                 >
-                    <Text
+                    <View
                         style={{
-                            color: "white",
-                            fontFamily: "Poppins-Regular",
-                            textAlign: "center",
-                            backgroundColor:"black",
-                            borderRadius:5,
+                            flexDirection: "column",
+                            backgroundColor: "#0000007f",
+                            padding: 5,
+                            width: "100%",
+                            justifyContent: "center",
+                            alignItems: "center",
                         }}
                     >
-                        {establecimiento.nombre}
-                    </Text>
-                    <Text
-                        style={{
-                            color: "white",
-                            textAlign: "center",
-                        }}
-                    >
-                        <FontAwesome name="star" color={"yellow"} />
-                        {Math.round(establecimiento.calificacion * 10) / 10} / 5
-                    </Text>
+                        <Text
+                            style={{
+                                color: "white",
+                                fontFamily: "Poppins-Regular",
+                                textAlign: "center",
+                                width: "100%",
+                                borderRadius: 5,
+                            }}
+                        >
+                            {establecimiento.nombre}
+                        </Text>
+                        <Text
+                            style={{
+                                color: "white",
+                                textAlign: "center",
+                            }}
+                        >
+                            <FontAwesome name="star" color={"yellow"} />{" "}
+                            {Math.round(establecimiento.calificacion * 10) / 10}{" "}
+                            / 5
+                        </Text>
+                    </View>
                 </View>
             </ImageBackground>
         </Link>
