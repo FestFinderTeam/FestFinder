@@ -10,3 +10,4 @@ from .Establecimiento_Vista import ListarEstablecimientosPorTipo, RecuperarDatos
 from .GaleriaEstablecimiento_Vista import EliminarGaleriaEstablecimiento, RegistrarImagenEnGaleriaEstablecimiento, RecuperarGaleriaPorEstablecimiento, RegistrarVariasImagenesGaleria
 from .Interes_Vista import EliminarInteres, InteresPorEventos, InteresPorUsuario, RegistrarInteres
 from .FavoritosLocal_Vista import FavoritosDeUnUsuario, CreateFavorito, FavoritosPorEstablecimiento, DeleteFavorito
+from .Preferencia_Vista import PreferenciasPorUsuario, RegistrarPreferencia, RegistrarPreferencias
